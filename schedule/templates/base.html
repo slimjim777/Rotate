@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Schedule Pro Ultimate Edition Extreme</title>
+    <script src="/static/js/jquery-1.9.1.js"></script>
+    <script src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <link href="/static/css/cupertino/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+    <link href="/static/css/app.css" rel="stylesheet">
+
+    <script>
+      $(function() {
+        $( "#accordion" ).accordion();
+        $( "#radio" ).buttonset();
+        $( "#r-events" ).click( function() {
+            document.location.href = '/events/';          
+        });
+        $( "#r-people" ).click( function() {
+            document.location.href = '/people/';          
+        });
+        $( "#r-settings" ).click( function() {
+            document.location.href = '/settings/';          
+        });
+      });
+    </script>
+
+</head>
+<body>
+
+    <nav id="main" class="banner">
+        <span class="header">   
+            <div id="radio" class="menu-top">
+              <input type="radio" id="r-events" name="radio" /><label for="r-events">Events</label>
+              <input type="radio" id="r-people" name="radio" /><label for="r-people">People</label>
+              <input type="radio" id="r-settings" name="radio" /><label for="r-settings">Admin</label>
+              <input type="radio" id="r-logout" name="radio" /><label for="r-logout">Logout</label>
+            </div>
+        </span>
+        <h1>Schedule Pro Ultimate Edition Extreme</h1>
+    </nav>
+
+<div class="page">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div id="flashed" class="ui-state-highlight ui-corner-all">
+        {% for message in messages %}
+          {{ message }}<br />
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div id="progressbar"></div>
+    {% block body %}{% endblock %}
+</div>
+
+</body>
+</html>

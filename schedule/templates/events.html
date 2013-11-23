@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h2 class="heading">Events</h2>
+
+<div id="accordion">
+  <h3>Events</h3>
+
+  <div>  
+  {% if rows %}
+    <table class="grid">
+    <tr>
+        <th>Name</th><th>Active</th><th>Created</th>
+    </tr>
+    {% for r in rows %}
+        <tr>
+            <td><a href="/events/{{ r.id }}">{{ r.name }}</a></td>
+            <td class="center">
+                {%if r.active %}
+                <span class="ui-icon ui-icon-check"></span>
+                {% endif %}
+            </td>
+            <td class="center">{{ r.created.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+  {% endif %}
+  </div>
+</div>
+
+<script>
+    $( document ).ready(function() {
+        // Select the page in the radio button
+        $( "#r-events" )[0].checked = true;
+        $( "#radio" ).buttonset("refresh");
+    });
+</script>
+
+{% endblock %}
