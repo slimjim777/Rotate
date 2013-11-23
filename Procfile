@@ -1,1 +1,1 @@
-web: python3 schedule:app
+web: gunicorn schedule:app
