@@ -2,46 +2,124 @@
 {% block body %}
 
 {% if row %}
-<h2 class="heading">Event Overview</h2>
+<h2 class="heading">{{ row.name }}</h2>
 
 <div id="accordion">
+    
+    <h3>Rota</h3>
+    <div>
+        <table class="grid">
+        <tr>
+            <th>Event Dates</th>
+            {% for r in row.roles %}
+            <th>{{ r.name }}</th>
+            {% endfor %}
+        </tr>
+
+        {% for ed in row.eventdates %}
+        <tr>
+            <td>{{ ed.on_date }}</td>
+            {% for rota in ed.people_for_roles() %}
+            <td>
+                {% if rota %}
+                <a href="/person/{{ rota.person.id }}">{{ rota.person.name }}</a>
+                {% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </table> 
+    </div>
+    
     <h3>Details</h3>
     <div>
+        <div class="cell-label">General</div>
         <div class="row">
             <div class="cell-left">
                 <div class="subcell-label">Name:</div>
                 <div class="subcell-data">{{ row.name }}</div>
             </div>
-            <div class="cell-right">
+            <div class="cell-middle">
                 <div class="subcell-label">Active:</div>
                 <div class="subcell-data">
                     {%if row.active %}
                     <span class="ui-icon ui-icon-check"></span>
                     {% endif %}
                 </div>
+            </div>
+            <div class="cell-right">
                 <div class="subcell-label">Created:</div>
                 <div class="subcell-data">{{ row.created.strftime('%Y-%m-%d %H:%M:%S') }}</div>
             </div>
         </div>
-    </div>
+        <div><hr /></div>
+        <div class="cell-label">Event Repetition</div>
+        <div class="row">
+            <div class="cell-left">
+                <div class="subcell-label">Frequency:</div>
+                <div class="subcell-data">{{ row.frequency.title() }}</div>
+            </div>
+            <div class="cell-middle">
+                <div class="subcell-label">Repeats Every:</div>
+                <div class="subcell-data">{{ row.repeat_event }}</div>
+            </div>
+            <div class="cell-right">
+                <div class="subcell-label">Repeats On:</div>
+                <div class="subcell-data">
+                    <table>
+                        <tr>
+                            <td>M</td>
+                            <td>T</td>
+                            <td>W</td>
+                            <td>T</td>
+                            <td>F</td>
+                            <td>S</td>
+                            <td>S</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {%if row.day_mon %}
+                                <span class="ui-icon ui-icon-check"></span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {%if row.day_tue %}
+                                <span class="ui-icon ui-icon-check"></span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {%if row.day_wed %}
+                                <span class="ui-icon ui-icon-check"></span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {%if row.day_thu %}
+                                <span class="ui-icon ui-icon-check"></span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {%if row.day_fri %}
+                                <span class="ui-icon ui-icon-check"></span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {%if row.day_sat %}
+                                <span class="ui-icon ui-icon-check"></span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {%if row.day_sun %}
+                                <span class="ui-icon ui-icon-check"></span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>            
+        </div>
+    </div>    
 </div>
-
-<br />
-
-<table class="grid">
-<tr>
-    <th>Event Dates</th>
-    {% for r in row.roles %}
-    <th>{{ r.name }}</th>
-    {% endfor %}
-</tr>
-
-{% for ed in row.eventdates %}
-<tr>
-    <td>{{ ed.on_date }}</td>
-</tr>
-{% endfor %}
-</table>
 
 
 {% endif %}

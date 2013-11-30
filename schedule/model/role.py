@@ -9,7 +9,7 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
-    role_people = db.relationship('Person', secondary=role_people, backref=db.backref('roles', lazy='dynamic'))
+    role_people = db.relationship('Person', secondary=role_people, backref=db.backref('roles_ref', lazy='dynamic'))
     sequence = db.Column(db.Integer, default=1)
 
     def __init__(self, name, event_id):

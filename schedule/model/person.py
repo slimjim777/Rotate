@@ -7,7 +7,7 @@ class Person(db.Model):
     name = db.Column(db.String(255))
     firstname = db.Column(db.String(100))
     lastname = db.Column(db.String(100))
-    person_roles = db.relationship('Role', secondary=role_people, backref=db.backref('people', lazy='dynamic'))
+    person_roles = db.relationship('Role', secondary=role_people, backref=db.backref('people_ref', lazy='dynamic'))
 
     def __init__(self, firstname, lastname):
         self.name = '%s %s' % (firstname,lastname)

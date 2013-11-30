@@ -8,7 +8,9 @@
 {
     font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-weight: bold;
-    background-color: rgb(59, 170, 227);
+    /*background-color: rgb(59, 170, 227);*/
+    background-color: rgb(204, 0, 0);
+    background: #aaaaaa url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x;
     padding: 10px 20px;
     color: white;
 }
@@ -42,10 +44,11 @@
     border-bottom: 1px solid #ccc;
     background-color: #fff;
     font-size: 0.9em;
+    text-align: center;
 }
 
 .grid a, div#accordion a {
-    color: rgb(59, 170, 240);
+    color: #cc0000;
     text-decoration: none;
 }
 
@@ -56,6 +59,19 @@
 .center {
     text-align: center;
     text-underline: none;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+}
+
+.cell-label {
+    color: rgb(0, 65, 120);
+    font-size: 0.95em;
+    font-weight: bold;
+    padding: 0;
 }
 
 .subcell-label {
@@ -72,8 +88,8 @@
     display: table-row;
 }
 
-.cell-left, .cell-right {
+.cell-left, .cell-middle, .cell-right {
     display: table-cell;
-    width: 600px;
+    width: 500px;
 }
 
