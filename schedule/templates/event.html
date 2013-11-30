@@ -24,8 +24,25 @@
             </div>
         </div>
     </div>
-
 </div>
+
+<br />
+
+<table class="grid">
+<tr>
+    <th>Event Dates</th>
+    {% for r in row.roles %}
+    <th>{{ r.name }}</th>
+    {% endfor %}
+</tr>
+
+{% for ed in row.eventdates %}
+<tr>
+    <td>{{ ed.on_date }}</td>
+</tr>
+{% endfor %}
+</table>
+
 
 {% endif %}
 
