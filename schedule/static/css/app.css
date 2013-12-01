@@ -93,3 +93,9 @@ hr {
     width: 500px;
 }
 
+label.dialog {
+    padding-top: 10px;
+    display: block;
+    color: #888;
+    font-size: 0.9em; 
+}

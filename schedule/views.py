@@ -2,6 +2,7 @@ from flask import render_template
 from flask import request, redirect, url_for, flash, session, abort
 from schedule import app
 from schedule.model.event import Event
+import time
 
 @app.route('/', methods=['GET'])
 def index():
@@ -17,7 +18,7 @@ def event_get(event_id):
     row = Event.query.get(event_id)
     if not row:
         abort(404)
-    
+        
     return render_template('event.html', row=row)
 
 @app.errorhandler(404)

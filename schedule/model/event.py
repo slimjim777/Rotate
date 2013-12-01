@@ -1,4 +1,4 @@
-from schedule import db
+from schedule import db, app
 from schedule.model.role import Role
 from schedule.model.person import Person
 import datetime
@@ -11,7 +11,7 @@ class Event(db.Model):
     active = db.Column(db.Boolean, default=True)
     created = db.Column(db.DateTime, default=datetime.datetime.now)
     eventdates = db.relationship('EventDate', backref='event_ref', lazy='dynamic', order_by='EventDate.on_date')
-    frequency = db.Column(db.Enum('irregular','weekly', name='frequency_types'))
+    frequency = db.Column(db.Enum('irregular','weekly', name='frequency_types'), default='weekly')
     repeat_every = db.Column(db.Integer, default=1)
     day_mon = db.Column(db.Boolean, default=False) 
     day_tue = db.Column(db.Boolean, default=False) 
@@ -26,6 +26,17 @@ class Event(db.Model):
 
     def __repr__(self):
         return '<Event %r>' % self.name
+
+    def last_date(self):
+        """
+        Get the last event-date.
+        """
+        ev_date = EventDate.query.order_by(EventDate.on_date.desc()).first()
+        app.logger.debug(ev_date)
+        if ev_date:
+            return ev_date.on_date
+        else:
+            return None
 
 class EventDate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -62,7 +73,7 @@ class EventDate(db.Model):
             if not in_list:
                 # Put a null entry in the scheduled list if no one is scheduled
                 scheduled.append(None)
-        return scheduled
+        return scheduled        
             
 class Rota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
