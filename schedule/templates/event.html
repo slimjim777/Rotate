@@ -149,7 +149,7 @@
         S<input type="checkbox" name="day_sat" id="d-day_sat" {% if row.day_sat %} checked {% endif %} />
         S<input type="checkbox" name="day_sun" id="d-day_sun" {% if row.day_sun %} checked {% endif %} />
         <label for="d-from-date" class="dialog">From Date</label>
-        <input type="text" name="from_date" id="d-from_date" value="{{ row.last_date() }}" class="dialog ui-widget-content ui-corner-all" />
+        <input type="text" name="from_date" id="d-from_date" value="{{ row.last_date().strftime('%Y-%m-%d') }}" class="dialog ui-widget-content ui-corner-all" />
         <label for="d-to-date" class="dialog">To Date</label>
         <input type="text" name="to_date" id="d-to_date" value="{{ row.last_date() }}" class="dialog ui-widget-content ui-corner-all" />
       </fieldset>
@@ -165,22 +165,33 @@
       modal: true,
       buttons: {
         "Create": function() {
-            var personid = $('#d-personid').val();
+            var eventid = $('#d-event_id').val();
         
             var postdata = {
-                username: $('#d-username').val()
+                frequency: $('#d-frequency').val(),
+                repeats_every: $('#d-repeats_every').val(),
+                day_mon: $('#d-day_mon').is(':checked'),
+                day_tue: $('#d-day_tue').is(':checked'),
+                day_wed: $('#d-day_wed').is(':checked'),
+                day_thu: $('#d-day_thu').is(':checked'),
+                day_fri: $('#d-day_fri').is(':checked'),
+                day_sat: $('#d-day_sat').is(':checked'),
+                day_sun: $('#d-day_sun').is(':checked'),
+                from_date: $('#d-from_date').val(),
+                to_date: $('#d-to_date').val()
             };
-            
+
+
             // Check that the username is valid
             var request = $.ajax({
               type: 'POST',
-              url: '/rest/v1.0/reset',
+              url: '/rest/v1.0/events/' + eventid +'/date/create',
               data: JSON.stringify(postdata),
               contentType:"application/json",
               dataType: "json",
               success: function(data) {
                 if (data.response) {
-                    document.location.href = '/accounts/' + personid;
+                    document.location.href = '/events/{{ event_id }}';
                 } else {
                     if (response.message) {
                         message.text( response.message );
@@ -218,6 +229,8 @@
         $('#create-event-dates').button();
         $('#d-from_date').datepicker();
         $('#d-to_date').datepicker();
+        $('#d-from_date').datepicker("option", "dateFormat", "yy-mm-dd");
+        $('#d-to_date').datepicker("option", "dateFormat", "yy-mm-dd");
     });
 </script>
 
