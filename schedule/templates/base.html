@@ -12,6 +12,10 @@
       $(function() {
         $( "#accordion" ).accordion();
         $( "#radio" ).buttonset();
+        $( "#progressbar" ).progressbar({
+            value: false
+        });
+        $( "#progressbar" ).hide();        
         $( "#r-events" ).click( function() {
             document.location.href = '/events/';          
         });

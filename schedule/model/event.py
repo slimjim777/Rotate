@@ -1,6 +1,4 @@
-from schedule import db, app
-from schedule.model.role import Role        # noqa
-from schedule.model.person import Person    # noqa
+from schedule import db
 import datetime
 
 
@@ -58,7 +56,7 @@ class Event(db.Model):
                     if not day:
                         continue
                     this_day = next_weekday(current_date, index)
-                
+
                     if this_day > end_date:
                         break
 
@@ -68,18 +66,18 @@ class Event(db.Model):
                         # Record already exists so skip it
                         continue
                     else:
-                        app.logger.debug('Create date %s' % this_day)
                         new_date = EventDate(this_day, event_id)
                         records.append(new_date)
-            
+
                 # Look a week ahead
                 current_date += datetime.timedelta(7)
-        
-        # Create the new date records    
-        if len(records)>0:
+
+        # Create the new date records
+        if len(records) > 0:
             [db.session.add(x) for x in records]
             db.session.commit()
         return True, len(records)
+
 
 class EventDate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -118,6 +116,82 @@ class EventDate(db.Model):
                 scheduled.append(None)
         return scheduled
 
+    def update_rota(self, records):
+        """
+        Update the rota by updating the people for each role on this event date.
+        """
+        try:
+            for rec in records:
+                # Check if there is a setting for this role
+                r = self.on_rota.filter_by(role_id=rec['role_id']).first()
+                if r:
+                    # Update the person for who is on rota
+                    if rec['person_id'] == 0:
+                        # Remove the existing record
+                        db.session.delete(r)
+                    else:
+                        # Update the existing record
+                        r.person_id = rec['person_id']
+                else:
+                    # Create a new rota record
+                    if rec['person_id'] != 0:
+                        r = Rota(self.id, rec['role_id'], rec['person_id'])
+                        db.session.add(r)
+
+            db.session.commit()
+            return None
+        except Exception, e:
+            db.session.rollback()
+            return str(e)
+
+
+role_people = db.Table(
+    'role_people',
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id')),
+    db.Column('person_id', db.Integer, db.ForeignKey('person.id'))
+)
+
+
+class Role(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), unique=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
+    role_people = db.relationship('Person', secondary=role_people, backref=db.backref('roles_ref', lazy='dynamic'))
+    sequence = db.Column(db.Integer, default=1)
+
+    def __init__(self, name, event_id):
+        self.name = name
+        self.event_id = event_id
+
+    def __repr__(self):
+        return '<Role %r>' % self.name
+
+
+class Person(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    firstname = db.Column(db.String(100))
+    lastname = db.Column(db.String(100))
+    person_roles = db.relationship('Role', secondary=role_people, backref=db.backref('people_ref', lazy='dynamic'))
+
+    def __init__(self, firstname, lastname):
+        self.name = '%s %s' % (firstname, lastname)
+        self.firstname = firstname
+        self.lastname = lastname
+
+    def __repr__(self):
+        return '<Person %r>' % self.name
+
+    def is_on_rota(self, eventdate_id, role_id):
+        """
+        Check to see if this person is on rota for a specific role on a specific date.
+        """
+        r = Rota.query.filter_by(person_id=self.id, eventdate_id=eventdate_id, role_id=role_id).first()
+        if r:
+            return True
+        else:
+            return False
+
 
 class Rota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -134,4 +208,4 @@ class Rota(db.Model):
         self.person_id = person_id
 
     def __repr__(self):
-        return '<Rota %s as %s on %s>' % (self.person.name, self.role.name, self.eventdate.on_date)
+        return '<Rota %s as %s on %s>' % (self.person_id, self.role_id, self.eventdate_id)

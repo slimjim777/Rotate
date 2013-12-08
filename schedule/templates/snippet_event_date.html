@@ -1,0 +1,20 @@
+{% block body %}
+
+<tr id="ededit{{ ed.id }}">
+    <form id="form{{ ed.id }}">
+    <td><button id="save{{ ed.id }}" onclick="event_date_edit_save(event, {{ event_id }}, {{ ed.id }})">Save</button> <a href="#" onclick="event_date_edit_cancel(event, {{ ed.id }})">Cancel</a></td>
+    <td>{{ ed.on_date }}</td>
+    {% for role in ed.event.roles %}
+    <td>
+        <select id="role{{ role.id }}" name="role{{ role.id }}">
+            <option value="0"></option>
+            {% for person in role.role_people %}
+            <option value="{{ person.id }}" {% if person.is_on_rota(ed.id, role.id) %}selected{% endif %}>{{ person.name }}</option>
+            {% endfor %}
+        </select>
+    </td>
+    {% endfor %}
+    </form>
+</tr>
+
+{% endblock %}

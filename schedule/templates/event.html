@@ -12,6 +12,7 @@
     <div>
         <table class="grid">
         <tr>
+            <th></th>
             <th>Event Dates</th>
             {% for r in row.roles %}
             <th>{{ r.name }}</th>
@@ -19,7 +20,8 @@
         </tr>
 
         {% for ed in row.eventdates %}
-        <tr>
+        <tr id="ed{{ ed.id }}">
+            <td><a href="#edit" onclick="event_date_edit(event, {{ event_id }},{{ ed.id }})">Edit</a></td>
             <td>{{ ed.on_date }}</td>
             {% for rota in ed.people_for_roles() %}
             <td>
@@ -182,7 +184,7 @@
             };
 
 
-            // Check that the username is valid
+            // Create the event dates
             var request = $.ajax({
               type: 'POST',
               url: '/rest/v1.0/events/' + eventid +'/date/create',
@@ -196,7 +198,7 @@
                     if (response.message) {
                         message.text( response.message );
                     } else {
-                        message.text('Error resetting the password. Please check the Username.');
+                        message.text('Error creating event dates.');
                     }
                     message.fadeIn();
                 }
