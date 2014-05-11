@@ -4,13 +4,12 @@
 {% if row %}
 <h2 class="heading">{{ row.name }}</h2>
 
-<button id="create-event-dates" onclick="showDialog()">New Event Dates</button>
-
-<div id="accordion">
-    
-    <h3>Rota</h3>
-    <div>
-        <table class="grid">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Rota <button id="create-event-dates" class="btn btn-primary" data-toggle="modal" data-target="#dialog-form" title="New Event Dates"><span class="glyphicon glyphicon-plus"></span></button></h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped">
         <tr>
             <th></th>
             <th>Event Dates</th>
@@ -34,9 +33,13 @@
         {% endfor %}
         </table> 
     </div>
-    
-    <h3>Details</h3>
-    <div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Details</h3>
+    </div>
+    <div class="panel-body">
         <div class="cell-label">General</div>
         <div class="row">
             <div class="cell-left">
@@ -126,46 +129,53 @@
 </div>
 
 <!-- Create Event Dates -->
-<div id="dialog-form" title="Create Event Dates">
-  <p class="validateTips">Create one or more event dates for '{{ row.name }}'.</p>
-
-  <br />
-  <div id="d-message" class="ui-state-error ui-corner-all"></div>
- 
-  <form>
-      <fieldset>
-        <input type="hidden" name="event_id" id="d-event_id" value="{{ row.id }}" />
-        <label for="d-frequency" class="dialog">Repeats</label>
-        <select id="d-frequency" class="dialog">
-          <option value="weekly">Weekly</option>
-          <option value="irregular">Once</option>
-        </select>
-        <label for="d-repeats_every" class="dialog">Repeats Every</label>
-        <input type="number" name="repeats_every" id="d-repeats_every" value="{{ row.repeat_every }}" min=0 max=52 class="dialog ui-widget-content ui-corner-all" />
-        <label class="dialog">Repeats On</label>
-        M<input type="checkbox" name="day_mon" id="d-day_mon" {% if row.day_mon %} checked {% endif %} />
-        T<input type="checkbox" name="day_tue" id="d-day_tue" {% if row.day_tue %} checked {% endif %} />
-        W<input type="checkbox" name="day_wed" id="d-day_wed" {% if row.day_wed %} checked {% endif %} />
-        T<input type="checkbox" name="day_thu" id="d-day_thu" {% if row.day_thu %} checked {% endif %} />
-        F<input type="checkbox" name="day_fri" id="d-day_fri" {% if row.day_fri %} checked {% endif %} />
-        S<input type="checkbox" name="day_sat" id="d-day_sat" {% if row.day_sat %} checked {% endif %} />
-        S<input type="checkbox" name="day_sun" id="d-day_sun" {% if row.day_sun %} checked {% endif %} />
-        <label for="d-from-date" class="dialog">From Date</label>
-        <input type="text" name="from_date" id="d-from_date" value="{{ row.last_date().strftime('%Y-%m-%d') }}" class="dialog ui-widget-content ui-corner-all" />
-        <label for="d-to-date" class="dialog">To Date</label>
-        <input type="text" name="to_date" id="d-to_date" value="{{ row.last_date() }}" class="dialog ui-widget-content ui-corner-all" />
-      </fieldset>
-  </form>
+<div id="dialog-form" title="Create Event Dates" class="modal fade">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Create one or more event dates for '{{ row.name }}'.</h4>
+              <br />
+              <div id="d-message" class="ui-state-error ui-corner-all"></div>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <fieldset>
+                    <input type="hidden" name="event_id" id="d-event_id" value="{{ row.id }}" class="form-control" />
+                    <label for="d-frequency">Repeats</label>
+                    <select id="d-frequency" class="form-control">
+                      <option value="weekly">Weekly</option>
+                      <option value="irregular">Once</option>
+                    </select>
+                    <label for="d-repeats_every">Repeats Every</label>
+                    <input type="number" name="repeats_every" id="d-repeats_every" value="{{ row.repeat_every }}" min=0 max=52 class="form-control" />
+                    <label>Repeats On</label>&nbsp;
+                    M<input type="checkbox" name="day_mon" id="d-day_mon" {% if row.day_mon %} checked {% endif %} />
+                    T<input type="checkbox" name="day_tue" id="d-day_tue" {% if row.day_tue %} checked {% endif %} />
+                    W<input type="checkbox" name="day_wed" id="d-day_wed" {% if row.day_wed %} checked {% endif %} />
+                    T<input type="checkbox" name="day_thu" id="d-day_thu" {% if row.day_thu %} checked {% endif %} />
+                    F<input type="checkbox" name="day_fri" id="d-day_fri" {% if row.day_fri %} checked {% endif %} />
+                    S<input type="checkbox" name="day_sat" id="d-day_sat" {% if row.day_sat %} checked {% endif %} />
+                    S<input type="checkbox" name="day_sun" id="d-day_sun" {% if row.day_sun %} checked {% endif %} />
+                    <br />
+                    <label for="d-from_date">From Date</label>
+                    <input type="text" name="from_date" id="d-from_date" value="{{ row.last_date().strftime('%Y-%m-%d') }}" class="form-control" />
+                    <label for="d-to_date">To Date</label>
+                    <input type="text" name="to_date" id="d-to_date" value="{{ row.last_date() }}" class="form-control" />
+                  </fieldset>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+      </div>
+  </div>
 </div>
 
 <script>
-    var message = $('#d-message');
-    $('#dialog-form').dialog({
-      autoOpen: false,
-      height: 600,
-      width: 400,
-      modal: true,
-      buttons: {
+    //var message = $('#d-message');
+
+    var buttons = {
         "Create": function() {
             var eventid = $('#d-event_id').val();
         
@@ -213,11 +223,7 @@
         Cancel: function() {
             $( this ).dialog( "close" );
         }
-      },
-      close: function() {
-        //allFields.val( "" ).removeClass( "ui-state-error" );
-      }
-    });
+      };
 
 </script>
 
@@ -225,16 +231,12 @@
 
 <script>
     $( document ).ready(function() {
-        // Select the page in the radio button
-        $( "#r-events" )[0].checked = true;
-        $( "#radio" ).buttonset("refresh");
-        $('#create-event-dates').button();
-        $('#d-from_date').datepicker();
-        $('#d-to_date').datepicker();
-        $('#d-from_date').datepicker("option", "dateFormat", "yy-mm-dd");
-        $('#d-to_date').datepicker("option", "dateFormat", "yy-mm-dd");
     });
 </script>
 
 {% endblock %}
 
+{% block jumbotron %}
+<div class="jumbotron">
+</div>
+{% endblock %}

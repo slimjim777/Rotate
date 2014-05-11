@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h2 class="heading">Events</h2>
-
-<div id="accordion">
-  <h3>Events</h3>
-
-  <div>  
-  {% if rows %}
-    <table class="grid">
-    <tr>
-        <th>Name</th><th>Active</th><th>Created</th>
-    </tr>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Events</h3>
+    </div>
+    <div class="panel-body">
+    {% if rows %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+            <th>Name</th><th>Active</th><th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
     {% for r in rows %}
         <tr>
             <td><a href="/events/{{ r.id }}">{{ r.name }}</a></td>
@@ -23,17 +25,21 @@
             <td class="center">{{ r.created.strftime('%Y-%m-%d %H:%M:%S') }}</td>
         </tr>
     {% endfor %}
+      </tbody>
     </table>
-  {% endif %}
-  </div>
+    {% endif %}
+    </div>
 </div>
 
 <script>
     $( document ).ready(function() {
-        // Select the page in the radio button
-        $( "#r-events" )[0].checked = true;
-        $( "#radio" ).buttonset("refresh");
+
     });
 </script>
 
+{% endblock %}
+
+{% block jumbotron %}
+<div class="jumbotron">
+</div>
 {% endblock %}

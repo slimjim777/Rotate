@@ -1,65 +1,4 @@
-.page {
-    width: 95%;
-    margin-left: auto;
-    margin-right: auto;
-}
 
-.banner
-{
-    font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-weight: bold;
-    /*background-color: rgb(59, 170, 227);*/
-    background-color: rgb(204, 0, 0);
-    background: #aaaaaa url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x;
-    padding: 10px 20px;
-    color: white;
-}
-
-.header {
-    float:right;
-}
-
-.heading {
-    font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    color: #666;
-}
-
-.grid {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-.grid th, .grid td {
-    padding: 5px;
-}
-
-.grid th {
-    border: 1px solid #ccc;
-    background-color: #ddd;
-    font-size: 0.9em;
-}
-
-.grid td {
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    background-color: #fff;
-    font-size: 0.9em;
-    text-align: center;
-}
-
-.grid a, div#accordion a {
-    color: #cc0000;
-    text-decoration: none;
-}
-
-.grid a:hover, div#accordion a:hover {
-    text-decoration: underline;
-}
-
-.center {
-    text-align: center;
-    text-underline: none;
-}
 
 hr {
     border: 0;
@@ -68,20 +7,19 @@ hr {
 }
 
 .cell-label {
-    color: rgb(0, 65, 120);
-    font-size: 0.95em;
+    color: #888;
     font-weight: bold;
     padding: 0;
 }
 
 .subcell-label {
     color: #888;
-    font-size: 0.85em;
+    font-size: 0.95em;
     padding-top: 10px;
 }
 
 .subcell-data {
-    font-size: 0.9em;
+    /*font-size: 0.9em;*/
 }
 
 .row {
@@ -97,5 +35,5 @@ label.dialog {
     padding-top: 10px;
     display: block;
     color: #888;
-    font-size: 0.9em; 
+    font-size: 0.9em;
 }

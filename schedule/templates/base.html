@@ -2,61 +2,47 @@
 <html>
 <head>
     <title>Schedule Pro Ultimate Edition Extreme</title>
-    <script src="/static/js/jquery-1.9.1.js"></script>
-    <script src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
-    <link href="/static/css/blitzer/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/app.css" rel="stylesheet">
-    <script src="/static/js/app.js"></script>
-
-    <script>
-      $(function() {
-        $( "#accordion" ).accordion();
-        $( "#radio" ).buttonset();
-        $( "#progressbar" ).progressbar({
-            value: false
-        });
-        $( "#progressbar" ).hide();        
-        $( "#r-events" ).click( function() {
-            document.location.href = '/events/';          
-        });
-        $( "#r-people" ).click( function() {
-            document.location.href = '/people/';          
-        });
-        $( "#r-settings" ).click( function() {
-            document.location.href = '/settings/';          
-        });
-      });
-    </script>
-
 </head>
 <body>
 
-    <nav id="main" class="banner">
-        <span class="header">   
-            <div id="radio" class="menu-top">
-              <input type="radio" id="r-events" name="radio" /><label for="r-events">Events</label>
-              <input type="radio" id="r-people" name="radio" /><label for="r-people">People</label>
-              <input type="radio" id="r-settings" name="radio" /><label for="r-settings">Admin</label>
-              <input type="radio" id="r-logout" name="radio" /><label for="r-logout">Logout</label>
-            </div>
-        </span>
-        <h1>Schedule Pro Ultimate Edition Extreme</h1>
-    </nav>
-
-<div class="page">
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div id="flashed" class="ui-state-highlight ui-corner-all">
-        {% for message in messages %}
-          {{ message }}<br />
-        {% endfor %}
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Schedule Pro Ultimate Edition Extreme</a>
         </div>
-      {% endif %}
-    {% endwith %}
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/events">Events</a></li>
+            <li id="nav-songlist"><a href="/people">People</a></li>
+            {% if 'admin' in session.role %}
+            <li id="nav-admin"><a href="/admin">Admin</a></li>
+            {% endif %}
+            <li><a href="https://accounts.google.com">{{ session.name }}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
-    <div id="progressbar"></div>
-    {% block body %}{% endblock %}
-</div>
+    {% block jumbotron %}{% endblock %}
+    <div id="main" class="container" role="main">
+        {% block body %}{% endblock %}
+    </div>
 
+
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/app.js"></script>
 </body>
 </html>

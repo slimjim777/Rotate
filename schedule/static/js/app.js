@@ -55,11 +55,13 @@ function event_date_edit_cancel(ev, eventdate_id) {
 // Save the updated event date
 function event_date_edit_save(ev, event_id, eventdate_id) {
     ev.preventDefault();
-    $( "#progressbar" ).show();
     
     // Get the details of the updated fields from the form
-    var data = $('#form'+eventdate_id).serialize();
-    
+    var data = {};
+    $('#ededit' + eventdate_id + ' select.roles option:selected').each(function (index) {
+        data[$(this).parent().attr('id')] = $(this).val();
+    });
+
     // Update the database by posting the form data
     var request = $.ajax({
       type: 'POST',
@@ -68,7 +70,6 @@ function event_date_edit_save(ev, event_id, eventdate_id) {
       success: function(data) {
         if (data.response=='Success') {
             document.location.href = '/events/' + event_id;
-            $( "#progressbar" ).hide();
         } else {
             $( "#progressbar" ).hide();
             showMessage(data.message);
