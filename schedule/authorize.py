@@ -60,7 +60,6 @@ def authorized(resp):
 
     # The user's email address
     result = check_user(me.data.get('email'))
-    #result = True
 
     if result:
         return redirect(url_for('events'))

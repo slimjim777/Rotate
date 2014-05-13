@@ -21,7 +21,7 @@ def error():
 
 @app.route('/events/', methods=['GET'])
 @login_required
-def index():
+def events():
     rows = Event.query.all()
     return render_template('events.html', rows=rows)
 

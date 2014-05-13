@@ -25,7 +25,7 @@
             {% for rota in ed.people_for_roles() %}
             <td>
                 {% if rota %}
-                <a href="/person/{{ rota.person.id }}">{{ rota.person.name }}</a>
+                <a href="/people/{{ rota.person.id }}">{{ rota.person.name }}</a>
                 {% endif %}
             </td>
             {% endfor %}
