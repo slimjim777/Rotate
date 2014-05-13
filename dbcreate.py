@@ -1,13 +1,12 @@
 from schedule.model.event import Event
-from schedule.model.role import Role
-from schedule.model.person import Person
+from schedule.model.event import Role
+from schedule.model.event import Person
 from schedule.model.event import EventDate
 from schedule.model.event import Rota
 from schedule import db
 
 
 db.create_all()
-
 
 
 e = Event('Sunday Morning - Bedworth')
@@ -26,10 +25,14 @@ db.session.add(r4)
 db.session.add(r5)
 db.session.commit()
 
-p1 = Person('John', 'Smith')
-p2 = Person('Janet', 'Jones')
-p3 = Person('James', 'Doe')
-p4 = Person('Jane', 'Johnson')
+p1 = Person('john.smith@gmail.com', 'John', 'Smith')
+p2 = Person('janet.jones@gmail.com', 'Janet', 'Jones')
+p3 = Person('james.doe@gmail.com', 'James', 'Doe')
+p4 = Person('jane.johnson', 'Jane', 'Johnson')
+p1.user_role = 'standard'
+p2.user_role = 'standard'
+p3.user_role = 'standard'
+p4.user_role = 'standard'
 db.session.add(p1)
 db.session.add(p2)
 db.session.add(p3)

@@ -6,10 +6,16 @@ hr {
     background: #ddd;
 }
 
+.cell-label, .cell-data {
+    display: table-cell;
+    width: 80%;
+}
+
 .cell-label {
     color: #888;
     font-weight: bold;
     padding: 0;
+    width: 20%;
 }
 
 .subcell-label {
@@ -26,14 +32,28 @@ hr {
     display: table-row;
 }
 
-.cell-left, .cell-middle, .cell-right {
-    display: table-cell;
-    width: 500px;
-}
 
 label.dialog {
     padding-top: 10px;
     display: block;
     color: #888;
     font-size: 0.9em;
+}
+
+.panel-form {
+    width: 100%;
+}
+
+.panel-form td {
+    vertical-align: top;
+    padding-top: 5px;
+    width: 33.33%;
+}
+
+.panel-form label {
+    margin-bottom: 0px;
+    color: #666;
+}
+.panel-cell {
+    display: block;
 }

@@ -15,7 +15,7 @@ class Event(db.Model):
     roles = db.relationship('Role', backref='event', lazy='dynamic', order_by='Role.sequence',)
     active = db.Column(db.Boolean, default=True)
     created = db.Column(db.DateTime, default=datetime.datetime.now)
-    eventdates = db.relationship('EventDate', backref='event_ref', lazy='dynamic', order_by='EventDate.on_date')
+    event_dates = db.relationship('EventDate', backref='event_ref', lazy='dynamic', order_by='EventDate.on_date')
     frequency = db.Column(db.Enum('irregular', 'weekly', name='frequency_types'), default='weekly')
     repeat_every = db.Column(db.Integer, default=1)
     day_mon = db.Column(db.Boolean, default=False)
@@ -32,7 +32,8 @@ class Event(db.Model):
     def __repr__(self):
         return '<Event %r>' % self.name
 
-    def last_date(self):
+    @staticmethod
+    def last_date():
         """
         Get the last event-date.
         """
@@ -61,7 +62,7 @@ class Event(db.Model):
                         break
 
                     # Check if the date already exists for the Event
-                    ed = self.eventdates.filter_by(on_date=this_day).first()
+                    ed = self.event_dates.filter_by(on_date=this_day).first()
                     if ed:
                         # Record already exists so skip it
                         continue
@@ -156,7 +157,7 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
-    role_people = db.relationship('Person', secondary=role_people, backref=db.backref('roles_ref', lazy='dynamic'))
+    people = db.relationship('Person', secondary=role_people, backref=db.backref('roles_ref', lazy='dynamic'))
     sequence = db.Column(db.Integer, default=1)
 
     def __init__(self, name, event_id):
@@ -169,43 +170,63 @@ class Role(db.Model):
 
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
+    email = db.Column(db.String(255))
     firstname = db.Column(db.String(100))
     lastname = db.Column(db.String(100))
     person_roles = db.relationship('Role', secondary=role_people, backref=db.backref('people_ref', lazy='dynamic'))
+    user_role = db.Column(db.Enum('admin', 'standard', name='user_roles'), default='standard')
+    last_login = db.Column(db.DateTime())
 
-    def __init__(self, firstname, lastname):
-        self.name = '%s %s' % (firstname, lastname)
+    def __init__(self, email, firstname, lastname):
         self.firstname = firstname
         self.lastname = lastname
+        self.email = email
 
     def __repr__(self):
         return '<Person %r>' % self.name
 
-    def is_on_rota(self, eventdate_id, role_id):
+    def is_on_rota(self, event_date_id, role_id):
         """
         Check to see if this person is on rota for a specific role on a specific date.
         """
-        r = Rota.query.filter_by(person_id=self.id, eventdate_id=eventdate_id, role_id=role_id).first()
+        r = Rota.query.filter_by(person_id=self.id, event_date_id=event_date_id, role_id=role_id).first()
         if r:
             return True
         else:
             return False
 
+    @property
+    def name(self):
+        return '%s %s' % (self.firstname, self.lastname)
+
+    @staticmethod
+    def update_last_login(user_id):
+        user = Person.query.get(user_id)
+        user.last_login = datetime.datetime.utcnow()
+        db.session.commit()
+
+    @staticmethod
+    def user_by_email(email):
+        """
+        Get the user by the Email address.
+        """
+        user = Person.query.filter_by(email=email).first()
+        return user
+
 
 class Rota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    eventdate_id = db.Column(db.Integer, db.ForeignKey('event_date.id'))
-    eventdate = db.relationship('EventDate')
+    event_date_id = db.Column(db.Integer, db.ForeignKey('event_date.id'))
+    event_date = db.relationship('EventDate')
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     role = db.relationship('Role', order_by='Role.sequence')
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     person = db.relationship('Person')
 
-    def __init__(self, eventdate_id, role_id, person_id):
-        self.eventdate_id = eventdate_id
+    def __init__(self, event_date_id, role_id, person_id):
+        self.event_date_id = event_date_id
         self.role_id = role_id
         self.person_id = person_id
 
     def __repr__(self):
-        return '<Rota %s as %s on %s>' % (self.person_id, self.role_id, self.eventdate_id)
+        return '<Rota %s as %s on %s>' % (self.person_id, self.role_id, self.event_date_id)

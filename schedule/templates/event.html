@@ -18,7 +18,7 @@
             {% endfor %}
         </tr>
 
-        {% for ed in row.eventdates %}
+        {% for ed in row.event_dates %}
         <tr id="ed{{ ed.id }}">
             <td><a href="#edit" onclick="event_date_edit(event, {{ event_id }},{{ ed.id }})">Edit</a></td>
             <td>{{ ed.on_date }}</td>
@@ -166,66 +166,11 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary" onclick="event_date_create({{ event_id }})">Save changes</button>
           </div>
       </div>
   </div>
 </div>
-
-<script>
-    //var message = $('#d-message');
-
-    var buttons = {
-        "Create": function() {
-            var eventid = $('#d-event_id').val();
-        
-            var postdata = {
-                frequency: $('#d-frequency').val(),
-                repeats_every: $('#d-repeats_every').val(),
-                day_mon: $('#d-day_mon').is(':checked'),
-                day_tue: $('#d-day_tue').is(':checked'),
-                day_wed: $('#d-day_wed').is(':checked'),
-                day_thu: $('#d-day_thu').is(':checked'),
-                day_fri: $('#d-day_fri').is(':checked'),
-                day_sat: $('#d-day_sat').is(':checked'),
-                day_sun: $('#d-day_sun').is(':checked'),
-                from_date: $('#d-from_date').val(),
-                to_date: $('#d-to_date').val()
-            };
-
-
-            // Create the event dates
-            var request = $.ajax({
-              type: 'POST',
-              url: '/rest/v1.0/events/' + eventid +'/date/create',
-              data: JSON.stringify(postdata),
-              contentType:"application/json",
-              dataType: "json",
-              success: function(data) {
-                if (data.response) {
-                    document.location.href = '/events/{{ event_id }}';
-                } else {
-                    if (response.message) {
-                        message.text( response.message );
-                    } else {
-                        message.text('Error creating event dates.');
-                    }
-                    message.fadeIn();
-                }
-              },
-              error: function(e) {
-                  message.text(e);
-              }
-            });  
-            
-            
-        },
-        Cancel: function() {
-            $( this ).dialog( "close" );
-        }
-      };
-
-</script>
 
 {% endif %}
 

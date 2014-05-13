@@ -1,3 +1,5 @@
+var dateFormat = 'dd/mm/yyyy';
+
 function showMessage(msg) {
     var message = $('#d-message');
     message.text(message);
@@ -5,10 +7,11 @@ function showMessage(msg) {
     message.show().fadeOut(2000);
 }
 
+/*
 function showDialog() {
     $('#d-message').hide();
     $( "#dialog-form" ).dialog( "open" );        
-}
+}*/
 
 // Event Screen
 function event_date_edit(ev, event_id, date_id) {
@@ -39,6 +42,7 @@ function event_date_edit(ev, event_id, date_id) {
         }
       },
       error: function(e) {
+          console.log(e);
           message.text(e);
       }
     });
@@ -74,6 +78,50 @@ function event_date_edit_save(ev, event_id, eventdate_id) {
             $( "#progressbar" ).hide();
             showMessage(data.message);
         }
+      }
+    });
+}
+
+// Create a new event date
+function event_date_create(eventid) {
+    var eventid = $('#d-event_id').val();
+
+    var postdata = {
+        frequency: $('#d-frequency').val(),
+        repeats_every: $('#d-repeats_every').val(),
+        day_mon: $('#d-day_mon').is(':checked'),
+        day_tue: $('#d-day_tue').is(':checked'),
+        day_wed: $('#d-day_wed').is(':checked'),
+        day_thu: $('#d-day_thu').is(':checked'),
+        day_fri: $('#d-day_fri').is(':checked'),
+        day_sat: $('#d-day_sat').is(':checked'),
+        day_sun: $('#d-day_sun').is(':checked'),
+        from_date: $('#d-from_date').val(),
+        to_date: $('#d-to_date').val()
+    };
+
+    // Create the event dates
+    var request = $.ajax({
+      type: 'POST',
+      url: '/events/' + eventid +'/dates/create',
+      data: JSON.stringify(postdata),
+      contentType:"application/json",
+      dataType: "json",
+      success: function(data) {
+        console.log(data);
+        if (data.response) {
+            document.location.href = '/events/' + eventid;
+        } else {
+            if (response.message) {
+                message.text( response.message );
+            } else {
+                message.text('Error creating event dates.');
+            }
+            message.fadeIn();
+        }
+      },
+      error: function(e) {
+          message.text(e);
       }
     });
 

@@ -3,26 +3,27 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Events</h3>
+        <h3 class="panel-title">People</h3>
     </div>
     <div class="panel-body">
     {% if rows %}
     <table class="table table-striped">
       <thead>
         <tr>
-            <th>Name</th><th>Active</th><th>Created</th>
+            <th>Name</th><th>Active</th><th>User Role</th><th>Last Login</th>
         </tr>
       </thead>
       <tbody>
     {% for r in rows %}
         <tr>
-            <td><a href="/events/{{ r.id }}">{{ r.name }}</a></td>
+            <td><a href="/people/{{ r.id }}">{{ r.name }}</a></td>
             <td class="center">
                 {%if r.active %}
                 <span class="glyphicon glyphicon-ok"></span>
                 {% endif %}
             </td>
-            <td class="center">{{ r.created.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ r.user_role }}</td>
+            <td class="center">{{ r.last_login.strftime('%Y-%m-%d %H:%M:%S') if r.last_login else ':(' }}</td>
         </tr>
     {% endfor %}
       </tbody>

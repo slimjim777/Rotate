@@ -7,7 +7,7 @@
     <td>
         <select id="role{{ role.id }}" name="role{{ role.id }}" class="form-control roles">
             <option value="0"></option>
-            {% for person in role.role_people %}
+            {% for person in role.people %}
             <option value="{{ person.id }}" {% if person.is_on_rota(ed.id, role.id) %}selected{% endif %}>{{ person.name }}</option>
             {% endfor %}
         </select>

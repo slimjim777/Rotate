@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Person Details</h3>
+    </div>
+    <div class="panel-body">
+        <table class="panel-form">
+        <tbody>
+            <tr>
+                <td>
+                    <label>Firstname</label><span class="panel-cell">{{ row.firstname }}</span>
+                </td>
+                <td>
+                    <label>Lastname</label><span class="panel-cell">{{ row.lastname }}</span>
+                </td>
+                <td>
+                    <label>Email</label><span class="panel-cell">{{ row.email.strip() }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>User Role</label><span class="panel-cell">{{ row.user_role }}</span>
+                </td>
+                <td></td>
+                <td>
+                    <label>Last Access</label><span class="panel-cell">{{ row.last_login }}</span>
+                </td>
+            </tr>
+            <tr>
+                 <td colspan="3">
+                    <label>Roles</label>
+                    <span class="panel-cell">
+                    {% for r in row.person_roles %}
+                    <span class="label label-default">{{ r.name }}</span>
+                    {% endfor %}
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endblock  %}
+
+{% block jumbotron %}
+<div class="jumbotron">
+    <div class="container">
+        <h2 class="sub-heading">{{ row.name }}</h2>
+    </div>
+</div>
+{% endblock %}
