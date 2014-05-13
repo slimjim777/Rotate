@@ -1,7 +1,5 @@
 from flask import render_template, jsonify
 from flask import request
-from flask import redirect
-from flask import url_for
 from flask import flash
 from flask import abort
 from schedule import app
@@ -12,8 +10,8 @@ from schedule.model.event import Person
 
 
 @app.route('/', methods=['GET'])
-def index():
-    return redirect(url_for('events'))
+def home():
+    return render_template('home.html')
 
 
 @app.route('/error')
@@ -23,7 +21,7 @@ def error():
 
 @app.route('/events/', methods=['GET'])
 @login_required
-def events():
+def index():
     rows = Event.query.all()
     return render_template('events.html', rows=rows)
 
