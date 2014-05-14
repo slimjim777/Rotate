@@ -41,6 +41,26 @@
         </table>
     </div>
 </div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Rota&nbsp;
+            <select id="person-rota-select" onchange="personRota(event, {{ row.id }}, null)">
+                <option value="8">Upcoming</option>
+                <option value="-12">Recent</option>
+            </select>
+        </h3>
+    </div>
+    <div class="panel-body" id="person-rota">
+    </div>
+</div>
+
+<script>
+    $( document ).ready(function() {
+        personRota(event, {{ row.id }}, null);
+    });
+</script>
+
 {% endblock  %}
 
 {% block jumbotron %}

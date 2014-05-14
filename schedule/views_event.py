@@ -1,4 +1,5 @@
-from flask import render_template, jsonify
+from flask import render_template
+from flask import jsonify
 from flask import request
 from flask import flash
 from flask import abort
@@ -6,7 +7,6 @@ from schedule import app
 from schedule.model.event import Event
 from schedule.model.event import EventDate
 from schedule.authorize import login_required
-from schedule.model.event import Person
 
 
 @app.route('/', methods=['GET'])
@@ -66,16 +66,3 @@ def event_date_edit(event_id, date_id):
 def not_found(error):
     return render_template('error.html'), 404
 
-
-@app.route('/people/', methods=['GET'])
-@login_required
-def people():
-    rows = Person.query.all()
-    return render_template('people.html', rows=rows)
-
-
-@app.route('/people/<int:person_id>', methods=['GET'])
-@login_required
-def person(person_id):
-    row = Person.query.get(person_id)
-    return render_template('person.html', row=row)

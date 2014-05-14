@@ -1,0 +1,20 @@
+{% block body %}
+    {% if rota and rota|length > 0 %}
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Event</th><th>Date</th><th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in rota %}
+        <tr>
+            <td>{{ r.event_date.event.name }}</td><td>{{ r.event_date.on_date }}</td><td>{{ r.role.name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    {% else %}
+    <p>Dude! You got nothing to do!</p>
+    {% endif %}
+{% endblock %}

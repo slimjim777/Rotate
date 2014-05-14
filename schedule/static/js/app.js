@@ -17,22 +17,16 @@ function showDialog() {
 function event_date_edit(ev, event_id, date_id) {
     ev.preventDefault();
 
-    $('#progressbar').show();
     // Get the editable line snippet for this event date
     var request = $.ajax({
       type: 'GET',
       url: '/events/' + event_id + '/dates/' + date_id +'/edit',
-      //data: JSON.stringify(postdata),
-      //contentType:"application/json",
-      //dataType: "json",
       success: function(data) {
         if (data) {
-            $('#progressbar').hide();
             $('#ed'+date_id).hide();
             $('#ed'+date_id).after(data);
             $('#save'+date_id).button();
         } else {
-            $('#progressbar').hide();
             if (response.message) {
                 message.text( response.message );
             } else {
@@ -108,7 +102,6 @@ function event_date_create(eventid) {
       contentType:"application/json",
       dataType: "json",
       success: function(data) {
-        console.log(data);
         if (data.response) {
             document.location.href = '/events/' + eventid;
         } else {
@@ -125,4 +118,29 @@ function event_date_create(eventid) {
       }
     });
 
+}
+
+// Person Screen
+
+function personRota(ev, personId, range) {
+    if (!range) {
+        range = $('#person-rota-select').val()
+    }
+    ev.preventDefault();
+
+    var postdata = {
+        range: range
+    };
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/people/' + personId + '/rota',
+      data: postdata,
+      success: function(data) {
+        $('#person-rota').html(data);
+      },
+      error: function(e) {
+          console.log(e);
+      }
+    });
 }
