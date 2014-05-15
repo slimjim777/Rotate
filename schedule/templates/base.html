@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Schedule Pro Ultimate Edition Extreme</title>
+    <title>Team Rota</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,12 +22,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Schedule Pro Ultimate Edition Extreme</a>
+          <a class="navbar-brand" href="/">Team Rota</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/events">Events</a></li>
-            <li id="nav-songlist"><a href="/people">People</a></li>
+            <li id="nav-people" class="active"><a href="/people">People</a></li>
+            <li id="nav-events"><a href="/events">Events</a></li>
             {% if 'admin' in session.role %}
             <li id="nav-admin"><a href="/admin">Admin</a></li>
             {% endif %}

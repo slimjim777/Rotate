@@ -9,7 +9,7 @@
     <tbody>
         {% for r in rota %}
         <tr>
-            <td>{{ r.event_date.event.name }}</td><td>{{ r.event_date.on_date }}</td><td>{{ r.role.name }}</td>
+            <td><a href="/events/{{ r.event_date.event_id }}">{{ r.event_date.event.name }}</a></td><td>{{ r.event_date.on_date }}</td><td>{{ r.role.name }}</td>
         </tr>
         {% endfor %}
     </tbody>

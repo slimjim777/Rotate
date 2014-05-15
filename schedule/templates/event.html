@@ -3,6 +3,7 @@
 
 {% if row %}
 <h2 class="heading">{{ row.name }}</h2>
+<div id="message" class="alert alert-danger" hidden></div>
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -176,6 +177,9 @@
 
 <script>
     $( document ).ready(function() {
+        // Set the current page
+        $('ul.navbar-nav li').removeClass('active');
+        $('#nav-events').addClass('active');
     });
 </script>
 

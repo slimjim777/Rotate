@@ -5,8 +5,11 @@ from schedule.model.event import Rota
 from flask import render_template
 from flask import request
 from schedule.model.event import EventDate
+from schedule.model.event import AwayDate
 import datetime
 from datetime import timedelta
+from flask import jsonify
+from schedule import db
 
 
 @app.route('/people/', methods=['GET'])
@@ -36,3 +39,37 @@ def person_rota(person_id):
         # Last n weeks
         rota = Rota.query.join(Person).join(EventDate).filter(Person.id == person_id, EventDate.on_date.between(delta.strftime('%Y-%m-%d'), datetime.date.today().strftime('%Y-%m-%d')))
     return render_template('snippet_person_rota.html', rota=rota.order_by(EventDate.on_date).all())
+
+
+@app.route('/people/<int:person_id>/away', methods=['POST'])
+@login_required
+def person_away(person_id):
+    weeks = int(request.form.get('range'))
+    delta = datetime.date.today() + timedelta(weeks=weeks)
+
+    if weeks > 0:
+        # Next n weeks
+        away_dates = AwayDate.query.filter(AwayDate.person_id == person_id, AwayDate.to_date.between(datetime.date.today().strftime('%Y-%m-%d'), delta.strftime('%Y-%m-%d')))
+    else:
+        # Last n weeks
+        away_dates = AwayDate.query.filter(AwayDate.person_id == person_id, AwayDate.to_date.between(delta.strftime('%Y-%m-%d'), datetime.date.today().strftime('%Y-%m-%d')))
+
+    return render_template('snippet_person_away.html', away_dates=away_dates.all())
+
+
+@app.route('/people/<int:person_id>/away/update', methods=['POST'])
+@login_required
+def person_away_update(person_id):
+    app.logger.debug(request.method)
+    if request.method == 'POST':
+        try:
+            away = AwayDate()
+            away.person_id = person_id
+            away.from_date = request.form.get('from_date')
+            away.to_date = request.form.get('to_date')
+            away.validate_dates()
+            db.session.add(away)
+            db.session.commit()
+            return jsonify({'response': 'Success'})
+        except Exception, v:
+            return jsonify({'response': 'Error', 'message': str(v)})

@@ -1,0 +1,22 @@
+{% block body %}
+    {% if away_dates and away_dates|length > 0 %}
+    <table class="table">
+    <thead>
+        <tr>
+            <th></th><th>From Date</th><th>To Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in away_dates %}
+        <tr>
+            <td><a href="#" onclick="showPersonAwayDialog(event, {{ r.id }}, {{ r.person_id }})">Edit</a></td>
+            <td id="from_date{{ r.id }}">{{ r.from_date }}</td>
+            <td id="to_date{{ r.id }}">{{ r.to_date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    {% else %}
+    <p>No away dates found.</p>
+    {% endif %}
+{% endblock %}

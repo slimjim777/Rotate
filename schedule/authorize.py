@@ -62,7 +62,7 @@ def authorized(resp):
     result = check_user(me.data.get('email'))
 
     if result:
-        return redirect(url_for('events'))
+        return redirect(url_for('person', person_id=session['user_id']))
     else:
         return redirect(url_for('error'))
 

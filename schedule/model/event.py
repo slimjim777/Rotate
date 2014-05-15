@@ -1,4 +1,6 @@
 from schedule import db
+from schedule import app
+from sqlalchemy.orm import validates
 import datetime
 
 
@@ -176,6 +178,8 @@ class Person(db.Model):
     person_roles = db.relationship('Role', secondary=role_people, backref=db.backref('people_ref', lazy='dynamic'))
     user_role = db.Column(db.Enum('admin', 'standard', name='user_roles'), default='standard')
     last_login = db.Column(db.DateTime())
+    active = db.Column(db.Boolean, default=True)
+    away_dates = db.relationship('AwayDate', backref='person_ref', lazy='dynamic')
 
     def __init__(self, email, firstname, lastname):
         self.firstname = firstname
@@ -230,3 +234,28 @@ class Rota(db.Model):
 
     def __repr__(self):
         return '<Rota %s as %s on %s>' % (self.person_id, self.role_id, self.event_date_id)
+
+
+class AwayDate(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    person = db.relationship('Person')
+    from_date = db.Column(db.Date)
+    to_date = db.Column(db.Date)
+
+    @validates('from_date', 'to_date')
+    def check_values(self, key, value):
+        if not value or len(value.strip()) == 0:
+            raise ValueError('The field `%s` must not be empty' % key)
+        else:
+            return value.strip()
+
+    def validate_dates(self):
+        app.logger.debug(self.from_date)
+        f = datetime.datetime.strptime(self.from_date, '%Y-%m-%d')
+        t = datetime.datetime.strptime(self.to_date, '%Y-%m-%d')
+        if t < f:
+            raise ValueError("The 'from date' must not be less than the 'to date'")
+
+    def __repr__(self):
+        return '<AwayDate %s to %s for %s>' % (self.from_date, self.to_date, self.person_id)

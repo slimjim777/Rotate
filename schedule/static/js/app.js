@@ -1,21 +1,25 @@
-var dateFormat = 'dd/mm/yyyy';
+var dateFormat = 'yyyy-mm-dd';
 
 function showMessage(msg) {
     var message = $('#d-message');
-    message.text(message);
-    message.attr('class', 'ui-state-error ui-corner-all');
-    message.show().fadeOut(2000);
+    message.text(msg);
+    message.attr('class', 'alert alert-danger');
+    message.fadeIn(1000);
 }
 
-/*
-function showDialog() {
-    $('#d-message').hide();
-    $( "#dialog-form" ).dialog( "open" );        
-}*/
+function clearMessage() {
+    var message = $('#d-message');
+    message.text('');
+    message.toggleClass('alert', false);
+    message.toggleClass('alert-danger', false);
+}
 
 // Event Screen
 function event_date_edit(ev, event_id, date_id) {
     ev.preventDefault();
+
+    var message = $('#message');
+    message.hide();
 
     // Get the editable line snippet for this event date
     var request = $.ajax({
@@ -32,12 +36,12 @@ function event_date_edit(ev, event_id, date_id) {
             } else {
                 message.text('Error editing the event date.');
             }
-            message.fadeIn();
+            message.fadeIn(1000).delay(3000).fadeOut(1000);
         }
       },
       error: function(e) {
-          console.log(e);
-          message.text(e);
+          message.text(e.responseText);
+          message.fadeIn(1000).delay(3000).fadeOut(1000);
       }
     });
 }
@@ -69,7 +73,6 @@ function event_date_edit_save(ev, event_id, eventdate_id) {
         if (data.response=='Success') {
             document.location.href = '/events/' + event_id;
         } else {
-            $( "#progressbar" ).hide();
             showMessage(data.message);
         }
       }
@@ -143,4 +146,70 @@ function personRota(ev, personId, range) {
           console.log(e);
       }
     });
+}
+
+function personAway(ev, personId, range) {
+    if (!range) {
+        range = $('#person-away-select').val()
+    }
+    ev.preventDefault();
+
+    var postdata = {
+        range: range
+    };
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/people/' + personId + '/away',
+      data: postdata,
+      success: function(data) {
+        $('#person-away').html(data);
+      },
+      error: function(e) {
+          console.log(e);
+      }
+    });
+}
+
+function personAwayDate(personId) {
+    var formData = $('#person-away-form').serialize();
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/people/' + personId + '/away/update',
+      data: formData,
+      success: function(data) {
+        if (data.response == 'Success') {
+            $('#person-away').html(data);
+            $('#dialog-form').modal('hide');
+            personAway(event, personId, null);
+        } else {
+            showMessage(data.message);
+        }
+      },
+      error: function(e) {
+          showMessage(e);
+      }
+    });
+}
+
+function showPersonAwayDialog(ev, awayId, personId) {
+    ev.preventDefault();
+    clearMessage();
+
+    var fromDate = '';
+    var toDate = '';
+
+    // Populate the form
+    $('#d-person_id').val(personId);
+    if (awayId) {
+        // Edit existing away date
+        fromDate = $('#from_date'+awayId).text();
+        toDate = $('#to_date'+awayId).text();
+    }
+    $('#d-from_date').val(fromDate);
+    $('#d-to_date').val(toDate);
+
+    // Show the dialog
+    $('#dialog-form').modal('show');
 }
