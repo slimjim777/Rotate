@@ -8,7 +8,7 @@
         <select id="role{{ role.id }}" name="role{{ role.id }}" class="form-control roles">
             <option value="0"></option>
             {% for person in role.people %}
-            <option value="{{ person.id }}" {% if person.is_on_rota(ed.id, role.id) %}selected{% endif %}>{{ person.name }}</option>
+            <option value="{{ person.id }}" {% if person.is_on_rota(ed.id, role.id) %}selected{% endif %} {% if person.is_away(ed.on_date) %}disabled{% endif %}>{{ person.name }}</option>
             {% endfor %}
         </select>
     </td>

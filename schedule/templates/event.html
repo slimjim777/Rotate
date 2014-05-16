@@ -9,7 +9,7 @@
     <div class="panel-heading">
         <h3 class="panel-title">Rota <button id="create-event-dates" class="btn btn-primary" data-toggle="modal" data-target="#dialog-form" title="New Event Dates"><span class="glyphicon glyphicon-plus"></span></button></h3>
     </div>
-    <div class="panel-body">
+    <div class="table-responsive">
         <table class="table table-striped">
         <tr>
             <th></th>
@@ -26,13 +26,17 @@
             {% for rota in ed.people_for_roles() %}
             <td>
                 {% if rota %}
-                <a href="/people/{{ rota.person.id }}">{{ rota.person.name }}</a>
+                <a href="/people/{{ rota.person.id }}">
+                    {% if rota.person.is_away(ed.on_date) %}<span class="alert-danger">{% endif %}
+                    {{ rota.person.name }}
+                    {% if rota.person.is_away(ed.on_date) %}</span>{% endif %}
+                </a>
                 {% endif %}
             </td>
             {% endfor %}
         </tr>
         {% endfor %}
-        </table> 
+        </table>
     </div>
 </div>
 
@@ -180,6 +184,18 @@
         // Set the current page
         $('ul.navbar-nav li').removeClass('active');
         $('#nav-events').addClass('active');
+
+        // From-to datepickers
+        var selectDateFrom = $('#d-from_date').datepicker({
+            format: dateFormat
+        }).on('changeDate', function(ev) {
+            $(this).datepicker('hide');
+        });
+        var selectDateTo = $('#d-to_date').datepicker({
+            format: dateFormat
+        }).on('changeDate', function(ev) {
+            $(this).datepicker('hide');
+        });
     });
 </script>
 

@@ -199,6 +199,16 @@ class Person(db.Model):
         else:
             return False
 
+    def is_away(self, event_date):
+        """
+        Check to see if the person has away dates booked for a date.
+        """
+        a = AwayDate.query.filter(AwayDate.person_id == self.id, AwayDate.from_date <= event_date, AwayDate.to_date >= event_date).first()
+        if a:
+            return True
+        else:
+            return False
+
     @property
     def name(self):
         return '%s %s' % (self.firstname, self.lastname)
@@ -251,7 +261,6 @@ class AwayDate(db.Model):
             return value.strip()
 
     def validate_dates(self):
-        app.logger.debug(self.from_date)
         f = datetime.datetime.strptime(self.from_date, '%Y-%m-%d')
         t = datetime.datetime.strptime(self.to_date, '%Y-%m-%d')
         if t < f:
