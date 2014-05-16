@@ -9,7 +9,15 @@
     <tbody>
         {% for r in rota %}
         <tr>
-            <td><a href="/events/{{ r.event_date.event_id }}">{{ r.event_date.event.name }}</a></td><td>{{ r.event_date.on_date }}</td><td>{{ r.role.name }}</td>
+            <td><a href="/events/{{ r.event_date.event_id }}">{{ r.event_date.event.name }}</a></td>
+            <td>{% if r.person.is_away(r.event_date.on_date) %}<span class="alert-danger">{% endif %}
+                {{ r.event_date.on_date }}
+                {% if r.person.is_away(r.event_date.on_date) %}</span>{% endif %}
+            </td>
+            <td>{% if r.person.is_away(r.event_date.on_date) %}<span class="alert-danger">{% endif %}
+                {{ r.role.name }}
+                {% if r.person.is_away(r.event_date.on_date) %}</span>{% endif %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>
