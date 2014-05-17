@@ -1,0 +1,35 @@
+{% block body %}
+
+{% if event_dates and event_dates|length > 0 %}
+    <table class="table table-striped">
+    <tr>
+        <th></th>
+        <th>Event Dates</th>
+        {% for r in event.roles %}
+        <th>{{ r.name }}</th>
+        {% endfor %}
+    </tr>
+
+    {% for ed in event_dates %}
+    <tr id="ed{{ ed.id }}">
+        <td><a href="#edit" onclick="event_date_edit(event, {{ event_id }},{{ ed.id }})">Edit</a></td>
+        <td>{{ ed.on_date }}</td>
+        {% for rota in ed.people_for_roles() %}
+        <td>
+            {% if rota %}
+            <a href="/people/{{ rota.person.id }}">
+                {% if rota.person.is_away(ed.on_date) %}<span class="alert-danger">{% endif %}
+                {{ rota.person.name }}
+                {% if rota.person.is_away(ed.on_date) %}</span>{% endif %}
+            </a>
+            {% endif %}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No dates found for the event.</p>
+{% endif %}
+
+{% endblock %}
