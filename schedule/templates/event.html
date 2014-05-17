@@ -7,7 +7,9 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Rota&nbsp;
+        <h3 class="panel-title">
+            <label id="event-dates-spinner" class="spinner" hidden>&nbsp;</label>
+            Rota&nbsp;
             <button id="create-event-dates" class="btn btn-primary" data-toggle="modal" data-target="#dialog-form" title="New Event Dates"><span class="glyphicon glyphicon-plus"></span></button>
             <select id="event-dates-select" onchange="eventDates(event, {{ row.id }})">
                 <option value="8">Upcoming</option>

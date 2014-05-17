@@ -1,38 +1,4 @@
 
-
-hr {
-    border: 0;
-    height: 1px;
-    background: #ddd;
-}
-
-.cell-label, .cell-data {
-    display: table-cell;
-    width: 80%;
-}
-
-.cell-label {
-    color: #888;
-    font-weight: bold;
-    padding: 0;
-    width: 20%;
-}
-
-.subcell-label {
-    color: #888;
-    font-size: 0.95em;
-    padding-top: 10px;
-}
-
-.subcell-data {
-    /*font-size: 0.9em;*/
-}
-
-.row {
-    display: table-row;
-}
-
-
 label.dialog {
     padding-top: 10px;
     display: block;
@@ -60,4 +26,10 @@ label.dialog {
 
 .datepicker {
     z-index: 1200;
+}
+
+.spinner {
+    background-image: url('/static/images/ajax-loader.gif');
+    background-repeat: no-repeat;
+    width: 16px;
 }

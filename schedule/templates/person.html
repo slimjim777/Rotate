@@ -9,10 +9,7 @@
         <tbody>
             <tr>
                 <td>
-                    <label>Firstname</label><span class="panel-cell">{{ row.firstname }}</span>
-                </td>
-                <td>
-                    <label>Lastname</label><span class="panel-cell">{{ row.lastname }}</span>
+                    <label>Name</label><span class="panel-cell">{{ row.name }}</span>
                 </td>
                 <td>
                     <label>Email</label><span class="panel-cell">{{ row.email.strip() }}</span>
@@ -22,13 +19,12 @@
                 <td>
                     <label>User Role</label><span class="panel-cell">{{ row.user_role }}</span>
                 </td>
-                <td></td>
                 <td>
                     <label>Last Access</label><span class="panel-cell">{{ row.last_login }}</span>
                 </td>
             </tr>
             <tr>
-                 <td colspan="3">
+                 <td colspan="2">
                     <label>Roles</label>
                     <span class="panel-cell">
                     {% for r in row.person_roles %}
@@ -44,7 +40,7 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Rota&nbsp;
+        <h3 class="panel-title"><label id="person-rota-spinner" class="spinner" hidden>&nbsp;</label>Rota&nbsp;
             <select id="person-rota-select" onchange="personRota(event, {{ row.id }}, null)">
                 <option value="8">Upcoming</option>
                 <option value="-12">Recent</option>
@@ -57,7 +53,7 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Away Dates&nbsp;
+        <h3 class="panel-title"><label id="person-away-spinner" class="spinner" hidden>&nbsp;</label>Away Dates&nbsp;
             <button class="btn btn-primary" title="New Away Dates" onclick="showPersonAwayDialog(event, null, {{ row.id }})"><span class="glyphicon glyphicon-plus"></span></button>
             <select id="person-away-select" onchange="personAway(event, {{ row.id }}, null)">
                 <option value="8">Upcoming</option>

@@ -129,6 +129,7 @@ function event_date_create(eventid) {
 function eventDates(ev, eventId) {
     var range = $('#event-dates-select').val()
     ev.preventDefault();
+    $('#event-dates-spinner').show();
 
     var postdata = {
         range: range
@@ -140,9 +141,11 @@ function eventDates(ev, eventId) {
       data: postdata,
       success: function(data) {
         $('#event-dates').html(data);
+        $('#event-dates-spinner').hide();
       },
       error: function(e) {
           console.log(e);
+          $('#event-dates-spinner').hide();
       }
     });
 }
@@ -154,6 +157,7 @@ function personRota(ev, personId, range) {
         range = $('#person-rota-select').val()
     }
     ev.preventDefault();
+    $('#person-rota-spinner').show();
 
     var postdata = {
         range: range
@@ -165,9 +169,11 @@ function personRota(ev, personId, range) {
       data: postdata,
       success: function(data) {
         $('#person-rota').html(data);
+        $('#person-rota-spinner').hide();
       },
       error: function(e) {
           console.log(e);
+          $('#person-rota-spinner').hide();
       }
     });
 }
@@ -177,6 +183,7 @@ function personAway(ev, personId, range) {
         range = $('#person-away-select').val()
     }
     ev.preventDefault();
+    $('#person-away-spinner').show();
 
     var postdata = {
         range: range
@@ -188,9 +195,11 @@ function personAway(ev, personId, range) {
       data: postdata,
       success: function(data) {
         $('#person-away').html(data);
+        $('#person-away-spinner').hide();
       },
       error: function(e) {
           console.log(e);
+          $('#person-away-spinner').hide();
       }
     });
 }
