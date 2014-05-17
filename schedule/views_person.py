@@ -57,10 +57,9 @@ def person_away(person_id):
     return render_template('snippet_person_away.html', away_dates=away_dates.all())
 
 
-@app.route('/people/<int:person_id>/away/update', methods=['POST'])
+@app.route('/people/<int:person_id>/away/update', methods=['POST', 'PUT', 'DELETE'])
 @login_required
 def person_away_update(person_id):
-    app.logger.debug(request.method)
     if request.method == 'POST':
         try:
             away = AwayDate()
@@ -69,6 +68,30 @@ def person_away_update(person_id):
             away.to_date = request.form.get('to_date')
             away.validate_dates()
             db.session.add(away)
+            db.session.commit()
+            return jsonify({'response': 'Success'})
+        except Exception, v:
+            return jsonify({'response': 'Error', 'message': str(v)})
+    elif request.method == 'PUT':
+        try:
+            # Update the existing away date
+            away = AwayDate.query.get(request.form.get('away_id'))
+            if not away:
+                raise Exception('Cannot find the away date.')
+            away.from_date = request.form.get('from_date')
+            away.to_date = request.form.get('to_date')
+            away.validate_dates()
+            db.session.commit()
+            return jsonify({'response': 'Success'})
+        except Exception, v:
+            return jsonify({'response': 'Error', 'message': str(v)})
+    elif request.method == 'DELETE':
+        try:
+            # Remove the existing away date
+            away = AwayDate.query.get(request.form.get('away_id'))
+            if not away:
+                raise Exception('Cannot find the away date.')
+            db.session.delete(away)
             db.session.commit()
             return jsonify({'response': 'Success'})
         except Exception, v:

@@ -1,7 +1,9 @@
 var dateFormat = 'yyyy-mm-dd';
 
-function showMessage(msg) {
-    var message = $('#d-message');
+function showMessage(msg, message) {
+    if (!message) {
+        message = $('#d-message');
+    }
     message.text(msg);
     message.attr('class', 'alert alert-danger');
     message.fadeIn(1000);
@@ -206,22 +208,29 @@ function personAway(ev, personId, range) {
 
 function personAwayDate(personId) {
     var formData = $('#person-away-form').serialize();
+    var method = 'POST';
+
+    if ($('#d-away_id').val()) {
+        method = 'PUT';
+    }
 
     var request = $.ajax({
-      type: 'POST',
+      type: method,
       url: '/people/' + personId + '/away/update',
       data: formData,
       success: function(data) {
         if (data.response == 'Success') {
             $('#person-away').html(data);
             $('#dialog-form').modal('hide');
+            // Refresh the panels
             personAway(event, personId, null);
+            personRota(event, personId, null);
         } else {
             showMessage(data.message);
         }
       },
-      error: function(e) {
-          showMessage(e.responseText);
+      error: function(a, b, c) {
+          showMessage(c);
       }
     });
 }
@@ -242,7 +251,34 @@ function showPersonAwayDialog(ev, awayId, personId) {
     }
     $('#d-from_date').val(fromDate);
     $('#d-to_date').val(toDate);
+    $('#d-away_id').val(awayId);
 
     // Show the dialog
     $('#dialog-form').modal('show');
+}
+
+function removePersonAway(ev, awayId, personId, from_date, to_date) {
+    ev.preventDefault();
+
+    bootbox.confirm("Confirm deletion of away dates: " + from_date + ' - ' + to_date, function(result) {
+       if (result) {
+            var request = $.ajax({
+              type: 'DELETE',
+              url: '/people/' + personId + '/away/update',
+              data: {away_id: awayId}
+            })
+            .done(function(data) {
+                if (data.response == 'Success') {
+                    // Refresh the panels
+                    personAway(event, personId, null);
+                    personRota(event, personId, null);
+                } else {
+                    showMessage(data.message);
+                }
+            })
+            .fail(function(a, b, c) {;
+                  bootbox.alert(a.responseText);
+            });
+       }
+    });
 }
