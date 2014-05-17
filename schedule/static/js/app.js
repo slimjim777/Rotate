@@ -71,10 +71,13 @@ function event_date_edit_save(ev, event_id, eventdate_id) {
       data: data,
       success: function(data) {
         if (data.response=='Success') {
-            document.location.href = '/events/' + event_id;
+            eventDates(ev, event_id);
         } else {
             showMessage(data.message);
         }
+      },
+      error: function(e) {
+        showMessage(e.responseText);
       }
     });
 }
@@ -121,6 +124,27 @@ function event_date_create(eventid) {
       }
     });
 
+}
+
+function eventDates(ev, eventId) {
+    var range = $('#event-dates-select').val()
+    ev.preventDefault();
+
+    var postdata = {
+        range: range
+    };
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/events/' + eventId + '/dates',
+      data: postdata,
+      success: function(data) {
+        $('#event-dates').html(data);
+      },
+      error: function(e) {
+          console.log(e);
+      }
+    });
 }
 
 // Person Screen
@@ -188,7 +212,7 @@ function personAwayDate(personId) {
         }
       },
       error: function(e) {
-          showMessage(e);
+          showMessage(e.responseText);
       }
     });
 }

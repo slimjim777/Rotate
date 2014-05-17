@@ -3,40 +3,19 @@
 
 {% if row %}
 <h2 class="heading">{{ row.name }}</h2>
-<div id="message" class="alert alert-danger" hidden></div>
+<div id="d-message" class="alert alert-danger" hidden></div>
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Rota <button id="create-event-dates" class="btn btn-primary" data-toggle="modal" data-target="#dialog-form" title="New Event Dates"><span class="glyphicon glyphicon-plus"></span></button></h3>
+        <h3 class="panel-title">Rota&nbsp;
+            <button id="create-event-dates" class="btn btn-primary" data-toggle="modal" data-target="#dialog-form" title="New Event Dates"><span class="glyphicon glyphicon-plus"></span></button>
+            <select id="event-dates-select" onchange="eventDates(event, {{ row.id }})">
+                <option value="8">Upcoming</option>
+                <option value="-12">Recent</option>
+            </select>
+        </h3>
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped">
-        <tr>
-            <th></th>
-            <th>Event Dates</th>
-            {% for r in row.roles %}
-            <th>{{ r.name }}</th>
-            {% endfor %}
-        </tr>
-
-        {% for ed in row.event_dates %}
-        <tr id="ed{{ ed.id }}">
-            <td><a href="#edit" onclick="event_date_edit(event, {{ event_id }},{{ ed.id }})">Edit</a></td>
-            <td>{{ ed.on_date }}</td>
-            {% for rota in ed.people_for_roles() %}
-            <td>
-                {% if rota %}
-                <a href="/people/{{ rota.person.id }}">
-                    {% if rota.person.is_away(ed.on_date) %}<span class="alert-danger">{% endif %}
-                    {{ rota.person.name }}
-                    {% if rota.person.is_away(ed.on_date) %}</span>{% endif %}
-                </a>
-                {% endif %}
-            </td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-        </table>
+    <div id="event-dates" class="table-responsive">
     </div>
 </div>
 
@@ -45,92 +24,49 @@
         <h3 class="panel-title">Details</h3>
     </div>
     <div class="panel-body">
-        <div class="cell-label">General</div>
-        <div class="row">
-            <div class="cell-left">
-                <div class="subcell-label">Name:</div>
-                <div class="subcell-data">{{ row.name }}</div>
-            </div>
-            <div class="cell-middle">
-                <div class="subcell-label">Active:</div>
-                <div class="subcell-data">
-                    {%if row.active %}
-                    <span class="ui-icon ui-icon-check"></span>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="cell-right">
-                <div class="subcell-label">Created:</div>
-                <div class="subcell-data">{{ row.created.strftime('%Y-%m-%d %H:%M:%S') }}</div>
-            </div>
-        </div>
-        <div><hr /></div>
-        <div class="cell-label">Event Repetition</div>
-        <div class="row">
-            <div class="cell-left">
-                <div class="subcell-label">Frequency:</div>
-                <div class="subcell-data">{{ row.frequency }}</div>
-            </div>
-            <div class="cell-middle">
-                <div class="subcell-label">Repeats Every:</div>
-                <div class="subcell-data">{{ row.repeat_every }}</div>
-            </div>
-            <div class="cell-right">
-                <div class="subcell-label">Repeats On:</div>
-                <div class="subcell-data">
-                    <table>
-                        <tr>
-                            <td>M</td>
-                            <td>T</td>
-                            <td>W</td>
-                            <td>T</td>
-                            <td>F</td>
-                            <td>S</td>
-                            <td>S</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {%if row.day_mon %}
-                                <span class="ui-icon ui-icon-check"></span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {%if row.day_tue %}
-                                <span class="ui-icon ui-icon-check"></span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {%if row.day_wed %}
-                                <span class="ui-icon ui-icon-check"></span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {%if row.day_thu %}
-                                <span class="ui-icon ui-icon-check"></span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {%if row.day_fri %}
-                                <span class="ui-icon ui-icon-check"></span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {%if row.day_sat %}
-                                <span class="ui-icon ui-icon-check"></span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {%if row.day_sun %}
-                                <span class="ui-icon ui-icon-check"></span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </table>
-
-                </div>
-            </div>            
-        </div>
-    </div>    
+        <table class="panel-form">
+            <tbody>
+            <tr>
+                <td>
+                    <label>Name</label><span class="panel-cell">{{ row.name }}</span>
+                </td>
+                <td>
+                    <label>Active</label>
+                        <span class="panel-cell">
+                            {%if row.active %}
+                            <span class="glyphicon glyphicon-ok"></span>
+                            {% endif %}
+                        </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Frequency</label><span class="panel-cell">{{ row.frequency.title() }}</span>
+                </td>
+                <td>
+                    <label>Repeats Every</label><span class="panel-cell">{{ row.repeat_every }}</span>
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    <label>Created</label><span class="panel-cell">{{ row.created.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </td>
+                <td>
+                    <label>Repeats On</label>
+                    <span class="panel-cell">
+                        {%if row.day_mon %}<b>M</b>{% else %}M{% endif %}
+                        {%if row.day_tue %}<b>T</b>{% else %}T{% endif %}
+                        {%if row.day_wed %}<b>W</b>{% else %}W{% endif %}
+                        {%if row.day_thu %}<b>T</b>{% else %}T{% endif %}
+                        {%if row.day_fri %}<b>F</b>{% else %}F{% endif %}
+                        {%if row.day_sat %}<b>S</b>{% else %}S{% endif %}
+                        {%if row.day_sun %}<b>S</b>{% else %}S{% endif %}
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Create Event Dates -->
@@ -184,6 +120,8 @@
         // Set the current page
         $('ul.navbar-nav li').removeClass('active');
         $('#nav-events').addClass('active');
+
+        eventDates(event, {{ event_id }});
 
         // From-to datepickers
         var selectDateFrom = $('#d-from_date').datepicker({

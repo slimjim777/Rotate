@@ -14,7 +14,7 @@ def next_weekday(d, weekday):
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True)
-    roles = db.relationship('Role', backref='event', lazy='dynamic', order_by='Role.sequence',)
+    roles = db.relationship('Role', backref='event', lazy='joined', order_by='Role.sequence',)
     active = db.Column(db.Boolean, default=True)
     created = db.Column(db.DateTime, default=datetime.datetime.now)
     event_dates = db.relationship('EventDate', backref='event_ref', lazy='dynamic', order_by='EventDate.on_date')
@@ -104,7 +104,7 @@ class EventDate(db.Model):
         scheduled = []
 
         # Get the list of people that are on rota for this event date
-        rota_list = self.on_rota.all()
+        rota_list = self.on_rota
 
         for r in self.event.roles:
             in_list = False
@@ -159,7 +159,7 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
-    people = db.relationship('Person', secondary=role_people, backref=db.backref('roles_ref', lazy='dynamic'))
+    people = db.relationship('Person', secondary=role_people, backref=db.backref('roles_ref', lazy='joined'))
     sequence = db.Column(db.Integer, default=1)
 
     def __init__(self, name, event_id):
@@ -175,7 +175,7 @@ class Person(db.Model):
     email = db.Column(db.String(255))
     firstname = db.Column(db.String(100))
     lastname = db.Column(db.String(100))
-    person_roles = db.relationship('Role', secondary=role_people, backref=db.backref('people_ref', lazy='dynamic'))
+    person_roles = db.relationship('Role', secondary=role_people, backref=db.backref('people_ref', lazy='joined'))
     user_role = db.Column(db.Enum('admin', 'standard', name='user_roles'), default='standard')
     last_login = db.Column(db.DateTime())
     active = db.Column(db.Boolean, default=True)
