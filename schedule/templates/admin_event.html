@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block body %}
+<div id="message" class="alert alert-danger" hidden></div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Event Details</h3>
+    </div>
+    <div class="panel panel-body">
+        <table class="panel-form">
+        <tbody>
+            <tr>
+                <td>
+                    <label>Name</label><span class="panel-cell">{{ row.name }}</span>
+                </td>
+                <td>
+                    <label>Active</label>
+                    <span class="panel-cell">
+                        {%if row.active %}
+                        <span class="glyphicon glyphicon-ok"></span>
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Frequency</label><span class="panel-cell">{{ row.frequency.title() }}</span>
+                </td>
+                <td>
+                    <label>Repeats Every</label><span class="panel-cell">{{ row.repeat_every }}</span>
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    <label>Created</label><span class="panel-cell">{{ row.created.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </td>
+                <td>
+                    <label>Repeats On</label>
+                    <span class="panel-cell">
+                        {%if row.day_mon %}<b>M</b>{% else %}M{% endif %}
+                        {%if row.day_tue %}<b>T</b>{% else %}T{% endif %}
+                        {%if row.day_wed %}<b>W</b>{% else %}W{% endif %}
+                        {%if row.day_thu %}<b>T</b>{% else %}T{% endif %}
+                        {%if row.day_fri %}<b>F</b>{% else %}F{% endif %}
+                        {%if row.day_sat %}<b>S</b>{% else %}S{% endif %}
+                        {%if row.day_sun %}<b>S</b>{% else %}S{% endif %}
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <label id="roles-spinner" class="spinner" hidden>&nbsp;</label>
+            Event Roles&nbsp;
+            <button id="create-event-role" class="btn btn-primary" onclick="showRoleDialog(event, null, {{ row.id }})" title="New Event Role"><span class="glyphicon glyphicon-plus"></span></button>
+        </h3>
+    </div>
+    <div id="roles" class="table-responsive">
+    </div>
+</div>
+
+<!-- Create Event Roles -->
+<div id="dialog-form" title="Create Event Roles" class="modal fade">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Define an Event Role</h4>
+              <br />
+              <div id="d-message"></div>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <fieldset>
+                      <input id="d-role_id" type="text" hidden name="role_id" />
+                      <label>Role Name</label>
+                      <input type="text" name="name" id="d-name" class="form-control" placeholder="role name" />
+                      <label>Sequence</label>
+                      <input type="number" name="sequence" id="d-sequence" value="1" min=0 max=100 class="form-control" placeholder="sequence" />
+                  </fieldset>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="eventRole(event, {{ row.id }})">Save</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Select People for Role -->
+<div id="role-people" title="Select People for Role" class="modal fade">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title"></h4>
+              <br />
+              <div id="r-message"></div>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <fieldset id="role-people-form">
+                  </fieldset>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="rolePeopleSave(event, {{ row.id }})">Save</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+    $( document ).ready(function() {
+        // Set the current page
+        $('ul.navbar-nav li').removeClass('active');
+        $('#nav-admin').addClass('active');
+
+        eventRoles(event, {{ row.id }})
+    });
+</script>
+
+{% endblock %}
+
+{% block jumbotron %}
+<div class="jumbotron">
+    <div class="container">
+        <h2 class="sub-heading">Event Administration</h2>
+    </div>
+</div>
+{% endblock %}

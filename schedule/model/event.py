@@ -1,5 +1,5 @@
 from schedule import db
-from schedule import app
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import validates
 import datetime
 
@@ -157,14 +157,23 @@ role_people = db.Table(
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=True)
+    name = db.Column(db.String(255))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
     people = db.relationship('Person', secondary=role_people, backref=db.backref('roles_ref', lazy='joined'))
     sequence = db.Column(db.Integer, default=1)
 
+    UniqueConstraint('event_id', 'name')
+
     def __init__(self, name, event_id):
         self.name = name
         self.event_id = event_id
+
+    @validates('name')
+    def check_not_empty(self, key, value):
+        if not value or len(value.strip()) == 0:
+            raise ValueError('The field `%s` must not be empty' % key)
+        else:
+            return value.strip()
 
     def __repr__(self):
         return '<Role %r>' % self.name
@@ -188,6 +197,13 @@ class Person(db.Model):
 
     def __repr__(self):
         return '<Person %r>' % self.name
+
+    @validates('firstname', 'lastname', 'email')
+    def check_not_empty(self, key, value):
+        if not value or len(value.strip()) == 0:
+            raise ValueError('The field `%s` must not be empty' % key)
+        else:
+            return value.strip()
 
     def is_on_rota(self, event_date_id, role_id):
         """

@@ -12,11 +12,34 @@ from flask import jsonify
 from schedule import db
 
 
+PAGE_SIZE = int(app.config['PAGE_SIZE'])
+
+
 @app.route('/people/', methods=['GET'])
 @login_required
 def people():
-    rows = Person.query.all()
-    return render_template('people.html', rows=rows)
+    # Get the page number for pagination
+    page = int(request.args.get('page', 1))
+    if page < 1:
+        page = 1
+
+    rows = Person.query.paginate(page, PAGE_SIZE, False)
+    return render_template('people.html', rows=rows, page=page, pages=rows.pages)
+
+
+@app.route('/people/update', methods=['POST'])
+@login_required
+def people_update():
+    if request.method == 'POST':
+        try:
+            p = Person(request.form.get('email'), request.form.get('firstname'), request.form.get('lastname'))
+            p.user_role = request.form.get('user_role')
+            app.logger.debug(p)
+            db.session.add(p)
+            db.session.commit()
+            return jsonify({'response': 'Success'})
+        except Exception, v:
+            return jsonify({'response': 'Error', 'message': str(v)})
 
 
 @app.route('/people/<int:person_id>', methods=['GET'])

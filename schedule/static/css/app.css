@@ -33,3 +33,11 @@ label.dialog {
     background-repeat: no-repeat;
     width: 16px;
 }
+
+tr.selected td {
+    background-color: #39b3d7 !important;
+}
+
+select.role-select {
+    height: 200px;
+}

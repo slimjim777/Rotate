@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block body %}
+<h2 class="heading">Event Administration</h2>
+<div id="d-message" class="alert alert-danger" hidden></div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Events</h3>
+    </div>
+    <div id="events" class="panel panel-body">
+    {% if rows %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+            <th>Name</th><th>Active</th><th>Roles</th><th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for r in rows %}
+        <tr>
+            <td><a href="/admin/{{ r.id }}">{{ r.name }}</a></td>
+            <td class="center">
+                {%if r.active %}
+                <span class="glyphicon glyphicon-ok"></span>
+                {% endif %}
+            </td>
+            <td>{{ r.roles|length }}</td>
+            <td class="center">{{ r.created.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+    {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    </div>
+</div>
+
+<script>
+    $( document ).ready(function() {
+        // Set the current page
+        $('ul.navbar-nav li').removeClass('active');
+        $('#nav-admin').addClass('active');
+    });
+</script>
+
+{% endblock %}
+
+

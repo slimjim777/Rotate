@@ -1,0 +1,25 @@
+{% block body %}
+    {% if roles and roles|length > 0 %}
+    <table class="table">
+    <thead>
+        <tr>
+            <th></th><th>Name</th><th>Sequence</th><th>People</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in roles %}
+        <tr id="role{{ r.id }}" class="role_list">
+            <td>
+                <a href="#" onclick="showRoleDialog(event, {{ r.id }}, {{ r.event_id }})">Edit</a>
+            </td>
+            <td id="name{{ r.id }}">{{ r.name }}</td>
+            <td id="sequence{{ r.id }}">{{ r.sequence }}</td>
+            <td id="people{{ r.id }}"><button class="btn btn-primary" title="Select the people for the role" onclick="rolePeople(event, {{ r.event_id }}, {{ r.id }})"><span class="badge">{{ r.people|length }}</span></button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    {% else %}
+    <p>No roles found.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% block body %}
+
+<table class="table">
+    <tr>
+        <th>Not in Role</th><th>&nbsp;</th><th>Assigned to Role</th>
+    </tr>
+    <tr>
+        <td>
+            <input type="text" id="select-role_id" name="role_id" hidden value="{{ role_id }}">
+            <select multiple id="unselected" class="form-control role-select">
+            {% for u in unselected %}
+            <option id="person{{ u.id }}" value="{{ u.id }}">{{ u.name }}</option>
+            {% endfor %}
+            </select>
+        </td>
+        <td>
+            <center>
+                <button class="btn btn-success" onclick="rolePersonSelect(event)">&raquo;</button>
+                <br />
+                <button class="btn btn-danger" onclick="rolePersonDeselect(event)">&laquo;</button>
+            </center>
+        </td>
+        <td>
+            <select multiple id="selected" class="form-control role-select">
+            {% for u in selected %}
+            <option id="person{{ u.id }}" value="{{ u.id }}">{{ u.name }}</option>
+            {% endfor %}
+            </select>
+        </td>
+    </tr>
+</table>
+
+{% endblock %}

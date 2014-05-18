@@ -250,7 +250,9 @@ function showPersonAwayDialog(ev, awayId, personId) {
         toDate = $('#to_date'+awayId).text();
     }
     $('#d-from_date').val(fromDate);
+    $('#d-from_date').datepicker('update', fromDate);
     $('#d-to_date').val(toDate);
+    $('#d-to_date').datepicker('update', toDate);
     $('#d-away_id').val(awayId);
 
     // Show the dialog
@@ -281,4 +283,177 @@ function removePersonAway(ev, awayId, personId, from_date, to_date) {
             });
        }
     });
+}
+
+// People Screen
+
+function personAdd(ev) {
+    ev.preventDefault();
+
+    // Get the details of the new person
+    var data = {
+        firstname: $("#usrnewfirst").val(),
+        lastname: $("#usrnewlast").val(),
+        email: $("#usrnewemail").val(),
+        user_role: $("#usrnewrole").val(),
+    };
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/people/update',
+      data: data
+    }).done( function(data) {
+        if (data.response == 'Success') {
+            window.location.href = '/people';
+        } else {
+            // Display the error
+            showMessage(data.message);
+        }
+    }).fail( function(a, b, c) {
+        showMessage(a.status + ': ' + a.statusText);
+    });
+}
+
+// Event Administration
+
+function eventRoles(ev, eventId) {
+    ev.preventDefault();
+    $('#roles-spinner').show();
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/admin/event/' + eventId + '/roles',
+      data: {},
+      success: function(data) {
+        $('#roles').html(data);
+        $('#roles-spinner').hide();
+      },
+      error: function(e) {
+          console.log(e);
+          $('#roles-spinner').hide();
+      }
+    });
+}
+
+function eventRole(ev, eventId) {
+    ev.preventDefault();
+    var method = 'POST'
+    var roleId = $('#d-role_id').val();
+
+    // Get the details of the new person
+    var data = {
+        name: $("#d-name").val(),
+        sequence: $("#d-sequence").val()
+    };
+
+    if (roleId) {
+        data.role_id = roleId;
+        method = 'PUT';
+    }
+
+     var request = $.ajax({
+      type: method,
+      url: '/admin/event/' + eventId + '/roles/update',
+      data: data
+    }).done( function(data) {
+        if (data.response == 'Success') {
+            $('#dialog-form').modal('hide');
+            eventRoles(ev, eventId);
+        } else {
+            // Display the error
+            showMessage(data.message);
+        }
+    }).fail( function(a, b, c) {
+        showMessage(a.status + ': ' + a.statusText);
+    });
+}
+
+function showRoleDialog(ev, roleId, eventId) {
+    ev.preventDefault();
+
+    // Set defaults for a new role
+    clearMessage();
+    var name = '';
+    var sequence = 1;
+
+    // Populate the form
+    $('#d-role_id').val(roleId);
+
+    if (roleId) {
+        // Editing existing role, so get the values
+        name = $('#name'+roleId).text();
+        sequence = $('#sequence'+roleId).text();
+    }
+
+    $('#d-name').val(name);
+    $('#d-sequence').val(sequence);
+
+    // Show the dialog
+    $('#dialog-form').modal('show');
+}
+
+function rolePeople(ev, eventId, roleId) {
+    ev.preventDefault();
+
+    var request = $.ajax({
+      type: 'GET',
+      url: '/admin/event/' + eventId + '/roles/' + roleId + '/people',
+      data: {}
+    }).done( function(data) {
+        $('#role-people-form').html(data);
+        $('#role-people h4').text('Select people for ' + $('#name' + roleId).text());
+        $('#role-people').modal('show');
+    }).fail( function(a, b, c) {
+        showMessage(a.status + ': ' + a.statusText);
+    });
+}
+
+function rolePersonSelect(ev) {
+    ev.preventDefault();
+    $('#unselected option:selected').each( function(index) {
+        $(this).remove().appendTo('#selected');
+    });
+}
+
+function rolePersonDeselect(ev) {
+    ev.preventDefault();
+    $('#selected option:selected').each( function(index) {
+        $(this).remove().appendTo('#unselected');
+    });
+}
+
+function rolePeopleSave(ev, eventId) {
+    ev.preventDefault();
+
+    var roleId = $('#select-role_id').val();
+
+    // Get the personId's from the selected list
+    var selected = [];
+    $('#selected option').each(function() {
+        selected.push($(this).val());
+    });
+
+    var postdata = {
+        role_id: roleId,
+        selected: selected
+    };
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/admin/event/' + eventId + '/roles/' + roleId + '/people',
+      data: JSON.stringify(postdata),
+      contentType:"application/json",
+      dataType: "json",
+    }).done( function(data) {
+        if (data.response == 'Success') {
+            $('#role-people').modal('hide');
+            eventRoles(ev, eventId);
+        } else {
+            // Display the error
+            showMessage(data.message, $('#r-message'));
+        }
+    }).fail( function(a, b, c) {
+        showMessage(a.status + ': ' + a.statusText, $('#r-message'));
+    });
+
 }
