@@ -457,3 +457,11 @@ function rolePeopleSave(ev, eventId) {
     });
 
 }
+
+// Admin Screen
+
+function showEventDialog(ev) {
+    ev.preventDefault();
+
+    $('#dialog-form').modal('show');
+}

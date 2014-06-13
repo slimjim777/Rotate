@@ -93,6 +93,13 @@ class EventDate(db.Model):
         self.on_date = on_date
         self.event_id = event_id
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'event': self.event.name,
+            'on_date': self.on_date.strftime('%Y-%m-%dT%H:%M:%S'),
+        }
+
     def __repr__(self):
         return '<Event Date %r>' % self.on_date
 
@@ -175,6 +182,14 @@ class Role(db.Model):
         else:
             return value.strip()
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'event_id': self.event_id,
+            'sequence': self.sequence,
+        }
+
     def __repr__(self):
         return '<Role %r>' % self.name
 
@@ -225,6 +240,19 @@ class Person(db.Model):
         else:
             return False
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'firstname': self.firstname,
+            'lastname': self.lastname,
+            'email': self.email,
+            'user_role': self.user_role,
+            'last_login': self.last_login.strftime('%Y-%m-%dT%H:%M:%S') if self.last_login else None,
+            'active': self.active,
+            'person_roles': [r.to_dict() for r in self.person_roles],
+        }
+
     @property
     def name(self):
         return '%s %s' % (self.firstname, self.lastname)
@@ -258,6 +286,14 @@ class Rota(db.Model):
         self.role_id = role_id
         self.person_id = person_id
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'role': self.role.to_dict(),
+            'event_date': self.event_date.to_dict(),
+            'person_id': self.person_id,
+        }
+
     def __repr__(self):
         return '<Rota %s as %s on %s>' % (self.person_id, self.role_id, self.event_date_id)
 
@@ -281,6 +317,14 @@ class AwayDate(db.Model):
         t = datetime.datetime.strptime(self.to_date, '%Y-%m-%d')
         if t < f:
             raise ValueError("The 'from date' must not be less than the 'to date'")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'person_id': self.person_id,
+            'from_date': self.from_date.strftime('%Y-%m-%dT%H:%M:%S') if self.from_date else None,
+            'to_date': self.to_date.strftime('%Y-%m-%dT%H:%M:%S') if self.to_date else None,
+        }
 
     def __repr__(self):
         return '<AwayDate %s to %s for %s>' % (self.from_date, self.to_date, self.person_id)

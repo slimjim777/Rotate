@@ -1,23 +1,25 @@
 {% extends "base.html" %}
 {% block body %}
-<h2 class="heading">Event Administration</h2>
-<div id="d-message" class="alert alert-danger" hidden></div>
+<div id="message" class="alert alert-danger" hidden></div>
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Events</h3>
+        <h3 class="panel-title">Events
+            <button class="btn btn-primary" title="New Event" onclick="showEventDialog(event)"><span class="glyphicon glyphicon-plus"></span></button>
+        </h3>
     </div>
     <div id="events" class="panel panel-body">
     {% if rows %}
     <table class="table table-striped">
       <thead>
         <tr>
-            <th>Name</th><th>Active</th><th>Roles</th><th>Created</th>
+            <th></th><th>Name</th><th>Active</th><th>Roles</th><th>Created</th>
         </tr>
       </thead>
       <tbody>
     {% for r in rows %}
         <tr>
+            <td><a href="">Edit</a></td>
             <td><a href="/admin/{{ r.id }}">{{ r.name }}</a></td>
             <td class="center">
                 {%if r.active %}
@@ -34,6 +36,50 @@
     </div>
 </div>
 
+<!-- Create Event Dates -->
+<div id="dialog-form" title="Create Event Dates" class="modal fade">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Create an Event</h4>
+              <br />
+              <div id="d-message"></div>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <fieldset>
+                    <input type="hidden" name="event_id" id="d-event_id" class="form-control" />
+                    <label for="d-name">Name</label>
+                    <input type="text" name="name" id="d-name" class="form-control" />
+                    <label for="d-active">Active</label>&nbsp;
+                    <input type="checkbox" name="active" id="d-active" checked /><br />
+                    <label for="d-frequency">Repeats</label>
+                    <select id="d-frequency" class="form-control">
+                      <option value="weekly">Weekly</option>
+                      <option value="irregular">Once</option>
+                    </select>
+                    <label for="d-repeats_every">Repeats Every</label>
+                    <input type="number" name="repeats_every" id="d-repeats_every" value="1" min=0 max=52 class="form-control" />
+                    <label>Repeats On</label>&nbsp;
+                    M<input type="checkbox" name="day_mon" id="d-day_mon" />
+                    T<input type="checkbox" name="day_tue" id="d-day_tue" />
+                    W<input type="checkbox" name="day_wed" id="d-day_wed" />
+                    T<input type="checkbox" name="day_thu" id="d-day_thu" />
+                    F<input type="checkbox" name="day_fri" id="d-day_fri" />
+                    S<input type="checkbox" name="day_sat" id="d-day_sat" />
+                    S<input type="checkbox" name="day_sun" id="d-day_sun" />
+                  </fieldset>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="eventCreate(event)">Save</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
 <script>
     $( document ).ready(function() {
         // Set the current page
@@ -44,4 +90,8 @@
 
 {% endblock %}
 
-
+{% block jumbotron %}
+<div class="jumbotron">
+    <div class="container"><h2 class="heading">Administration</h2></div>
+</div>
+{% endblock %}
