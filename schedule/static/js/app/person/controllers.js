@@ -1,5 +1,6 @@
 
 App.PersonController = Ember.ObjectController.extend({
+    menu: 'nav-myrota',
     rotaRangeSelected: null,
     ranges: [{value: '8', name:'Upcoming'}, {value: '-12', name:'Recent'}],
     rotaLoading: false,
@@ -95,7 +96,13 @@ App.PersonController = Ember.ObjectController.extend({
             });
         }
     }
+});
 
 
+App.PeopleController = Ember.ArrayController.extend({
+    menu: 'nav-people',
+
+    actions: {}
 
 });
+

@@ -16,16 +16,16 @@ from schedule import db
 PAGE_SIZE = int(app.config['PAGE_SIZE'])
 
 
-@app.route('/people/', methods=['GET'])
-@login_required
-def people():
-    # Get the page number for pagination
-    page = int(request.args.get('page', 1))
-    if page < 1:
-        page = 1
-
-    rows = Person.query.paginate(page, PAGE_SIZE, False)
-    return render_template('people.html', rows=rows, page=page, pages=rows.pages)
+# @app.route('/people/', methods=['GET'])
+# @login_required
+# def people():
+#     # Get the page number for pagination
+#     page = int(request.args.get('page', 1))
+#     if page < 1:
+#         page = 1
+#
+#     rows = Person.query.paginate(page, PAGE_SIZE, False)
+#     return render_template('people.html', rows=rows, page=page, pages=rows.pages)
 
 
 # @app.route('/people/update', methods=['POST'])
@@ -243,3 +243,17 @@ def person_away_date_update(person_id):
             return jsonify({'response': 'Success'})
         except Exception, v:
             return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route('/api/people', methods=['GET'])
+@login_required
+def api_people():
+    # Get the page number for pagination
+    page = int(request.args.get('page', 1))
+    if page < 1:
+        page = 1
+
+    rows = Person.query.order_by('lastname').all()
+    app.logger.debug(rows)
+    people = [p.to_dict() for p in rows]
+    return jsonify({'response': 'Success', 'people': people})

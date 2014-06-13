@@ -25,3 +25,11 @@ App.PersonRoute = Ember.Route.extend({
     }
 });
 
+App.PeopleRoute = Ember.Route.extend({
+    model: function() {
+        return App.Person.getAll().then(function(data) {
+            console.log(data);
+            return data.people;
+        })
+    }
+});

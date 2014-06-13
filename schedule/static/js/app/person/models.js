@@ -142,6 +142,13 @@ App.Person.reopenClass({
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });
+    },
+    
+    getAll: function () {
+        return ajax(this.url, {
+            type: 'GET',
+            contentType: "application/json; charset=utf-8"
+        });
     }
 
 });

@@ -6,5 +6,6 @@ App = Ember.Application.create({
 
 App.Router.map(function() {
     this.resource('person', { path: '/' });
-    this.resource('person', { path: '/:id' });
+    this.resource('person', { path: '/people/:id' });
+    this.resource('people', { path: '/people' });
 });
