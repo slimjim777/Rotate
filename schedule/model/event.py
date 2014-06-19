@@ -31,6 +31,24 @@ class Event(db.Model):
     def __init__(self, name):
         self.name = name
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'active': self.active,
+            'created': self.created,
+            'frequency': self.frequency,
+            'repeat_every': self.repeat_every,
+            'day_mon': self.day_mon,
+            'day_tue': self.day_tue,
+            'day_wed': self.day_wed,
+            'day_thu': self.day_thu,
+            'day_fri': self.day_fri,
+            'day_sat': self.day_sat,
+            'day_sun': self.day_sun,
+            'roles': [r.name for r in self.roles],
+        }
+
     def __repr__(self):
         return '<Event %r>' % self.name
 
@@ -96,6 +114,7 @@ class EventDate(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
+            'event_id': self.event.id,
             'event': self.event.name,
             'on_date': self.on_date.strftime('%Y-%m-%dT%H:%M:%S'),
         }
@@ -292,6 +311,7 @@ class Rota(db.Model):
             'role': self.role.to_dict(),
             'event_date': self.event_date.to_dict(),
             'person_id': self.person_id,
+            'person_name': self.person.name,
         }
 
     def __repr__(self):

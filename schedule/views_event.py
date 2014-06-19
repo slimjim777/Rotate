@@ -203,3 +203,84 @@ def admin_event_roles_people(event_id, role_id):
             return jsonify({'response': 'Success'})
         except Exception, v:
             return jsonify({'response': 'Error', 'message': str(v)})
+
+
+# API
+
+@app.route('/api/events', methods=['GET'])
+@login_required
+def api_events():
+    rows = Event.query.all()
+    evts = [e.to_dict() for e in rows]
+    return jsonify({'response': 'Success', 'events': evts})
+
+
+@app.route("/api/events/<int:event_id>", methods=['GET'])
+@login_required
+def api_event_get(event_id):
+    try:
+        start = time.time()
+        row = Event.query.get(event_id)
+        if not row:
+            raise Exception("Cannot find the event")
+
+        app.logger.debug(time.time() - start)
+        return jsonify({'response': 'Success', 'event': row.to_dict()})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/events/<int:event_id>/event_dates", methods=['POST'])
+@login_required
+def api_event_dates(event_id):
+    start = time.time()
+    weeks = int(request.json.get('range') or 8)
+    delta = datetime.date.today() + timedelta(weeks=weeks)
+
+    event = Event.query.get(event_id)
+
+    if weeks > 0:
+        # Next n weeks
+        #event_dates = EventDate.query.filter(EventDate.event_id == event_id,
+        event_dates = event.event_dates.filter(EventDate.on_date.between(datetime.date.today().strftime('%Y-%m-%d'),
+                                                                         delta.strftime('%Y-%m-%d')))
+    else:
+        # Last n weeks
+        event_dates = event.event_dates.filter(EventDate.on_date.between(delta.strftime('%Y-%m-%d'),
+                                                                          datetime.date.today().strftime('%Y-%m-%d')))
+    ev_dates = []
+    for ed in event_dates.all():
+        e = ed.to_dict()
+        e['rota'] = []
+        for rota in ed.people_for_roles():
+            app.logger.debug(rota)
+            r = {}
+            if rota:
+                r['person_id'] = rota.person.id
+                r['person_name'] = rota.person.name
+                r['is_away'] = rota.person.is_away(ed.on_date)
+            e['rota'].append(r)
+        ev_dates.append(e)
+
+    app.logger.debug(time.time() - start)
+    return jsonify({'response': 'Success', 'event_dates': ev_dates})
+
+
+@app.route("/api/event_date/<int:event_date_id>", methods=['GET'])
+@login_required
+def api_event_date(event_date_id):
+    try:
+        start = time.time()
+        row = EventDate.query.get(event_date_id)
+        if not row:
+            raise Exception("Cannot find the event date")
+
+        e = row.to_dict()
+        e['rota'] = []
+        for rota in row.on_rota:
+            e['rota'].append(rota.to_dict())
+
+        app.logger.debug(time.time() - start)
+        return jsonify({'response': 'Success', 'event_date': e})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})

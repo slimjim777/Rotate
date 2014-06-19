@@ -1,0 +1,35 @@
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{#if rotaLoading}}<label id="person-rota-spinner" class="spinner">&nbsp;</label>{{/if}}Rota&nbsp;
+                {{view Ember.Select
+                    value=rotaRangeSelected
+                    content=ranges
+                    optionValuePath="content.value"
+                    optionLabelPath="content.name"}}
+            </h3>
+        </div>
+        <div class="panel-body" id="person-rota">
+        {{#if rota}}
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Event</th><th>Date</th><th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{#each r in rota}}
+            <tr>
+                <td>{{r.event_date.event}}</td>
+                <td>{{formatDate r.event_date.on_date}}</td>
+                <td>{{r.role.name}}</td>
+            </tr>
+            {{/each}}
+            </tbody>
+            </table>
+        {{else}}
+            <p>Dude! You've got nothing to do!</p>
+        {{/if}}
+        </div>
+    </div>
+

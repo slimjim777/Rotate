@@ -1,0 +1,22 @@
+
+<h2 class="heading">{{#link-to 'event' model.event_id}}{{model.event}}{{/link-to}}</h2>
+<h3 class="sub-heading">{{formatDate model.on_date}}</h3>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <button {{action 'editEventDate' model.id}} class="btn btn-info">Edit</button>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped">
+            <tr>
+                <th>Role</th><th>Name</th>
+            </tr>
+            {{#each r in model.rota}}
+            <tr>
+                <td>{{r.role.name}}</td>
+                <td>{{#if r.is_away}}{{#link-to 'person' r.person_id}}<span class="alert-danger">{{r.person_name}}</span>{{/link-to}}{{else}}{{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}{{/if}}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+</div>

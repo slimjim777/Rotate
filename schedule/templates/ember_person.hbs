@@ -27,7 +27,7 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li id="nav-myrota"><a href="/my_rota">My Rota</a></li>
-            <li id="nav-people"><a href="/person#/people">People</a></li>
+            <li id="nav-people"><a href="/rota#/people">People</a></li>
             <li id="nav-events"><a href="/events">Events</a></li>
             {% if 'admin' in session.role %}
             <li id="nav-admin"><a href="/admin">Admin</a></li>
@@ -47,209 +47,6 @@
     {{outlet}}
 </div>
 </script>
-
-<script type="text/x-handlebars" data-template-name="people">
-    <h2 class="sub-heading">People</h2>
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">People&nbsp;
-            <button class="btn btn-primary" title="New User" {{action newPerson}}><span class="glyphicon glyphicon-plus"></span></button>
-        </h3>
-    </div>
-    <div class="panel-body">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-                <th>Name</th><th>Active</th><th>Permissions</th><th>Last Login</th>
-            </tr>
-          </thead>
-          <tbody>
-        {{#each person in model}}
-          <tr>
-            <td>{{#link-to 'person' person}}{{person.name}}{{/link-to}}</td>
-            <td class="center">
-                {{#if person.active}}
-                <span class="glyphicon glyphicon-ok"></span>
-                {{/if}}
-            </td>
-            <td>{{person.user_role}}</td>
-            <td>{{dateFromNow person.last_login}}</td>
-          </tr>
-        {{/each}}
-          </tbody>
-       </table>
-    </div>
-</div>
-</script>
-
-<script type="text/x-handlebars" data-template-name="person">
-    <h2 class="sub-heading">{{model.name}}</h2>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Person Details</h3>
-            <div id="message" hidden></div>
-        </div>
-        <div class="panel-body">
-            <table class="panel-form">
-            <tbody>
-                <tr>
-                    <td>
-                        <label>Name</label><span class="panel-cell">{{ person.name }}</span>
-                    </td>
-                    <td>
-                        <label>Email</label><span class="panel-cell">{{ person.email }}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>Permissions</label><span class="panel-cell">{{ person.user_role }}</span>
-                    </td>
-                    <td>
-                        <label>Last Access</label><span class="panel-cell">{{dateFromNow person.last_login}}</span>
-                    </td>
-                </tr>
-                <tr>
-                     <td colspan="2">
-                        <label>Roles</label>
-                        <span class="panel-cell">
-                        {{#each r in person.person_roles }}
-                        <span class="label label-default">{{ r.name }}</span>
-                        {{/each}}
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
-            </table>
-        </div>
-    </div>
-
-    {{partial "rota"}}
-    {{partial "away_dates"}}
-    {{partial "confirm_dialog"}}
-</script>
-
-<script type="text/x-handlebars" data-template-name="_rota">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">{{#if rotaLoading}}<label id="person-rota-spinner" class="spinner">&nbsp;</label>{{/if}}Rota&nbsp;
-                {{view Ember.Select
-                    value=rotaRangeSelected
-                    content=ranges
-                    optionValuePath="content.value"
-                    optionLabelPath="content.name"}}
-            </h3>
-        </div>
-        <div class="panel-body" id="person-rota">
-        {{#if rota}}
-            <table class="table">
-            <thead>
-                <tr>
-                    <th>Event</th><th>Date</th><th>Role</th>
-                </tr>
-            </thead>
-            <tbody>
-            {{#each r in rota}}
-            <tr>
-                <td>{{r.event_date.event}}</td>
-                <td>{{formatDate r.event_date.on_date}}</td>
-                <td>{{r.role.name}}</td>
-            </tr>
-            {{/each}}
-            </tbody>
-            </table>
-        {{else}}
-            <p>Dude! You've got nothing to do!</p>
-        {{/if}}
-        </div>
-    </div>
-</script>
-
-<script type="text/x-handlebars" data-template-name="_away_dates">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">{{#if awayLoading}}<label id="person-rota-spinner" class="spinner">&nbsp;</label>{{/if}}Away Dates&nbsp;
-                <button class="btn btn-primary" title="New Away Dates" {{action newAwayDates}}><span class="glyphicon glyphicon-plus"></span></button>
-                {{view Ember.Select
-                    value=awayRangeSelected
-                    content=ranges
-                    optionValuePath="content.value"
-                    optionLabelPath="content.name"}}
-            </h3>
-        </div>
-        <div class="panel-body" id="person-rota">
-        {{#if away_dates}}
-            <table class="table">
-            <thead>
-                <tr>
-                    <th></th><th>From Date</th><th>To Date</th><th></th>
-                </tr>
-            </thead>
-            <tbody>
-            {{#each r in away_dates}}
-            <tr>
-                <td><button {{action editAwayDate r}} class="btn btn-default">Edit</button></td>
-                <td>{{formatDate r.from_date}}</td>
-                <td>{{formatDate r.to_date}}</td>
-                <td><button {{action deleteAwayDate r}} class="btn btn-link"><span class="glyphicon glyphicon-remove-circle"></span></button></td>
-            </tr>
-            {{/each}}
-            </tbody>
-            </table>
-        {{else}}
-            <p>No away dates found.</p>
-        {{/if}}
-        </div>
-    </div>
-
-
-<div class="modal fade" id="awayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Away Dates</h4>
-      </div>
-      <div class="modal-body">
-        {{#if awayError}}
-            <div class="alert alert-danger">{{awayError}}</div>
-        {{/if}}
-        {{input type="hidden" name=awayForm.id value=awayForm.id class="form-control"}}
-        <label>From Date</label>
-        {{view App.CalendarDatePicker name=awayForm.from_date value=awayForm.from_date class="form-control" placeholder="from date"}}
-        <label>To Date</label>
-        {{view App.CalendarDatePicker name=awayForm.to_date value=awayForm.to_date class="form-control" placeholder="to date"}}
-      </div>
-      <div class="modal-footer">
-        <button {{action saveAwayDate}} class="btn btn-primary">Save</button>
-        <button class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-</script>
-
-<script type="text/x-handlebars" data-template-name="_confirm_dialog">
-<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">{{confirmHeader}}</h4>
-      </div>
-      <div class="modal-body">
-        {{#if confirmError}}
-            <div class="alert alert-danger">{{confirmError}}</div>
-        {{/if}}
-          {{confirmBody}}
-      </div>
-      <div class="modal-footer">
-          <button {{action confirmYes}} class="btn btn-success">Okay</button> <button data-dismiss="modal" class="btn btn-danger">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-</script>
-
 {% endraw %}
 
     <!--script src="/static/js/bootstrap.min.js"></script-->
@@ -262,9 +59,15 @@
     <script src="/static/bower_components/moment/min/moment.min.js"></script>
     <script src="/static/bower_components/ember/ember.js"></script>
     <script src="/static/bower_components/pikaday/pikaday.js"></script>
+
+    <script src="/static/js/dist/templates.js"></script>
+
     <script src="/static/js/app/app.js"></script>
     <script src="/static/js/app/person/routes.js"></script>
     <script src="/static/js/app/person/models.js"></script>
     <script src="/static/js/app/person/controllers.js"></script>
+    <script src="/static/js/app/event/routes.js"></script>
+    <script src="/static/js/app/event/models.js"></script>
+    <script src="/static/js/app/event/controllers.js"></script>
 </body>
 </html>

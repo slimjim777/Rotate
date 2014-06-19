@@ -1,0 +1,19 @@
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{confirmHeader}}</h4>
+      </div>
+      <div class="modal-body">
+        {{#if confirmError}}
+            <div class="alert alert-danger">{{confirmError}}</div>
+        {{/if}}
+          {{confirmBody}}
+      </div>
+      <div class="modal-footer">
+          <button {{action confirmYes}} class="btn btn-success">Okay</button> <button data-dismiss="modal" class="btn btn-danger">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

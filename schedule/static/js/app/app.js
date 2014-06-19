@@ -8,4 +8,7 @@ App.Router.map(function() {
     this.resource('person', { path: '/' });
     this.resource('person', { path: '/people/:id' });
     this.resource('people', { path: '/people' });
+    this.resource('events', { path: '/events'});
+    this.resource('event',  { path: '/event/:event_id'});
+    this.resource('event_date',  { path: '/event_date/:event_date_id'});
 });

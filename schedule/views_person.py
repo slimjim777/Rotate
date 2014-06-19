@@ -130,7 +130,7 @@ def view_person_my_rota():
     return redirect(url_for('view_person'))
 
 
-@app.route('/person', methods=['GET'])
+@app.route('/rota', methods=['GET'])
 @login_required
 def view_person():
     return render_template('ember_person.hbs')

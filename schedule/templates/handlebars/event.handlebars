@@ -1,0 +1,86 @@
+<h2 class="heading">{{model.name}}</h2>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+    {{#if datesLoading}}<label class="spinner">&nbsp;</label>{{/if}}
+            Rota&nbsp;
+            <button id="create-event-dates" class="btn btn-primary" data-toggle="modal" data-target="#dialog-form" title="New Event Dates"><span class="glyphicon glyphicon-plus"></span></button>
+            {{view Ember.Select
+                    value=datesRangeSelected
+                    content=ranges
+                    optionValuePath="content.value"
+                    optionLabelPath="content.name"}}
+        </h3>
+    </div>
+    <div id="event-dates" class="table-responsive">
+        <table class="table table-striped">
+            <tr>
+                <th></th>
+                <th>Date</th>
+            {{#each role in model.roles}}
+                <th>{{role}}</th>
+            {{/each}}
+            </tr>
+            {{#each ed in event_dates}}
+                <tr>
+                    <td>{{#link-to 'event_date' ed.id}}Edit{{/link-to}}</td>
+                    <td>{{formatDate ed.on_date}}</td>
+                    {{#each r in ed.rota}}
+                        <td>{{#if r.is_away}}{{#link-to 'person' r.person_id}}<span class="alert-danger">{{r.person_name}}</span>{{/link-to}}{{else}}{{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}{{/if}}</td>
+                    {{/each}}
+                </tr>
+            {{/each}}
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Details</h3>
+    </div>
+    <div class="panel-body">
+        <table class="panel-form">
+            <tbody>
+            <tr>
+                <td>
+                    <label>Name</label><span class="panel-cell">{{ model.name }}</span>
+                </td>
+                <td>
+                    <label>Active</label>
+                        <span class="panel-cell">
+                            {{#if model.active }}
+                            <span class="glyphicon glyphicon-ok"></span>
+                            {{/if}}
+                        </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Frequency</label><span class="panel-cell">{{ model.frequency }}</span>
+                </td>
+                <td>
+                    <label>Repeats Every</label><span class="panel-cell">{{ model.repeat_every }}</span>
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    <label>Created</label><span class="panel-cell">{{dateFromNow model.created }}</span>
+                </td>
+                <td>
+                    <label>Repeats On</label>
+                    <span class="panel-cell">
+                    {{#if model.day_mon }}<b>M</b>{{else}}M{{/if}}
+                    {{#if model.day_tue }}<b>T</b>{{else}}T{{/if}}
+                    {{#if model.day_wed }}<b>W</b>{{else}}W{{/if}}
+                    {{#if model.day_thu }}<b>T</b>{{else}}T{{/if}}
+                    {{#if model.day_fri }}<b>F</b>{{else}}F{{/if}}
+                    {{#if model.day_sat }}<b>S</b>{{else}}S{{/if}}
+                    {{#if model.day_sun }}<b>S</b>{{else}}S{{/if}}
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
