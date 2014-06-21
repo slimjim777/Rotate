@@ -312,6 +312,7 @@ class Rota(db.Model):
             'event_date': self.event_date.to_dict(),
             'person_id': self.person_id,
             'person_name': self.person.name,
+            'is_away': self.person.is_away(self.event_date.on_date),
         }
 
     def __repr__(self):

@@ -22,10 +22,28 @@ App.EventRoute = Ember.Route.extend({
 });
 
 App.EventDateRoute = Ember.Route.extend({
-   model: function(params) {
+    model: function(params) {
+        console.log('EventDateRoute');
         return App.EventDate.findById(params.event_date_id).then(function(data) {
             console.log(data.event_date);
             return App.EventDate.create(data.event_date);
         });
-   }
+    },
+
+    actions: {
+        reloadModel: function() {
+            console.log('reloadModel');
+            this.refresh();
+        }
+    },
+
+    setupController: function(controller, model) {
+        controller.set('content', model);
+
+        // Reset the controller
+        controller.set('dataLoading', false);
+        controller.set('isEditing', false);
+    }
+
 });
+

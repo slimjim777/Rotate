@@ -20,8 +20,14 @@
             <tbody>
             {{#each r in rota}}
             <tr>
-                <td>{{r.event_date.event}}</td>
-                <td>{{formatDate r.event_date.on_date}}</td>
+                <td>{{#link-to 'event_date' r.event_date.id}}{{r.event_date.event}}{{/link-to}}</td>
+                <td>
+                    {{#if r.is_away}}
+                        <span class="alert-danger">{{formatDate r.event_date.on_date}}</span>
+                    {{else}}
+                        {{formatDate r.event_date.on_date}}
+                    {{/if}}
+                </td>
                 <td>{{r.role.name}}</td>
             </tr>
             {{/each}}

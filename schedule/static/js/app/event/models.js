@@ -26,10 +26,10 @@ App.Event.reopenClass({
 App.EventDate = Ember.Object.extend({});
 
 App.EventDate.reopenClass({
-    url: '/api/events/',
+    url: '/api/event_date/',
 
     getAll: function(modelId, range) {
-        return ajax(this.url + modelId + '/event_dates', {
+        return ajax('/api/events/' + modelId + '/event_dates', {
             type: 'POST',
             data: JSON.stringify({range: range}),
             contentType: "application/json; charset=utf-8",
@@ -38,11 +38,19 @@ App.EventDate.reopenClass({
     },
 
     findById: function(modelId) {
-        return ajax('/api/event_date/' + modelId, {
+        return ajax(this.url + modelId, {
             type: 'GET',
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });
     },
 
+    updateRota: function(modelId, rota) {
+        return ajax(this.url + modelId, {
+            type: 'POST',
+            data: JSON.stringify({rota: rota}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
+    }
 });

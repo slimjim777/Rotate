@@ -241,7 +241,6 @@ def api_event_dates(event_id):
 
     if weeks > 0:
         # Next n weeks
-        #event_dates = EventDate.query.filter(EventDate.event_id == event_id,
         event_dates = event.event_dates.filter(EventDate.on_date.between(datetime.date.today().strftime('%Y-%m-%d'),
                                                                          delta.strftime('%Y-%m-%d')))
     else:
@@ -253,7 +252,6 @@ def api_event_dates(event_id):
         e = ed.to_dict()
         e['rota'] = []
         for rota in ed.people_for_roles():
-            app.logger.debug(rota)
             r = {}
             if rota:
                 r['person_id'] = rota.person.id
@@ -271,16 +269,56 @@ def api_event_dates(event_id):
 def api_event_date(event_date_id):
     try:
         start = time.time()
-        row = EventDate.query.get(event_date_id)
-        if not row:
+        ed = EventDate.query.get(event_date_id)
+        if not ed:
             raise Exception("Cannot find the event date")
 
-        e = row.to_dict()
+        e = ed.to_dict()
+        e['roles'] = []
+        for r in ed.event.roles:
+            role = r.to_dict()
+            role['people'] = [{}]
+            for person in r.people:
+                p = {
+                    'person_id': person.id,
+                    'person_name': person.name,
+                    'is_away': person.is_away(ed.on_date),
+                }
+                if p['is_away']:
+                    p['person_name_status'] = '%s (away)' % p['person_name']
+                else:
+                    p['person_name_status'] = p['person_name']
+                role['people'].append(p)
+            e['roles'].append(role)
         e['rota'] = []
-        for rota in row.on_rota:
-            e['rota'].append(rota.to_dict())
+        for index, rota in enumerate(ed.people_for_roles()):
+            r = {
+                'role': e['roles'][index],
+            }
+            if rota:
+                r = rota.to_dict()
+            r['people'] = e['roles'][index]['people'],
+            r['people'] = r['people'][0]
+            e['rota'].append(r)
 
         app.logger.debug(time.time() - start)
         return jsonify({'response': 'Success', 'event_date': e})
     except Exception, v:
         return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/event_date/<int:event_date_id>", methods=['POST'])
+@login_required
+def api_event_date_edit(event_date_id):
+    """
+    Edit an existing event date.
+    """
+    ed = EventDate.query.get(event_date_id)
+
+    # Save the modified event date details
+    records = request.json.get('rota')
+    result = ed.update_rota(records)
+    if not result:
+        return jsonify({'response': 'Success'})
+    else:
+        return jsonify({'response': 'Failed', 'message': result})

@@ -4,19 +4,42 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <button {{action 'editEventDate' model.id}} class="btn btn-info">Edit</button>
+        {{#if dataLoading}}<label class="spinner">&nbsp;</label>{{/if}}
+        {{#if isEditing}}
+            <button {{action 'saveEventDate' model}} class="btn btn-success">Save</button>&nbsp;
+            <button {{action 'cancelEventDate' model}} class="btn btn-danger">Cancel</button>
+        {{else}}
+            <button {{action 'editEventDate' model}} class="btn btn-info">Edit</button>
+        {{/if}}
     </div>
     <div class="panel-body">
         <table class="table table-striped">
             <tr>
                 <th>Role</th><th>Name</th>
             </tr>
-            {{#each r in model.rota}}
-            <tr>
-                <td>{{r.role.name}}</td>
-                <td>{{#if r.is_away}}{{#link-to 'person' r.person_id}}<span class="alert-danger">{{r.person_name}}</span>{{/link-to}}{{else}}{{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}{{/if}}</td>
-            </tr>
-            {{/each}}
+            {{#if isEditing}}
+                {{#each r in model.rota}}
+                    <tr>
+                        <td>{{r.role.name}}</td>
+                        <td>
+                            {{view Ember.Select
+                                    value=r.person_id
+                                    content=r.people
+                                    optionValuePath="content.person_id"
+                                    optionLabelPath="content.person_name_status"
+                                    class="form-control"
+                            }}
+                        </td>
+                    </tr>
+                {{/each}}
+            {{else}}
+                {{#each r in model.rota}}
+                    <tr>
+                        <td>{{r.role.name}}</td>
+                        <td>{{#if r.is_away}}{{#link-to 'person' r.person_id}}<span class="alert-danger">{{r.person_name}}</span>{{/link-to}}{{else}}{{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}{{/if}}</td>
+                    </tr>
+                {{/each}}
+            {{/if}}
         </table>
     </div>
 </div>

@@ -24,7 +24,7 @@
             </tr>
             {{#each ed in event_dates}}
                 <tr>
-                    <td>{{#link-to 'event_date' ed.id}}Edit{{/link-to}}</td>
+                    <td>{{#link-to 'event_date' ed.id class="btn btn-default" title="View Rota"}}<span class="glyphicon glyphicon-cog"></span>{{/link-to}}</td>
                     <td>{{formatDate ed.on_date}}</td>
                     {{#each r in ed.rota}}
                         <td>{{#if r.is_away}}{{#link-to 'person' r.person_id}}<span class="alert-danger">{{r.person_name}}</span>{{/link-to}}{{else}}{{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}{{/if}}</td>
