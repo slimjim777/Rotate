@@ -1,1 +1,1 @@
-web: gunicorn schedule:app -b 0.0.0.0:$PORT -w 8 --max-requests 250
+web: gunicorn schedule:app
