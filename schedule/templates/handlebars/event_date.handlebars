@@ -1,16 +1,15 @@
 
-<h2 class="heading">{{#link-to 'event' model.event_id}}{{model.event}}{{/link-to}}</h2>
-<h3 class="sub-heading">{{formatDate model.on_date}}</h3>
-
 <div class="panel panel-default">
     <div class="panel-heading">
-        {{#if dataLoading}}<label class="spinner">&nbsp;</label>{{/if}}
+        <h4 class="sub-heading">
+        {{#if eventDataLoading}}<label class="spinner">&nbsp;</label>{{/if}}
         {{#if isEditing}}
             <button {{action 'saveEventDate' model}} class="btn btn-success">Save</button>&nbsp;
             <button {{action 'cancelEventDate' model}} class="btn btn-danger">Cancel</button>
         {{else}}
             <button {{action 'editEventDate' model}} class="btn btn-info">Edit</button>
         {{/if}}
+        On {{formatDate model.on_date}}</h4>
     </div>
     <div class="panel-body">
         <table class="table table-striped">

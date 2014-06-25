@@ -2,7 +2,7 @@ from schedule import db
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import validates
 import datetime
-
+from schedule import app
 
 def next_weekday(d, weekday):
     days_ahead = weekday - d.weekday()
@@ -97,6 +97,7 @@ class Event(db.Model):
         if len(records) > 0:
             [db.session.add(x) for x in records]
             db.session.commit()
+        app.logger.debug(records)
         return True, len(records)
 
 

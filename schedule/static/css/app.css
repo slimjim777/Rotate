@@ -41,3 +41,7 @@ tr.selected td {
 select.role-select {
     height: 200px;
 }
+
+.center {
+    text-align: center;
+}

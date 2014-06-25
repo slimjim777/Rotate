@@ -18,6 +18,12 @@ App.EventRoute = Ember.Route.extend({
 
         // Trigger load of the event dates
         controller.set('datesRangeSelected', '8');
+    },
+
+    actions: {
+        reloadModel: function() {
+            this.refresh();
+        }
     }
 });
 
@@ -25,7 +31,6 @@ App.EventDateRoute = Ember.Route.extend({
     model: function(params) {
         console.log('EventDateRoute');
         return App.EventDate.findById(params.event_date_id).then(function(data) {
-            console.log(data.event_date);
             return App.EventDate.create(data.event_date);
         });
     },
@@ -41,7 +46,7 @@ App.EventDateRoute = Ember.Route.extend({
         controller.set('content', model);
 
         // Reset the controller
-        controller.set('dataLoading', false);
+        controller.set('eventDataLoading', false);
         controller.set('isEditing', false);
     }
 

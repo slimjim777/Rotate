@@ -19,6 +19,15 @@ App.Event.reopenClass({
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });
+    },
+
+    createDates: function(modelId, data) {
+        return ajax('/api/events/' + modelId + '/event_dates/create', {
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
     }
 
 });

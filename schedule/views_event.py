@@ -50,7 +50,7 @@ def event_get(event_id):
 @login_required
 def event_dates_get(event_id):
     start = time.time()
-    weeks = int(request.form.get('range'))
+    weeks = int(request.form.get('range') or 12)
     delta = datetime.date.today() + timedelta(weeks=weeks)
 
     event = Event.query.get(event_id)
@@ -234,7 +234,7 @@ def api_event_get(event_id):
 @login_required
 def api_event_dates(event_id):
     start = time.time()
-    weeks = int(request.json.get('range') or 8)
+    weeks = int(request.json.get('range') or 12)
     delta = datetime.date.today() + timedelta(weeks=weeks)
 
     event = Event.query.get(event_id)
@@ -250,14 +250,14 @@ def api_event_dates(event_id):
     ev_dates = []
     for ed in event_dates.all():
         e = ed.to_dict()
-        e['rota'] = []
-        for rota in ed.people_for_roles():
-            r = {}
-            if rota:
-                r['person_id'] = rota.person.id
-                r['person_name'] = rota.person.name
-                r['is_away'] = rota.person.is_away(ed.on_date)
-            e['rota'].append(r)
+        #e['rota'] = []
+        #for rota in ed.people_for_roles():
+        #    r = {}
+        #    if rota:
+        #        r['person_id'] = rota.person.id
+        #        r['person_name'] = rota.person.name
+        #        r['is_away'] = rota.person.is_away(ed.on_date)
+        #    e['rota'].append(r)
         ev_dates.append(e)
 
     app.logger.debug(time.time() - start)
@@ -322,3 +322,33 @@ def api_event_date_edit(event_date_id):
         return jsonify({'response': 'Success'})
     else:
         return jsonify({'response': 'Failed', 'message': result})
+
+
+@app.route("/api/events/<int:event_id>/event_dates/create", methods=['POST'])
+@login_required
+def event_dates_create(event_id):
+    """
+    Create the events for an event.
+    """
+    frequency = request.json.get('frequency', 'irregular')
+    repeats_every = int(request.json.get('repeats_every', 1))
+    repeats_on = [
+        request.json.get('day_mon'), request.json.get('day_tue'), request.json.get('day_wed'),
+        request.json.get('day_thu'), request.json.get('day_fri'), request.json.get('day_sat'),
+        request.json.get('day_sun')
+    ]
+    from_date = request.json.get('from_date', None)
+    to_date = request.json.get('to_date', None)
+    if not from_date and not to_date:
+        return jsonify({'response': 'Failed', 'message': "Both 'From Date' and 'To Date' must be entered"})
+
+    # Get the event
+    event = Event.query.get(event_id)
+    if not event:
+        return jsonify({'response': 'Failed', 'message': "Could not find the event with ID '%s'" % event_id})
+
+    # Create the dates for the event
+    result, qty = event.create_dates(event_id, frequency, repeats_every, repeats_on, from_date, to_date)
+    app.logger.debug(result)
+
+    return jsonify({'response': 'Success'})

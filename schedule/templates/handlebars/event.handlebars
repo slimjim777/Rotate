@@ -1,10 +1,11 @@
-<h2 class="heading">{{model.name}}</h2>
+<h2 class="heading center">{{model.name}}</h2>
 
+<div class="col-md-4 col-xs-6">
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
     {{#if datesLoading}}<label class="spinner">&nbsp;</label>{{/if}}
-            Rota&nbsp;
+            Dates&nbsp;
             <button id="create-event-dates" class="btn btn-primary" data-toggle="modal" data-target="#dialog-form" title="New Event Dates"><span class="glyphicon glyphicon-plus"></span></button>
             {{view Ember.Select
                     value=datesRangeSelected
@@ -13,25 +14,14 @@
                     optionLabelPath="content.name"}}
         </h3>
     </div>
-    <div id="event-dates" class="table-responsive">
-        <table class="table table-striped">
-            <tr>
-                <th></th>
-                <th>Date</th>
-            {{#each role in model.roles}}
-                <th>{{role}}</th>
-            {{/each}}
-            </tr>
+    <div id="event-dates">
+        <div class="list-group">
             {{#each ed in event_dates}}
-                <tr>
-                    <td>{{#link-to 'event_date' ed.id class="btn btn-default" title="View Rota"}}<span class="glyphicon glyphicon-cog"></span>{{/link-to}}</td>
-                    <td>{{formatDate ed.on_date}}</td>
-                    {{#each r in ed.rota}}
-                        <td>{{#if r.is_away}}{{#link-to 'person' r.person_id}}<span class="alert-danger">{{r.person_name}}</span>{{/link-to}}{{else}}{{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}{{/if}}</td>
-                    {{/each}}
-                </tr>
+                {{#link-to 'event_date' ed.id  title="View Rota" class="list-group-item"}}
+                    {{formatDate ed.on_date}}
+                {{/link-to}}
             {{/each}}
-        </table>
+        </div>
     </div>
 </div>
 
@@ -84,3 +74,10 @@
         </table>
     </div>
 </div>
+</div>
+
+<div class="col-md-8 col-xs-12">
+{{outlet}}
+</div>
+
+{{partial "_create_dates"}}

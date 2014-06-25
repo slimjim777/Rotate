@@ -1,0 +1,45 @@
+<!-- Create Event Dates -->
+<div id="dialog-form" title="Create Event Dates" class="modal fade">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Create one or more event dates for '{{model.name}}'.</h4>
+              <br />
+              <div class="ui-state-error ui-corner-all">{{d_errors}}</div>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <fieldset>
+                    <label for="d-frequency">Repeats</label>
+                    {{view Ember.Select
+                            value=model.frequency
+                            content=frequencies
+                            optionValuePath="content.value"
+                            optionLabelPath="content.name"
+                            class="form-control"
+                    }}
+                    <label>Repeats Every</label>
+                    {{input type="number" name="model.repeat_every" min=0 max=52 class="form-control" }}
+                    <label>Repeats On</label>&nbsp;
+                    M<input type="checkbox" name="model.day_mon" {{bind-attr checked="model.day_mon"}} />
+                    T<input type="checkbox" name="model.day_tue" {{bind-attr checked="model.day_tue"}} />
+                    W<input type="checkbox" name="model.day_wed" {{bind-attr checked="model.day_wed"}} />
+                    T<input type="checkbox" name="model.day_thu" {{bind-attr checked="model.day_thu"}} />
+                    F<input type="checkbox" name="model.day_fri" {{bind-attr checked="model.day_fri"}} />
+                    S<input type="checkbox" name="model.day_sat" {{bind-attr checked="model.day_sat"}} />
+                    S<input type="checkbox" name="model.day_sun" {{bind-attr checked="model.day_sun"}} />
+                    <br />
+                    <label>From Date</label>
+                    {{view App.CalendarDatePicker name=model.from_date value=model.from_date class="form-control" placeholder="from date"}}
+                    <label>To Date</label>
+                    {{view App.CalendarDatePicker name=model.to_date value=model.to_date class="form-control" placeholder="to date"}}
+                  </fieldset>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" {{action 'createEventDates' model}}>Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
