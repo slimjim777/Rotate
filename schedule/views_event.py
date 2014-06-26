@@ -1,7 +1,6 @@
 from flask import render_template
 from flask import jsonify
 from flask import request
-from flask import flash
 from flask import abort
 from flask import session
 from schedule import app

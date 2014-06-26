@@ -1,12 +1,16 @@
+App.IndexRoute = Ember.Route.extend({
+  beforeModel: function() {
+    this.transitionTo('person', 'me');
+  }
+});
 
 App.PersonRoute = Ember.Route.extend({
     model: function(params) {
-        console.log('PersonRoute');
-        console.log(params);
-        return Ember.RSVP.hash({
-            person: App.Person.findById(params.id).then( function(data) {
-                return App.Person.create(data.person);
-            })
+        if (params.id === 'undefined') {
+            this.transitionTo('person', 'me');
+        }
+        return App.Person.findById(params.id).then( function(data) {
+            return data.person;
         });
     },
 
@@ -14,21 +18,14 @@ App.PersonRoute = Ember.Route.extend({
         controller.set('content', model);
 
         // Trigger load of the person's rota
-        controller.set('rotaRangeSelected', '8');
-    },
-
-    beforeModel: function(transition, b, c) {
-        // Redirect to /me when no person_id supplied
-        if (!transition.params.person.id) {
-            this.transitionTo('person', 'me');
-        }
+        controller.set('rotaRangeSelected', '12');
     }
+
 });
 
 App.PeopleRoute = Ember.Route.extend({
     model: function() {
         return App.Person.getAll().then(function(data) {
-            console.log(data);
             return data.people;
         })
     }

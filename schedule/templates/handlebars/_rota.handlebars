@@ -20,7 +20,7 @@
             <tbody>
             {{#each r in rota}}
             <tr>
-                <td>{{#link-to 'event_date' r.event_date.id}}{{r.event_date.event}}{{/link-to}}</td>
+                <td>{{#link-to 'event_date' r.event_date.event_id r.event_date.id}}{{r.event_date.event}}{{/link-to}}</td>
                 <td>
                     {{#if r.is_away}}
                         <span class="alert-danger">{{formatDate r.event_date.on_date}}</span>

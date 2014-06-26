@@ -146,6 +146,5 @@ def api_people():
         page = 1
 
     rows = Person.query.order_by('lastname').all()
-    app.logger.debug(rows)
     people = [p.to_dict() for p in rows]
     return jsonify({'response': 'Success', 'people': people})

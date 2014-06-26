@@ -2,7 +2,7 @@
 App.PersonController = Ember.ObjectController.extend({
     menu: 'nav-myrota',
     rotaRangeSelected: null,
-    ranges: [{value: '8', name:'Upcoming'}, {value: '-12', name:'Recent'}],
+    ranges: [{value: '12', name:'Upcoming'}, {value: '-12', name:'Recent'}],
     rotaLoading: false,
 
     awayRangeSelected: null,
@@ -15,7 +15,7 @@ App.PersonController = Ember.ObjectController.extend({
         var controller = this;
         controller.set('rotaLoading', true);
 
-        App.Person.rota(this.get('person').get('id'), this.get('rotaRangeSelected')).then( function(data) {
+        App.Person.rota(this.get('model').id, this.get('rotaRangeSelected')).then( function(data) {
             controller.set('rota', data.rota);
             controller.set('rotaLoading', false);
         });
@@ -26,7 +26,7 @@ App.PersonController = Ember.ObjectController.extend({
         var controller = this;
         controller.set('awayLoading', true);
 
-        App.Person.awayDates(this.get('person').get('id'), this.get('awayRangeSelected')).then( function(data) {
+        App.Person.awayDates(this.get('model').id, this.get('awayRangeSelected')).then( function(data) {
             controller.set('away_dates', data.away_dates);
             controller.set('awayLoading', false);
         });

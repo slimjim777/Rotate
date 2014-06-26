@@ -78,7 +78,7 @@ App.Person.reopenClass({
     url: '/api/people',
 
     findById: function(modelId) {
-        if (!modelId) {
+        if ((!modelId) || (modelId === 'undefined')) {
             modelId = 'me';
         }
         return ajax(this.url + '/' + modelId, {
@@ -95,7 +95,7 @@ App.Person.reopenClass({
         if (range) {
             data.range = range;
         }
-        if (!modelId) {
+        if ((!modelId)) {
             modelId = 'me';
         }
 

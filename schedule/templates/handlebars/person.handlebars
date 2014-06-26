@@ -10,25 +10,25 @@
             <tbody>
                 <tr>
                     <td>
-                        <label>Name</label><span class="panel-cell">{{ person.name }}</span>
+                        <label>Name</label><span class="panel-cell">{{ model.name }}</span>
                     </td>
                     <td>
-                        <label>Email</label><span class="panel-cell">{{ person.email }}</span>
+                        <label>Email</label><span class="panel-cell">{{ model.email }}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label>Permissions</label><span class="panel-cell">{{ person.user_role }}</span>
+                        <label>Permissions</label><span class="panel-cell">{{ model.user_role }}</span>
                     </td>
                     <td>
-                        <label>Last Access</label><span class="panel-cell">{{dateFromNow person.last_login}}</span>
+                        <label>Last Access</label><span class="panel-cell">{{dateFromNow model.last_login}}</span>
                     </td>
                 </tr>
                 <tr>
                      <td colspan="2">
                         <label>Roles</label>
                         <span class="panel-cell">
-                        {{#each r in person.person_roles }}
+                        {{#each r in model.person_roles }}
                         <span class="label label-default">{{ r.name }}</span>
                         {{/each}}
                         </span>

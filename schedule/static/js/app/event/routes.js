@@ -17,7 +17,7 @@ App.EventRoute = Ember.Route.extend({
         controller.set('content', model);
 
         // Trigger load of the event dates
-        controller.set('datesRangeSelected', '8');
+        controller.set('datesRangeSelected', '12');
     },
 
     actions: {
