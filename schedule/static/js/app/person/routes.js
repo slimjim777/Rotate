@@ -30,3 +30,9 @@ App.PeopleRoute = Ember.Route.extend({
         })
     }
 });
+
+App.PersonCreateRoute = Ember.Route.extend({
+    setupController: function(controller, model) {
+        controller.reset();
+    }
+});

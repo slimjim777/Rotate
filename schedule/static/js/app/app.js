@@ -7,6 +7,8 @@ App = Ember.Application.create({
 App.Router.map(function() {
     this.resource('index', { path: '/' });
     this.resource('person', { path: '/people/:id' });
+    this.resource('person_create', { path: '/people/new' });
+    this.resource('person_edit', { path: '/people/:id/edit' });
     this.resource('people', { path: '/people' });
     this.resource('events', { path: '/events'});
     this.resource('event',  { path: '/event/:event_id'}, function() {

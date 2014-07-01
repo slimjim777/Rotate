@@ -29,7 +29,7 @@ def view_person():
 
 
 @app.route('/api/people/me', methods=['GET'])
-@app.route('/api/people/<int:person_id>', methods=['GET'])
+@app.route('/api/people/<int:person_id>', methods=['POST'])
 @login_required
 def api_person(person_id=None):
     if request.method == "GET":
@@ -39,6 +39,27 @@ def api_person(person_id=None):
             p = Person.query.get(person_id)
             if not p:
                 raise Exception('Cannot find the person')
+            result = {
+                'response': 'Success',
+                'person': p.to_dict(),
+            }
+            return jsonify(result)
+        except Exception, v:
+            return jsonify({'response': 'Error', 'message': str(v)})
+
+    elif request.method == "POST":
+        try:
+            if not person_id:
+                raise Exception('The person_id must be supplied')
+            p = Person.query.get(person_id)
+            if not p:
+                raise Exception('Cannot find the person')
+            p.firstname = request.json.get('firstname')
+            p.lastname = request.json.get('lastname')
+            p.active = request.json.get('active')
+            p.email = request.json.get('email')
+            p.user_role = request.json.get('user_role')
+            db.session.commit()
             result = {
                 'response': 'Success',
                 'person': p.to_dict(),
@@ -148,3 +169,18 @@ def api_people():
     rows = Person.query.order_by('lastname').all()
     people = [p.to_dict() for p in rows]
     return jsonify({'response': 'Success', 'people': people})
+
+
+@app.route('/api/people/new', methods=['POST'])
+@login_required
+def api_people_new():
+    try:
+        if session['role'] != 'admin':
+            raise Exception('You do not have permissions to create users')
+
+        p = Person(request.json.get('email'), request.json.get('firstname'), request.json.get('lastname'))
+        db.session.add(p)
+        db.session.commit()
+        return jsonify({'response': 'Success', 'person': p.to_dict()})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})

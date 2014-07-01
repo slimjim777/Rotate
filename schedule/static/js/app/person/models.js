@@ -149,6 +149,24 @@ App.Person.reopenClass({
             type: 'GET',
             contentType: "application/json; charset=utf-8"
         });
+    },
+
+    createNew: function(data) {
+        return ajax(this.url + '/new', {
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
+    },
+
+    edit: function(modelId, data) {
+        return ajax(this.url + '/' + modelId, {
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
     }
 
 });

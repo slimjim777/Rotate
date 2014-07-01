@@ -100,9 +100,59 @@ App.PersonController = Ember.ObjectController.extend({
 
 
 App.PeopleController = Ember.ArrayController.extend({
-    menu: 'nav-people',
-
-    actions: {}
-
+    menu: 'nav-people'
 });
 
+
+App.PersonCreateController = Ember.ObjectController.extend({
+    menu: 'nav-people',
+    roles: [{value: 'standard', name:'Standard'}, {value: 'admin', name:'Admin'}],
+    user_role: 'standard',
+    firstname: null,
+    lastname: null,
+    email: null,
+    error: null,
+
+    reset: function() {
+        this.set('error', null);
+    },
+
+    actions: {
+        saveNewPerson: function () {
+            var data = {
+                firstname: this.get('firstname'),
+                lastname: this.get('lastname'),
+                email: this.get('email'),
+                user_role: this.get('user_role')
+            };
+
+            var controller = this;
+            controller.set('error', null);
+
+            App.Person.createNew(data).then(function(result) {
+                controller.transitionToRoute('people');
+            }).catch(function(error) {
+                controller.set('error', error.message);
+            });
+        }
+    }
+});
+
+App.PersonEditController = Ember.ObjectController.extend({
+    menu: 'nav-people',
+    roles: [{value: 'standard', name:'Standard'}, {value: 'admin', name:'Admin'}],
+
+    actions: {
+        savePerson: function(model) {
+            var controller = this;
+            controller.set('error', null);
+
+            App.Person.edit(this.get('model').id, model).then(function(result) {
+                controller.transitionToRoute('people');
+            }).catch(function(error) {
+                controller.set('error', error.message);
+            });
+        }
+    }
+
+});
