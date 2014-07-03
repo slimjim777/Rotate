@@ -107,6 +107,8 @@ class EventDate(db.Model):
     event = db.relationship('Event')
     on_date = db.Column(db.Date)
     on_rota = db.relationship('Rota', backref='event_date_ref', lazy='dynamic')
+    focus = db.Column(db.Text)
+    notes = db.Column(db.Text)
 
     def __init__(self, on_date, event_id):
         self.on_date = on_date
@@ -118,6 +120,8 @@ class EventDate(db.Model):
             'event_id': self.event.id,
             'event': self.event.name,
             'on_date': self.on_date.strftime('%Y-%m-%dT%H:%M:%S'),
+            'focus': self.focus,
+            'notes': self.notes,
         }
 
     def __repr__(self):

@@ -57,7 +57,7 @@ App.EventDate.reopenClass({
     updateRota: function(modelId, rota) {
         return ajax(this.url + modelId, {
             type: 'POST',
-            data: JSON.stringify({rota: rota}),
+            data: JSON.stringify(rota),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });

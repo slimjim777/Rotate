@@ -12,6 +12,34 @@
         On {{formatDate model.on_date}}</h4>
     </div>
     <div class="panel-body">
+        {{#if isEditing}}
+            <div>
+                <label>Focus</label>
+                <div>{{textarea value=model.focus class="form-control"}}</div>
+            </div>
+        {{else}}
+            {{#if model.focus}}
+                <div>
+                    <label>Focus</label>
+                    <div>{{model.focus}}</div>
+                </div>
+                <br />
+            {{/if}}
+        {{/if}}
+        {{#if isEditing}}
+            <div>
+                <label>Notes</label>
+                <div>{{textarea value=model.notes class="form-control"}}</div>
+            </div>
+        {{else}}
+            {{#if model.notes}}
+                <div>
+                    <label>Notes</label>
+                    <div>{{model.notes}}</div>
+                </div>
+                <br />
+            {{/if}}
+        {{/if}}
         <table class="table table-striped">
             <tr>
                 <th>Role</th><th>Name</th>

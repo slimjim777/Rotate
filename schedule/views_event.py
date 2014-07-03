@@ -243,15 +243,20 @@ def api_event_date_edit(event_date_id):
     """
     Edit an existing event date.
     """
-    ed = EventDate.query.get(event_date_id)
+    try:
+        ed = EventDate.query.get(event_date_id)
+        ed.focus = request.json.get('focus')
+        ed.notes = request.json.get('notes')
 
-    # Save the modified event date details
-    records = request.json.get('rota')
-    result = ed.update_rota(records)
-    if not result:
-        return jsonify({'response': 'Success'})
-    else:
-        return jsonify({'response': 'Failed', 'message': result})
+        # Save the modified event date details
+        records = request.json.get('rota')
+        result = ed.update_rota(records)
+        if not result:
+            return jsonify({'response': 'Success'})
+        else:
+            return jsonify({'response': 'Failed', 'message': result})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})
 
 
 @app.route("/api/events/<int:event_id>/event_dates/create", methods=['POST'])

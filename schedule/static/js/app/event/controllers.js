@@ -2,7 +2,7 @@ App.EventController = Ember.ObjectController.extend({
     datesRangeSelected: null,
     ranges: [{value: '12', name:'Upcoming'}, {value: '-12', name:'Recent'}],
     datesLoading: false,
-    frequencies: [{value: 'weekly', name: 'Weekly'}, {value: 'irregular', name: 'Once'}],
+    frequencies: [{value: 'weekly', name: 'Weekly'}, {value: 'irregular', name: 'Never'}],
     d_errors: null,
 
     datesRangeChange: function() {
@@ -69,7 +69,15 @@ App.EventDateController = Ember.ObjectController.extend({
             });
 
             var controller = this;
-            App.EventDate.updateRota(this.get('model').get('id'), update_rota).then(function(result) {
+
+            var update = {
+                focus: event_date.get('focus'),
+                notes: event_date.get('notes'),
+                rota: update_rota
+            }
+            console.log(event_date);
+
+            App.EventDate.updateRota(this.get('model').get('id'), update).then(function(result) {
                 controller.set('isEditing', false);
                 controller.set('eventDataLoading', false);
                 controller.send('reloadModel');   // Calls action on the route
