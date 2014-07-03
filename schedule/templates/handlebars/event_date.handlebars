@@ -35,7 +35,12 @@
                 {{#each r in model.rota}}
                     <tr>
                         <td>{{r.role.name}}</td>
-                        <td>{{#if r.is_away}}{{#link-to 'person' r.person_id}}<span class="alert-danger">{{r.person_name}}</span>{{/link-to}}{{else}}{{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}{{/if}}</td>
+                        <td>{{#if r.active}}
+                            {{#if r.is_away}}{{#link-to 'person' r.person_id}}<span class="alert-danger" title="Away">{{r.person_name}}</span>{{/link-to}}{{else}}{{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}{{/if}}
+                            {{else}}
+                            {{#link-to 'person' r.person_id}}<span class="alert-warning" title="Inactive User">{{r.person_name}}</span>{{/link-to}}
+                            {{/if}}
+                        </td>
                     </tr>
                 {{/each}}
             {{/if}}

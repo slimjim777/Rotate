@@ -14,7 +14,11 @@
             </td>
             <td id="name{{ r.id }}">{{ r.name }}</td>
             <td id="sequence{{ r.id }}">{{ r.sequence }}</td>
-            <td id="people{{ r.id }}"><button class="btn btn-primary" title="Select the people for the role" onclick="rolePeople(event, {{ r.event_id }}, {{ r.id }})"><span class="badge">{{ r.people|length }}</span></button></td>
+            <td id="people{{ r.id }}">
+                <button class="btn btn-primary" title="Select the people for the role" onclick="rolePeople(event, {{ r.event_id }}, {{ r.id }})">
+                    <span class="badge">{{ role_count[r.id] }}</span>
+                </button>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

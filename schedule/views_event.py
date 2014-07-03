@@ -56,7 +56,12 @@ def admin_event_roles(event_id):
         abort(403)
 
     event = Event.query.get(event_id)
-    return render_template('snippet_event_roles.html', roles=event.roles)
+
+    role_count = {}
+    for r in event.roles:
+        role_count[r.id] = len([p.id for p in r.people if p.active])
+
+    return render_template('snippet_event_roles.html', roles=event.roles, role_count=role_count)
 
 
 @app.route("/admin/event/<int:event_id>/roles/update", methods=['POST', 'PUT'])
@@ -101,13 +106,16 @@ def admin_event_roles_people(event_id, role_id):
         if not role:
             raise Exception('Cannot find the role.')
 
+        # Active people in the role
+        selected = [p for p in role.people if p.active]
+        selected_ids = [p.id for p in selected]
+
         # Get the people that are not in the role
-        selected_ids = [p.id for p in role.people]
         if len(selected_ids) > 0:
-            unselected = Person.query.filter(~ Person.id.in_(selected_ids))
+            unselected = Person.query.filter(~ Person.id.in_(selected_ids), Person.active)
         else:
-            unselected = Person.query.all()
-        return render_template('snippet_event_role_people.html', role_id=role_id, selected=role.people, unselected=unselected)
+            unselected = Person.query.filter(Person.active).all()
+        return render_template('snippet_event_role_people.html', role_id=role_id, selected=selected, unselected=unselected)
     elif request.method == 'POST':
         try:
             # Update the selected people for the role
@@ -199,6 +207,8 @@ def api_event_date(event_date_id):
             role = r.to_dict()
             role['people'] = [{}]
             for person in r.people:
+                if not person.active:
+                    continue
                 p = {
                     'person_id': person.id,
                     'person_name': person.name,

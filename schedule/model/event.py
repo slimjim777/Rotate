@@ -314,6 +314,7 @@ class Rota(db.Model):
             'person_id': self.person_id,
             'person_name': self.person.name,
             'is_away': self.person.is_away(self.event_date.on_date),
+            'active': self.person.active,
         }
 
     def __repr__(self):

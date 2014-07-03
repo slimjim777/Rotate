@@ -531,41 +531,69 @@ function program11(depth0,data) {
   stack1 = helpers._triageMustache.call(depth0, "r.role.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</td>\n                        <td>");
-  stack1 = helpers['if'].call(depth0, "r.is_away", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(15, program15, data),fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "r.active", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(19, program19, data),fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</td>\n                    </tr>\n                ");
+  data.buffer.push("\n                        </td>\n                    </tr>\n                ");
   return buffer;
   }
 function program12(depth0,data) {
   
-  var stack1, helper, options;
-  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(13, program13, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "r.person_id", options) : helperMissing.call(depth0, "link-to", "person", "r.person_id", options));
+  var buffer = '', stack1;
+  data.buffer.push("\n                            ");
+  stack1 = helpers['if'].call(depth0, "r.is_away", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(16, program16, data),fn:self.program(13, program13, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  else { data.buffer.push(''); }
+  data.buffer.push("\n                            ");
+  return buffer;
   }
 function program13(depth0,data) {
   
+  var stack1, helper, options;
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(14, program14, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "r.person_id", options) : helperMissing.call(depth0, "link-to", "person", "r.person_id", options));
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  else { data.buffer.push(''); }
+  }
+function program14(depth0,data) {
+  
   var buffer = '', stack1;
-  data.buffer.push("<span class=\"alert-danger\">");
+  data.buffer.push("<span class=\"alert-danger\" title=\"Away\">");
   stack1 = helpers._triageMustache.call(depth0, "r.person_name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</span>");
   return buffer;
   }
 
-function program15(depth0,data) {
+function program16(depth0,data) {
   
   var stack1, helper, options;
-  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(16, program16, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "r.person_id", options) : helperMissing.call(depth0, "link-to", "person", "r.person_id", options));
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(17, program17, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "r.person_id", options) : helperMissing.call(depth0, "link-to", "person", "r.person_id", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   else { data.buffer.push(''); }
   }
-function program16(depth0,data) {
+function program17(depth0,data) {
   
   var stack1;
   stack1 = helpers._triageMustache.call(depth0, "r.person_name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   else { data.buffer.push(''); }
+  }
+
+function program19(depth0,data) {
+  
+  var buffer = '', stack1, helper, options;
+  data.buffer.push("\n                            ");
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(20, program20, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "r.person_id", options) : helperMissing.call(depth0, "link-to", "person", "r.person_id", options));
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n                            ");
+  return buffer;
+  }
+function program20(depth0,data) {
+  
+  var buffer = '', stack1;
+  data.buffer.push("<span class=\"alert-warning\" title=\"Inactive User\">");
+  stack1 = helpers._triageMustache.call(depth0, "r.person_name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</span>");
+  return buffer;
   }
 
   data.buffer.push("\n<div class=\"panel panel-default\">\n    <div class=\"panel-heading\">\n        <h4 class=\"sub-heading\">\n        ");
