@@ -42,7 +42,7 @@ App.PersonController = Ember.ObjectController.extend({
         
         saveAwayDate: function () {
             var controller = this;
-            App.Person.upsertAwayDate(this.get('person').get('id'), this.get('awayForm')).then(function(value) {
+            App.Person.upsertAwayDate(this.get('model').id, this.get('awayForm')).then(function(value) {
                 // Update the away list
                 var found = false;
                 var away_dates = controller.get('away_dates').map(function(away) {
@@ -89,7 +89,7 @@ App.PersonController = Ember.ObjectController.extend({
             var controller = this;
 
             // Delete the away date
-            App.Person.deleteAwayDate(this.get('person').get('id'), this.get('awayForm')).then(function(value) {
+            App.Person.deleteAwayDate(this.get('model').id, this.get('awayForm')).then(function(value) {
                 controller.get('away_dates').removeObject(controller.get('awayForm'));
                 controller.set('awayForm', {});
                 Ember.$('#confirmModal').modal('hide');
