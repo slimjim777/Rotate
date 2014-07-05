@@ -19,7 +19,7 @@
       <tbody>
     {% for r in rows %}
         <tr>
-            <td><a href="">Edit</a></td>
+            <td><a href="#" onclick="showEventDialogEdit(event,'{{ r.id }}')">Edit</a></td>
             <td><a href="/admin/{{ r.id }}">{{ r.name }}</a></td>
             <td class="center">
                 {%if r.active %}
@@ -46,7 +46,7 @@
               <div id="d-message"></div>
           </div>
           <div class="modal-body">
-              <form>
+              <form id="d-create-event">
                   <fieldset>
                     <input type="hidden" name="event_id" id="d-event_id" class="form-control" />
                     <label for="d-name">Name</label>
@@ -54,12 +54,12 @@
                     <label for="d-active">Active</label>&nbsp;
                     <input type="checkbox" name="active" id="d-active" checked /><br />
                     <label for="d-frequency">Repeats</label>
-                    <select id="d-frequency" class="form-control">
+                    <select id="d-frequency" name="frequency" class="form-control">
                       <option value="weekly">Weekly</option>
                       <option value="irregular">Never</option>
                     </select>
-                    <label for="d-repeats_every">Repeats Every</label>
-                    <input type="number" name="repeats_every" id="d-repeats_every" value="1" min=0 max=52 class="form-control" />
+                    <label for="d-repeat_every">Repeats Every</label>
+                    <input type="number" name="repeat_every" id="d-repeat_every" value="1" min=0 max=52 class="form-control" />
                     <label>Repeats On</label>&nbsp;
                     M<input type="checkbox" name="day_mon" id="d-day_mon" />
                     T<input type="checkbox" name="day_tue" id="d-day_tue" />

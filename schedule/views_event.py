@@ -37,6 +37,65 @@ def admin():
     return render_template('admin.html', rows=rows)
 
 
+@app.route("/admin/event/new", methods=['POST'])
+@login_required
+def admin_event_new():
+    if session['role'] != 'admin':
+        abort(403)
+
+    try:
+        if not request.form.get('name'):
+            raise Exception('The event name must be entered')
+
+        event = Event(request.form.get('name'))
+        event.active = request.form.get('active')
+        event.frequency = request.form.get('frequency')
+        event.repeats_every = request.form.get('repeats_every')
+        event.day_mon = request.form.get('day_mon')
+        event.day_tue = request.form.get('day_tue')
+        event.day_wed = request.form.get('day_wed')
+        event.day_thu = request.form.get('day_thu')
+        event.day_fri = request.form.get('day_fri')
+        event.day_sat = request.form.get('day_sat')
+        event.day_sun = request.form.get('day_sun')
+        db.session.add(event)
+        db.session.commit()
+        return jsonify({'response': 'Success'})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/admin/event/<int:event_id>", methods=['POST'])
+@login_required
+def admin_event_update(event_id):
+    if session['role'] != 'admin':
+        abort(403)
+
+    try:
+        if not request.form.get('name'):
+            raise Exception('The event name must be entered')
+
+        event = Event.query.get(event_id)
+        if not event:
+            raise Exception('Cannot find the event')
+        event.name = request.form.get('name')
+        event.active = request.form.get('active')
+        event.frequency = request.form.get('frequency')
+        event.repeats_every = request.form.get('repeats_every')
+        event.day_mon = request.form.get('day_mon')
+        event.day_tue = request.form.get('day_tue')
+        event.day_wed = request.form.get('day_wed')
+        event.day_thu = request.form.get('day_thu')
+        event.day_fri = request.form.get('day_fri')
+        event.day_sat = request.form.get('day_sat')
+        event.day_sun = request.form.get('day_sun')
+        db.session.add(event)
+        db.session.commit()
+        return jsonify({'response': 'Success'})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
 @app.route("/admin/<int:event_id>", methods=['GET'])
 @login_required
 def admin_event(event_id):

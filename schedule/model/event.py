@@ -36,7 +36,7 @@ class Event(db.Model):
             'id': self.id,
             'name': self.name,
             'active': self.active,
-            'created': self.created,
+            'created': self.created.strftime('%Y-%m-%dT%H:%M:%S'),
             'frequency': self.frequency,
             'repeat_every': self.repeat_every,
             'day_mon': self.day_mon,

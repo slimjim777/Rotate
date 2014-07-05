@@ -90,7 +90,7 @@ function event_date_create(eventid) {
 
     var postdata = {
         frequency: $('#d-frequency').val(),
-        repeats_every: $('#d-repeats_every').val(),
+        repeat_every: $('#d-repeat_every').val(),
         day_mon: $('#d-day_mon').is(':checked'),
         day_tue: $('#d-day_tue').is(':checked'),
         day_wed: $('#d-day_wed').is(':checked'),
@@ -463,5 +463,81 @@ function rolePeopleSave(ev, eventId) {
 function showEventDialog(ev) {
     ev.preventDefault();
 
+    $('#d-message').empty();
+    $('#d-message').attr('class', '');
+    $('#d-event_id').val('');
+    $('#d-name').val('');
+    $('#d-frequency').val('weekly');
+    $('#d-repeat_every').val(1);
+    $('#d-day_mon').prop("checked", false);
+    $('#d-day_tue').prop("checked", false);
+    $('#d-day_wed').prop("checked", false);
+    $('#d-day_thu').prop("checked", false);
+    $('#d-day_fri').prop("checked", false);
+    $('#d-day_sat').prop("checked", false);
+    $('#d-day_sun').prop("checked", false);
     $('#dialog-form').modal('show');
+}
+
+function showEventDialogEdit(ev, eventId) {
+    ev.preventDefault();
+
+    var request = $.ajax({
+      type: 'GET',
+      url: '/api/events/' + eventId,
+      success: function(data) {
+        if (data.response=='Success') {
+            $('#d-message').empty();
+            $('#d-message').attr('class', '');
+            $('#d-event_id').val(eventId);
+            $('#d-name').val(data.event.name);
+            $('#d-frequency').val(data.event.frequency);
+            $('#d-repeat_every').val(data.event.repeat_every);
+            $('#d-day_mon').prop("checked", data.event.day_mon);
+            $('#d-day_tue').prop("checked", data.event.day_tue);
+            $('#d-day_wed').prop("checked", data.event.day_wed);
+            $('#d-day_thu').prop("checked", data.event.day_thu);
+            $('#d-day_fri').prop("checked", data.event.day_fri);
+            $('#d-day_sat').prop("checked", data.event.day_sat);
+            $('#d-day_sun').prop("checked", data.event.day_sun);
+            $('#dialog-form').modal('show');
+        } else {
+            showMessage(data.message);
+        }
+      },
+      error: function(e) {
+        showMessage(e.responseText);
+      }
+    });
+
+}
+
+function eventCreate(ev) {
+    ev.preventDefault();
+    var url;
+    var eventId = $('#d-event_id').val();
+    if (eventId) {
+        url = '/admin/event/' + eventId;
+    } else {
+        url = '/admin/event/new';
+    }
+
+    var formData = $('#d-create-event').serialize();
+
+    var request = $.ajax({
+      type: 'POST',
+      url: url,
+      data: formData,
+      success: function(data) {
+        if (data.response == 'Success') {
+            $('#d-create-event').modal('hide');
+            window.location.href = '/admin';
+        } else {
+            showMessage(data.message);
+        }
+      },
+      error: function(a, b, c) {
+          showMessage(c);
+      }
+    });
 }
