@@ -1,0 +1,13 @@
+{% if error %}
+<div class="alert alert-danger">{{error}}</div>
+{% endif %}
+{% if people %}
+<table class="table">
+    {% for p in people %}
+    <tr>
+        <td>{{p.firstname}}&nbsp;{{p.lastname}}</td>
+        <td><button class="btn btn-info" onclick="addEventAdmin(event,'{{event.id}}','{{p.id}}')">Add</button></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}

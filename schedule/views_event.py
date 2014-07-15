@@ -3,6 +3,7 @@ from flask import jsonify
 from flask import request
 from flask import abort
 from flask import session
+from sqlalchemy import or_
 from schedule import app
 from schedule import db
 from schedule.model.event import Event
@@ -346,3 +347,90 @@ def event_dates_create(event_id):
     app.logger.debug(result)
 
     return jsonify({'response': 'Success'})
+
+
+@app.route("/api/events/<int:event_id>/event_admins/find", methods=['POST'])
+@login_required
+def api_event_admins_find(event_id):
+    try:
+        event = Event.query.get(event_id)
+        if not event:
+            raise Exception('Cannot find the event')
+
+        # Search for people who are not already event admins
+        q = request.form.get('search', '').strip()
+        app.logger.debug('Search: ' + q)
+        qq = q.split(' ')
+        q1 = qq[0]
+        q2 = ''.join(qq[1:])
+
+        # Get the IDs of the existing admins
+        person_ids = []
+        for p in event.event_admins:
+            person_ids.append(p.id)
+
+        not_admins = []
+        if len(q1) > 0 and len(q2) > 0:
+            query = Person.query.filter(Person.firstname.ilike('%%%s%%' % q1), Person.lastname.\
+                                        ilike('%%%s%%' % q2)).filter(~Person.id.in_(person_ids))
+        elif len(q) > 0:
+            query = Person.query.filter(or_(Person.firstname.ilike('%%%s%%' % q), Person.lastname.\
+                                            ilike('%%%s%%' % q))).filter(~Person.id.in_(person_ids))
+        else:
+            query = Person.query.filter(~Person.id.in_(person_ids))
+
+        people = query.filter(Person.active).order_by(Person.lastname).limit(20)
+        not_admins = [p.to_dict() for p in people]
+        return render_template('snippet_event_admins_find.html', event=event, people=not_admins, error='')
+    except Exception, v:
+        return render_template('snippet_event_admins_find.html', event=event, people=[], error=str(v))
+
+
+@app.route("/api/events/<int:event_id>/event_admins/add", methods=['POST'])
+@login_required
+def api_event_admins_add(event_id):
+    try:
+        event = Event.query.get(event_id)
+        if not event:
+            raise Exception('Cannot find the event')
+
+        # Get the person
+        person = Person.query.get(request.json.get('person_id'))
+        if not person:
+            raise Exception('Cannot find the person')
+        if not person.active:
+            raise Exception('The person is inactive')
+
+        # Check that the person is not already an admin
+        is_existing = [p.id for p in event.event_admins if p.id==person.id]
+        if len(is_existing) > 0:
+            return jsonify({'response': 'Success'})
+        else:
+            # Add the person as an event admin
+            event.event_admins.append(person)
+            db.session.commit()
+            return jsonify({'response': 'Success', 'message': '%s can now administrate this event' % person.name})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/events/<int:event_id>/event_admins/remove", methods=['POST'])
+@login_required
+def api_event_admins_remove(event_id):
+    try:
+        event = Event.query.get(event_id)
+        if not event:
+            raise Exception('Cannot find the event')
+
+        # Get the person
+        person = Person.query.get(request.json.get('person_id'))
+        if not person:
+            raise Exception('Cannot find the person')
+
+        # Remove the person as an event admin
+        event.event_admins.remove(person)
+        db.session.commit()
+        return jsonify({'response': 'Success'})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+

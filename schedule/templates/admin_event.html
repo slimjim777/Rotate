@@ -55,6 +55,26 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
+            <label id="admins-spinner" class="spinner" hidden>&nbsp;</label>
+            Event Administrators&nbsp;
+            <button id="create-event-admin" class="btn btn-primary" title="New Event Administrator" data-toggle="modal" data-target="#dialog-form-admins"><span class="glyphicon glyphicon-plus"></span></button>
+        </h3>
+    </div>
+    <div id="admins" class="table-responsive">
+        <table class="table">
+            {% for p in row.event_admins %}
+            <tr id="person{{p.id}}">
+                <td>{{ p.name }}</td>
+                <td><a href="#" onclick="eventAdminRemove(event, '{{row.id}}', '{{p.id}}')" title="Remove event administrator"><span class="glyphicon glyphicon-remove-circle"></span></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
             <label id="roles-spinner" class="spinner" hidden>&nbsp;</label>
             Event Roles&nbsp;
             <button id="create-event-role" class="btn btn-primary" onclick="showRoleDialog(event, null, {{ row.id }})" title="New Event Role"><span class="glyphicon glyphicon-plus"></span></button>
@@ -62,6 +82,26 @@
     </div>
     <div id="roles" class="table-responsive">
     </div>
+</div>
+
+<!-- Add Event Administrators -->
+<div id="dialog-form-admins" title="Add Event Administrators" class="modal fade">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Add Event Administrators</h4>
+              <br />
+              <div id="d-message-admins"></div>
+          </div>
+          <div class="modal-body">
+              <input type="search" class="form-control" onchange="findEventAdmin(event, '{{ row.id }}')" name="person-search" id="person-search" placeholder="find person">
+              <div id="d-people"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" onclick="eventAdminClose(event)">Close</button>
+          </div>
+      </div>
+  </div>
 </div>
 
 <!-- Create Event Roles -->

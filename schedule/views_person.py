@@ -29,7 +29,7 @@ def view_person():
 
 
 @app.route('/api/people/me', methods=['GET'])
-@app.route('/api/people/<int:person_id>', methods=['POST'])
+@app.route('/api/people/<int:person_id>', methods=['GET', 'POST'])
 @login_required
 def api_person(person_id=None):
     if request.method == "GET":

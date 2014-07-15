@@ -4,11 +4,19 @@ from sqlalchemy.orm import validates
 import datetime
 from schedule import app
 
+
 def next_weekday(d, weekday):
     days_ahead = weekday - d.weekday()
     if days_ahead < 0:
         days_ahead += 7
     return d + datetime.timedelta(days_ahead)
+
+
+event_admins = db.Table(
+    'event_admins',
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id')),
+    db.Column('person_id', db.Integer, db.ForeignKey('person.id'))
+)
 
 
 class Event(db.Model):
@@ -27,6 +35,7 @@ class Event(db.Model):
     day_fri = db.Column(db.Boolean, default=False)
     day_sat = db.Column(db.Boolean, default=False)
     day_sun = db.Column(db.Boolean, default=False)
+    event_admins = db.relationship('Person', secondary=event_admins, backref=db.backref('event_ref', lazy='joined'))
 
     def __init__(self, name):
         self.name = name
@@ -228,6 +237,7 @@ class Person(db.Model):
     last_login = db.Column(db.DateTime())
     active = db.Column(db.Boolean, default=True)
     away_dates = db.relationship('AwayDate', backref='person_ref', lazy='dynamic')
+    events_admin = db.relationship('Event', secondary=event_admins, backref=db.backref('person_ref', lazy='joined'))
 
     def __init__(self, email, firstname, lastname):
         self.firstname = firstname

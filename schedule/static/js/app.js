@@ -9,6 +9,15 @@ function showMessage(msg, message) {
     message.fadeIn(1000);
 }
 
+function showSuccessMessage(msg, message) {
+    if (!message) {
+        message = $('#d-message');
+    }
+    message.text(msg);
+    message.attr('class', 'alert alert-success');
+    message.fadeIn(1000);
+}
+
 function clearMessage() {
     var message = $('#d-message');
     message.text('');
@@ -146,7 +155,6 @@ function eventDates(ev, eventId) {
         $('#event-dates-spinner').hide();
       },
       error: function(e) {
-          console.log(e);
           $('#event-dates-spinner').hide();
       }
     });
@@ -174,7 +182,6 @@ function personRota(ev, personId, range) {
         $('#person-rota-spinner').hide();
       },
       error: function(e) {
-          console.log(e);
           $('#person-rota-spinner').hide();
       }
     });
@@ -200,7 +207,6 @@ function personAway(ev, personId, range) {
         $('#person-away-spinner').hide();
       },
       error: function(e) {
-          console.log(e);
           $('#person-away-spinner').hide();
       }
     });
@@ -329,7 +335,6 @@ function eventRoles(ev, eventId) {
         $('#roles-spinner').hide();
       },
       error: function(e) {
-          console.log(e);
           $('#roles-spinner').hide();
       }
     });
@@ -540,4 +545,85 @@ function eventCreate(ev) {
           showMessage(c);
       }
     });
+}
+
+function findEventAdmin(ev, eventId) {
+    ev.preventDefault();
+    var search = $('#person-search').val();
+    var msg = $('#d-message-admins');
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/api/events/' + eventId + '/event_admins/find',
+      data: {search: search},
+      success: function(data) {
+          $('#d-people').html(data);
+      },
+      error: function(a, b, c) {
+          showMessage(c, msg);
+      }
+    });
+}
+
+function addEventAdmin(ev, eventId, personId) {
+    ev.preventDefault();
+    var event_admin = {
+        event_id: eventId,
+        person_id: personId
+    };
+    var msg = $('#d-message-admins');
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/api/events/' + eventId + '/event_admins/add',
+      data: JSON.stringify(event_admin),
+      contentType:"application/json",
+      dataType: "json",
+      success: function(data) {
+          if (data.response == 'Success') {
+              showSuccessMessage(data.message, msg);
+          } else {
+              showMessage(data.message, msg);
+          }
+      },
+      error: function(a, b, c) {
+          showMessage(c, msg);
+      }
+    });
+
+}
+
+function eventAdminClose(ev) {
+    ev.preventDefault();
+
+    $('#dialog-form-admins').modal('hide');
+    window.location.reload();
+}
+
+function eventAdminRemove(ev, eventId, personId) {
+    ev.preventDefault();
+
+        var event_admin = {
+        event_id: eventId,
+        person_id: personId
+    };
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/api/events/' + eventId + '/event_admins/remove',
+      data: JSON.stringify(event_admin),
+      contentType:"application/json",
+      dataType: "json",
+      success: function(data) {
+          if (data.response == 'Success') {
+              $('#person' + personId).fadeOut(1000).delay(100).hide();
+          } else {
+              showMessage(data.message, msg);
+          }
+      },
+      error: function(a, b, c) {
+          showMessage(c, msg);
+      }
+    });
+
 }
