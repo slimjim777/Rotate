@@ -94,6 +94,14 @@ App.PersonController = Ember.ObjectController.extend({
                 controller.set('awayForm', {});
                 Ember.$('#confirmModal').modal('hide');
             });
+        },
+
+        refreshRota: function() {
+            this.rotaRangeChange();
+        },
+
+        refreshAwayDates: function() {
+            this.awayRangeChange();
         }
     }
 });

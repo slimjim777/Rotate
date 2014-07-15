@@ -10,28 +10,30 @@
     </div>
     <div id="events" class="panel panel-body">
     {% if rows %}
-    <table class="table table-striped">
-      <thead>
-        <tr>
-            <th></th><th>Name</th><th>Active</th><th>Roles</th><th>Created</th>
-        </tr>
-      </thead>
-      <tbody>
-    {% for r in rows %}
-        <tr>
-            <td><a href="#" onclick="showEventDialogEdit(event,'{{ r.id }}')">Edit</a></td>
-            <td><a href="/admin/{{ r.id }}">{{ r.name }}</a></td>
-            <td class="center">
-                {%if r.active %}
-                <span class="glyphicon glyphicon-ok"></span>
-                {% endif %}
-            </td>
-            <td>{{ r.roles|length }}</td>
-            <td class="center">{{ r.created.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-        </tr>
-    {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+                <th></th><th>Name</th><th>Active</th><th>Roles</th><th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for r in rows %}
+            <tr>
+                <td><a href="#" onclick="showEventDialogEdit(event,'{{ r.id }}')">Edit</a></td>
+                <td><a href="/admin/{{ r.id }}">{{ r.name }}</a></td>
+                <td class="center">
+                    {%if r.active %}
+                    <span class="glyphicon glyphicon-ok"></span>
+                    {% endif %}
+                </td>
+                <td>{{ r.roles|length }}</td>
+                <td class="center">{{ r.created.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
+    </div>
     {% endif %}
     </div>
 </div>
