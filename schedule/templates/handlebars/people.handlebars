@@ -3,8 +3,9 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">People&nbsp;
+            {{#if permissions.is_admin}}
             {{#link-to 'person_create' class="btn btn-primary" title="New User"}}<span class="glyphicon glyphicon-plus"></span>{{/link-to}}
-            <!--button class="btn btn-primary" title="New User" {{action newPerson}}><span class="glyphicon glyphicon-plus"></span></button-->
+            {{/if}}
         </h3>
     </div>
     <div class="panel-body">
@@ -12,13 +13,16 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                    <th></th><th>Name</th><th>Active</th><th>Permissions</th><th>Last Login</th>
+                    {{#if permissions.is_admin}}<th></th>{{/if}}
+                    <th>Name</th><th>Active</th><th>Permissions</th><th>Last Login</th>
                 </tr>
               </thead>
               <tbody>
             {{#each person in model}}
               <tr>
+                {{#if permissions.is_admin}}
                 <td>{{#link-to 'person_edit' person class="btn btn-default"}}Edit{{/link-to}}</td>
+                {{/if}}
                 <td>{{#link-to 'person' person}}{{person.name}}{{/link-to}}</td>
                 <td class="center">
                     {{#if person.active}}

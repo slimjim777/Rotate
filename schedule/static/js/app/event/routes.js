@@ -18,6 +18,8 @@ App.EventRoute = Ember.Route.extend({
 
         // Trigger load of the event dates
         controller.set('datesRangeSelected', '12');
+
+        controller.getPermissions();
     },
 
     actions: {
@@ -48,6 +50,7 @@ App.EventDateRoute = Ember.Route.extend({
         // Reset the controller
         controller.set('eventDataLoading', false);
         controller.set('isEditing', false);
+        controller.getPermissions();
     }
 
 });

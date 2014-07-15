@@ -184,3 +184,27 @@ def api_people_new():
         return jsonify({'response': 'Success', 'person': p.to_dict()})
     except Exception, v:
         return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route('/api/permissions', methods=['POST'])
+@login_required
+def api_permissions():
+    """
+    Get the permissions for the current user.
+    """
+    person = Person.query.get(session['user_id'])
+    events_admin = []
+    for e in person.events_admin:
+        events_admin.append({
+            'id': e.id,
+            'name': e.name,
+        })
+
+    permissions = {
+        'name': session['name'],
+        'role': session['role'],
+        'is_admin': session['role'] == 'admin',
+        'user_id': session['user_id'],
+        'events_admin': events_admin,
+    }
+    return jsonify({'response': 'Success', 'permissions': permissions})

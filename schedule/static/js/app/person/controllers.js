@@ -108,7 +108,14 @@ App.PersonController = Ember.ObjectController.extend({
 
 
 App.PeopleController = Ember.ArrayController.extend({
-    menu: 'nav-people'
+    menu: 'nav-people',
+
+    getPermissions: function() {
+        var controller = this;
+        App.Person.permissions().then(function(result) {
+            controller.set('permissions', result.permissions);
+        });
+    }
 });
 
 

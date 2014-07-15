@@ -7,7 +7,9 @@
             <button {{action 'saveEventDate' model}} class="btn btn-success">Save</button>&nbsp;
             <button {{action 'cancelEventDate' model}} class="btn btn-danger">Cancel</button>
         {{else}}
+            {{#if canAdministrate}}
             <button {{action 'editEventDate' model}} class="btn btn-info">Edit</button>
+            {{/if}}
         {{/if}}
         On {{formatDate model.on_date}}</h4>
     </div>

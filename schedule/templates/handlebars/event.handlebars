@@ -6,7 +6,9 @@
         <h3 class="panel-title">
     {{#if datesLoading}}<label class="spinner">&nbsp;</label>{{/if}}
             Dates&nbsp;
+            {{#if canAdministrate}}
             <button id="create-event-dates" class="btn btn-primary" data-toggle="modal" data-target="#dialog-form" title="New Event Dates"><span class="glyphicon glyphicon-plus"></span></button>
+            {{/if}}
             {{view Ember.Select
                     value=datesRangeSelected
                     content=ranges

@@ -5,6 +5,29 @@ App.EventController = Ember.ObjectController.extend({
     frequencies: [{value: 'weekly', name: 'Weekly'}, {value: 'irregular', name: 'Never'}],
     d_errors: null,
 
+    getPermissions: function() {
+        var controller = this;
+        App.Person.permissions().then(function(result) {
+            controller.set('permissions', result.permissions);
+            controller.isEventAdmin(controller.get('model').id);
+        });
+    },
+
+    isEventAdmin: function(eventId) {
+        this.set('canAdministrate', false);
+        if (this.get('permissions').is_admin) {
+            this.set('canAdministrate', true);
+            return;
+        }
+
+        this.get('permissions').events_admin.forEach(function(item) {
+            if (item.id==eventId) {
+                this.set('canAdministrate', true);
+                return;
+            }
+        });
+    },
+
     datesRangeChange: function() {
         var controller = this;
         controller.set('datesLoading', true);
@@ -53,6 +76,29 @@ App.EventDateController = Ember.ObjectController.extend({
     isEditing: false,
     eventDataLoading: false,
 
+    getPermissions: function() {
+        var controller = this;
+        App.Person.permissions().then(function(result) {
+            controller.set('permissions', result.permissions);
+            controller.isEventAdmin(controller.get('model').event_id);
+        });
+    },
+
+    isEventAdmin: function(eventId) {
+        this.set('canAdministrate', false);
+        if (this.get('permissions').is_admin) {
+            this.set('canAdministrate', true);
+            return;
+        }
+
+        this.get('permissions').events_admin.forEach(function(item) {
+            if (item.id==eventId) {
+                this.set('canAdministrate', true);
+                return;
+            }
+        });
+    },
+
     actions: {
         editEventDate: function(event_date) {
             this.set('isEditing', true);
@@ -75,7 +121,6 @@ App.EventDateController = Ember.ObjectController.extend({
                 notes: event_date.get('notes'),
                 rota: update_rota
             }
-            console.log(event_date);
 
             App.EventDate.updateRota(this.get('model').get('id'), update).then(function(result) {
                 controller.set('isEditing', false);

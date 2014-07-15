@@ -28,6 +28,11 @@ App.PeopleRoute = Ember.Route.extend({
         return App.Person.getAll().then(function(data) {
             return data.people;
         })
+    },
+
+    setupController: function(controller, model) {
+        controller.set('content', model);
+        controller.getPermissions();
     }
 });
 
