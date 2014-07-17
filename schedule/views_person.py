@@ -32,6 +32,9 @@ def view_person():
 @app.route('/api/people/<int:person_id>', methods=['GET', 'POST'])
 @login_required
 def api_person(person_id=None):
+    """
+    Get or update a person's details.
+    """
     if request.method == "GET":
         try:
             if not person_id:
@@ -49,8 +52,11 @@ def api_person(person_id=None):
 
     elif request.method == "POST":
         try:
+            if session['role'] != 'admin':
+                raise Exception('You do not have permissions to amend users')
             if not person_id:
                 raise Exception('The person_id must be supplied')
+
             p = Person.query.get(person_id)
             if not p:
                 raise Exception('Cannot find the person')
@@ -73,6 +79,9 @@ def api_person(person_id=None):
 @app.route('/api/people/<int:person_id>/rota', methods=['POST'])
 @login_required
 def api_person_rota(person_id=None):
+    """
+    Get the rota for a person.
+    """
     if not person_id:
         person_id = session['user_id']
     weeks = int(request.json.get('range') or 8)
@@ -97,6 +106,9 @@ def api_person_rota(person_id=None):
 @app.route('/api/people/<int:person_id>/away_dates', methods=['POST'])
 @login_required
 def api_person_away(person_id=None):
+    """
+    Get the away dates for a person.
+    """
     if not person_id:
         person_id = session['user_id']
     weeks = int(request.json.get('range') or 8)
@@ -120,6 +132,12 @@ def api_person_away(person_id=None):
 @app.route('/api/people/<int:person_id>/away_date', methods=['POST', 'DELETE'])
 @login_required
 def person_away_date_update(person_id):
+    """
+    Update the away dates for a person.
+    """
+    if session['role'] != 'admin' and session['user_id'] != person_id:
+        return jsonify({'response': 'Error', 'message': 'You do not have permissions to this person'})
+
     if request.method == 'POST':
         try:
             away_id = request.json.get('id')
@@ -174,6 +192,9 @@ def api_people():
 @app.route('/api/people/new', methods=['POST'])
 @login_required
 def api_people_new():
+    """
+    Add a new person.
+    """
     try:
         if session['role'] != 'admin':
             raise Exception('You do not have permissions to create users')

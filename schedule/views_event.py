@@ -323,7 +323,7 @@ def api_event_date_edit(event_date_id):
 @login_required
 def event_dates_create(event_id):
     """
-    Create the events for an event.
+    Create the event dates for an event.
     """
     frequency = request.json.get('frequency', 'irregular')
     repeats_every = int(request.json.get('repeats_every', 1))
@@ -390,6 +390,9 @@ def api_event_admins_find(event_id):
 @login_required
 def api_event_admins_add(event_id):
     try:
+        if session['role'] != 'admin':
+            raise Exception('You do not have permissions to add event admins')
+
         event = Event.query.get(event_id)
         if not event:
             raise Exception('Cannot find the event')
@@ -418,6 +421,9 @@ def api_event_admins_add(event_id):
 @login_required
 def api_event_admins_remove(event_id):
     try:
+        if session['role'] != 'admin':
+            raise Exception('You do not have permissions to remove event admins')
+
         event = Event.query.get(event_id)
         if not event:
             raise Exception('Cannot find the event')
