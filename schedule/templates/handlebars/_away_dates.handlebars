@@ -2,7 +2,9 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">{{#if awayLoading}}<label id="person-rota-spinner" class="spinner">&nbsp;</label>{{/if}}Away Dates&nbsp;
+                {{#if canAdministratePerson}}
                 <button class="btn btn-primary" title="New Away Dates" {{action newAwayDates}}><span class="glyphicon glyphicon-plus"></span></button>
+                {{/if}}
                 {{view Ember.Select
                     value=awayRangeSelected
                     content=ranges

@@ -1,7 +1,7 @@
 
 App.PersonController = Ember.ObjectController.extend({
     menu: 'nav-myrota',
-    rotaRangeSelected: null,
+    rotaRangeSelected: '12',
     ranges: [{value: '12', name:'Upcoming'}, {value: '-12', name:'Recent'}],
     rotaLoading: false,
 
@@ -10,6 +10,23 @@ App.PersonController = Ember.ObjectController.extend({
 
     awayForm: {},
     awayError: null,
+
+    getPermissions: function() {
+        var controller = this;
+        App.Person.permissions().then(function(result) {
+            controller.set('permissions', result.permissions);
+            controller.isPersonAdmin();
+        });
+    },
+
+    isPersonAdmin: function() {
+        this.set('canAdministratePerson', false);
+        if (this.get('permissions').is_admin) {
+            this.set('canAdministratePerson', true);
+        } else if (this.get('model').id == this.get('permissions').user_id) {
+            this.set('canAdministratePerson', true);
+        }
+    },
 
     rotaRangeChange: function() {
         var controller = this;

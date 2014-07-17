@@ -1,5 +1,5 @@
 App.EventController = Ember.ObjectController.extend({
-    datesRangeSelected: null,
+    datesRangeSelected: '12',
     ranges: [{value: '12', name:'Upcoming'}, {value: '-12', name:'Recent'}],
     datesLoading: false,
     frequencies: [{value: 'weekly', name: 'Weekly'}, {value: 'irregular', name: 'Never'}],

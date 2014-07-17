@@ -11,14 +11,23 @@ function program1(depth0,data) {
 
 function program3(depth0,data) {
   
+  var buffer = '';
+  data.buffer.push("\n                <button class=\"btn btn-primary\" title=\"New Away Dates\" ");
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "newAwayDates", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data})));
+  data.buffer.push("><span class=\"glyphicon glyphicon-plus\"></span></button>\n                ");
+  return buffer;
+  }
+
+function program5(depth0,data) {
+  
   var buffer = '', stack1;
   data.buffer.push("\n            <table class=\"table\">\n            <thead>\n                <tr>\n                    <th></th><th>From Date</th><th>To Date</th><th></th>\n                </tr>\n            </thead>\n            <tbody>\n            ");
-  stack1 = helpers.each.call(depth0, "r", "in", "away_dates", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
+  stack1 = helpers.each.call(depth0, "r", "in", "away_dates", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n            </tbody>\n            </table>\n        ");
   return buffer;
   }
-function program4(depth0,data) {
+function program6(depth0,data) {
   
   var buffer = '', helper, options;
   data.buffer.push("\n            <tr>\n                <td><button ");
@@ -33,13 +42,13 @@ function program4(depth0,data) {
   return buffer;
   }
 
-function program6(depth0,data) {
+function program8(depth0,data) {
   
   
   data.buffer.push("\n            <p>No away dates found.</p>\n        ");
   }
 
-function program8(depth0,data) {
+function program10(depth0,data) {
   
   var buffer = '', stack1;
   data.buffer.push("\n            <div class=\"alert alert-danger\">");
@@ -52,9 +61,10 @@ function program8(depth0,data) {
   data.buffer.push("\n    <div class=\"panel panel-default\">\n        <div class=\"panel-heading\">\n            <h3 class=\"panel-title\">");
   stack1 = helpers['if'].call(depth0, "awayLoading", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("Away Dates&nbsp;\n                <button class=\"btn btn-primary\" title=\"New Away Dates\" ");
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "newAwayDates", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data})));
-  data.buffer.push("><span class=\"glyphicon glyphicon-plus\"></span></button>\n                ");
+  data.buffer.push("Away Dates&nbsp;\n                ");
+  stack1 = helpers['if'].call(depth0, "canAdministratePerson", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n                ");
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "Ember.Select", {hash:{
     'value': ("awayRangeSelected"),
     'content': ("ranges"),
@@ -64,10 +74,10 @@ function program8(depth0,data) {
   data.buffer.push("&nbsp;\n                <button class=\"btn\" ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "refreshAwayDates", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data})));
   data.buffer.push(" title=\"Refresh Away Dates\"><span class=\"glyphicon glyphicon-refresh\"></span></button>\n            </h3>\n        </div>\n        <div class=\"panel-body\" id=\"person-rota\">\n        ");
-  stack1 = helpers['if'].call(depth0, "away_dates", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(6, program6, data),fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "away_dates", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(8, program8, data),fn:self.program(5, program5, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n        </div>\n    </div>\n\n\n<div class=\"modal fade\" id=\"awayModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <h4 class=\"modal-title\">Away Dates</h4>\n      </div>\n      <div class=\"modal-body\">\n        ");
-  stack1 = helpers['if'].call(depth0, "awayError", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "awayError", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n        ");
   data.buffer.push(escapeExpression((helper = helpers.input || (depth0 && depth0.input),options={hash:{
@@ -409,7 +419,7 @@ function program28(depth0,data) {
   data.buffer.push("<h2 class=\"heading center\">");
   stack1 = helpers._triageMustache.call(depth0, "model.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</h2>\n\n<div class=\"col-md-4 col-xs-12\">\n<div class=\"panel panel-default\">\n    <div class=\"panel-heading\">\n        <h3 class=\"panel-title\">\n    ");
+  data.buffer.push("</h2>\n\n<div class=\"col-md-4 col-sm-4 col-xs-12\">\n<div class=\"panel panel-default\">\n    <div class=\"panel-heading\">\n        <h3 class=\"panel-title\">\n    ");
   stack1 = helpers['if'].call(depth0, "datesLoading", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n            Dates&nbsp;\n            ");
@@ -460,7 +470,7 @@ function program28(depth0,data) {
   data.buffer.push("\n                    ");
   stack1 = helpers['if'].call(depth0, "model.day_sun", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(28, program28, data),fn:self.program(26, program26, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n                    </span>\n                </td>\n            </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n</div>\n\n<div class=\"col-md-8 col-xs-12\">\n");
+  data.buffer.push("\n                    </span>\n                </td>\n            </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n</div>\n\n<div class=\"col-md-8 col-sm-8 col-xs-12\">\n");
   stack1 = helpers._triageMustache.call(depth0, "outlet", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n</div>\n\n");

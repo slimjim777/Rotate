@@ -16,9 +16,11 @@ App.PersonRoute = Ember.Route.extend({
 
     setupController: function(controller, model) {
         controller.set('content', model);
+        controller.getPermissions();
 
         // Trigger load of the person's rota
-        controller.set('rotaRangeSelected', '12');
+        controller.rotaRangeChange();
+        controller.awayRangeChange();
     }
 
 });
