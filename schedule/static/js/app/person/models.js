@@ -144,8 +144,12 @@ App.Person.reopenClass({
         });
     },
     
-    getAll: function () {
-        return ajax(this.url, {
+    getAll: function (pageNo) {
+        var url = this.url;
+        if (pageNo) {
+            url = this.url + '/page/' + pageNo;
+        }
+        return ajax(url, {
             type: 'GET',
             contentType: "application/json; charset=utf-8"
         });

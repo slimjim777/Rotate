@@ -124,7 +124,7 @@ App.PersonController = Ember.ObjectController.extend({
 });
 
 
-App.PeopleController = Ember.ArrayController.extend({
+App.PeoplePageController = Ember.ArrayController.extend({
     menu: 'nav-people',
 
     getPermissions: function() {
@@ -147,6 +147,10 @@ App.PersonCreateController = Ember.ObjectController.extend({
 
     reset: function() {
         this.set('error', null);
+        this.set('firstname', null);
+        this.set('lastname', null);
+        this.set('email', null);
+        this.set('user_role', 'standard');
     },
 
     actions: {

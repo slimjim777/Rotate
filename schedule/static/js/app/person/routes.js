@@ -26,15 +26,29 @@ App.PersonRoute = Ember.Route.extend({
 });
 
 App.PeopleRoute = Ember.Route.extend({
-    model: function() {
-        return App.Person.getAll().then(function(data) {
-            return data.people;
+    beforeModel: function() {
+        this.transitionTo('people_page', 1);
+    }
+});
+
+App.PeoplePageRoute = Ember.Route.extend({
+    model: function(params) {
+        console.log('PeoplePageRoute');
+        var pageNo = null;
+        if (params.page_no) {
+            pageNo = params.page_no;
+        }
+        return App.Person.getAll(pageNo).then(function(data) {
+            // This is a paginated result
+            return data;
         })
     },
 
     setupController: function(controller, model) {
-        controller.set('content', model);
         controller.getPermissions();
+        // Extract the rows and the pagination metadata
+        controller.set('content', model.people);
+        controller.set('meta', model.meta);
     }
 });
 

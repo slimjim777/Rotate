@@ -89,10 +89,20 @@ def api_person_rota(person_id=None):
 
     if weeks > 0:
         # Next n weeks
-        rota = Rota.query.join(Person).join(EventDate).filter(Person.id == person_id, EventDate.on_date.between(datetime.date.today().strftime('%Y-%m-%d'), delta.strftime('%Y-%m-%d')))
+        rota = Rota.query.join(Person).join(EventDate).filter(
+            Person.id == person_id,
+            EventDate.on_date.between(
+                datetime.date.today().strftime('%Y-%m-%d'),
+                delta.strftime('%Y-%m-%d')))
     else:
         # Last n weeks
-        rota = Rota.query.join(Person).join(EventDate).filter(Person.id == person_id, EventDate.on_date.between(delta.strftime('%Y-%m-%d'), datetime.date.today().strftime('%Y-%m-%d')))
+        rota = Rota.query.join(Person).join(EventDate).filter(
+            Person.id == person_id,
+            EventDate.on_date.between(
+                delta.strftime('%Y-%m-%d'),
+                datetime.date.today().strftime('%Y-%m-%d')
+            )
+        )
 
     result = {
         'response': 'Success',
@@ -116,10 +126,18 @@ def api_person_away(person_id=None):
 
     if weeks > 0:
         # Next n weeks
-        away_dates = AwayDate.query.filter(AwayDate.person_id == person_id, AwayDate.to_date.between(datetime.date.today().strftime('%Y-%m-%d'), delta.strftime('%Y-%m-%d')))
+        away_dates = AwayDate.query.filter(
+            AwayDate.person_id == person_id,
+            AwayDate.to_date.between(
+                datetime.date.today().strftime('%Y-%m-%d'),
+                delta.strftime('%Y-%m-%d')))
     else:
         # Last n weeks
-        away_dates = AwayDate.query.filter(AwayDate.person_id == person_id, AwayDate.to_date.between(delta.strftime('%Y-%m-%d'), datetime.date.today().strftime('%Y-%m-%d')))
+        away_dates = AwayDate.query.filter(
+            AwayDate.person_id == person_id,
+            AwayDate.to_date.between(
+                delta.strftime('%Y-%m-%d'),
+                datetime.date.today().strftime('%Y-%m-%d')))
 
     result = {
         'response': 'Success',
@@ -136,7 +154,9 @@ def person_away_date_update(person_id):
     Update the away dates for a person.
     """
     if session['role'] != 'admin' and session['user_id'] != person_id:
-        return jsonify({'response': 'Error', 'message': 'You do not have permissions to this person'})
+        return jsonify({
+            'response': 'Error',
+            'message': 'You do not have permissions to this person'})
 
     if request.method == 'POST':
         try:
@@ -179,14 +199,33 @@ def person_away_date_update(person_id):
 @app.route('/api/people', methods=['GET'])
 @login_required
 def api_people():
-    # Get the page number for pagination
-    page = int(request.args.get('page', 1))
-    if page < 1:
-        page = 1
+    # Returning page 1
+    response = get_people(1)
+    return jsonify(response)
 
-    rows = Person.query.order_by('lastname').all()
+
+@app.route('/api/people/page/<int:page_no>', methods=['GET'])
+@login_required
+def api_people_page(page_no):
+    # Returning the requested page
+    response = get_people(page_no)
+    return jsonify(response)
+
+
+def get_people(page):
+    paginate = Person.query.order_by(Person.lastname).paginate(
+        page, PAGE_SIZE, False)
+    rows = paginate.items
+    meta = {
+        'total': paginate.pages,
+        'page': paginate.page,
+        'has_next': paginate.has_next,
+        'has_prev': paginate.has_prev,
+        'next_num': paginate.next_num,
+        'prev_num': paginate.prev_num,
+    }
     people = [p.to_dict() for p in rows]
-    return jsonify({'response': 'Success', 'people': people})
+    return {'response': 'Success', 'people': people, 'meta': meta}
 
 
 @app.route('/api/people/new', methods=['POST'])
@@ -199,7 +238,8 @@ def api_people_new():
         if session['role'] != 'admin':
             raise Exception('You do not have permissions to create users')
 
-        p = Person(request.json.get('email'), request.json.get('firstname'), request.json.get('lastname'))
+        p = Person(request.json.get('email'), request.json.get('firstname'),
+                   request.json.get('lastname'))
         db.session.add(p)
         db.session.commit()
         return jsonify({'response': 'Success', 'person': p.to_dict()})
