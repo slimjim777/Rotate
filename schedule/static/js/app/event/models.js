@@ -61,5 +61,14 @@ App.EventDate.reopenClass({
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });
+    },
+
+    delete: function(modelId) {
+        return ajax(this.url + modelId, {
+            type: 'DELETE',
+            data: JSON.stringify({eventId: modelId}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
     }
 });

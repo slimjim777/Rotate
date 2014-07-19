@@ -141,7 +141,7 @@ function program1(depth0,data) {
 Ember.TEMPLATES["_create_dates"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-  var buffer = '', stack1, helper, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
+  var buffer = '', stack1, escapeExpression=this.escapeExpression;
 
 
   data.buffer.push("<!-- Create Event Dates -->\n<div id=\"dialog-form\" title=\"Create Event Dates\" class=\"modal fade\">\n  <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n          <div class=\"modal-header\">\n              <h4 class=\"modal-title\">Create one or more event dates for '");
@@ -158,15 +158,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
     'optionLabelPath': ("content.name"),
     'class': ("form-control")
   },hashTypes:{'value': "ID",'content': "ID",'optionValuePath': "STRING",'optionLabelPath': "STRING",'class': "STRING"},hashContexts:{'value': depth0,'content': depth0,'optionValuePath': depth0,'optionLabelPath': depth0,'class': depth0},contexts:[depth0],types:["ID"],data:data})));
-  data.buffer.push("\n                    <label>Repeats Every</label>\n                    ");
-  data.buffer.push(escapeExpression((helper = helpers.input || (depth0 && depth0.input),options={hash:{
-    'type': ("number"),
-    'name': ("model.repeat_every"),
-    'min': (0),
-    'max': (52),
-    'class': ("form-control")
-  },hashTypes:{'type': "STRING",'name': "STRING",'min': "INTEGER",'max': "INTEGER",'class': "STRING"},hashContexts:{'type': depth0,'name': depth0,'min': depth0,'max': depth0,'class': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "input", options))));
-  data.buffer.push("\n                    <label>Repeats On</label>&nbsp;\n                    M<input type=\"checkbox\" name=\"model.day_mon\" ");
+  data.buffer.push("\n                    <!--label>Repeats Every</label>\n                    {-input type=\"number\" name=\"model.repeat_every\" min=0 max=52 class=\"form-control\" -}\n                    <label>Repeats On</label-->\n                    M<input type=\"checkbox\" name=\"model.day_mon\" ");
   data.buffer.push(escapeExpression(helpers['bind-attr'].call(depth0, {hash:{
     'checked': ("model.day_mon")
   },hashTypes:{'checked': "STRING"},hashContexts:{'checked': depth0},contexts:[],types:[],data:data})));
@@ -444,10 +436,10 @@ function program28(depth0,data) {
   data.buffer.push("\n                        </span>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <label>Frequency</label><span class=\"panel-cell\">");
   stack1 = helpers._triageMustache.call(depth0, "model.frequency", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</span>\n                </td>\n                <td>\n                    <label>Repeats Every</label><span class=\"panel-cell\">");
+  data.buffer.push("</span>\n                </td>\n                <!--td>\n                    <label>Repeats Every</label><span class=\"panel-cell\">");
   stack1 = helpers._triageMustache.call(depth0, "model.repeat_every", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</span>\n                </td>\n            </tr>\n             <tr>\n                <td>\n                    <label>Created</label><span class=\"panel-cell\">");
+  data.buffer.push("</span>\n                </td-->\n            </tr>\n             <tr>\n                <td>\n                    <label>Created</label><span class=\"panel-cell\">");
   data.buffer.push(escapeExpression((helper = helpers.dateFromNow || (depth0 && depth0.dateFromNow),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "model.created", options) : helperMissing.call(depth0, "dateFromNow", "model.created", options))));
   data.buffer.push("</span>\n                </td>\n                <td>\n                    <label>Repeats On</label>\n                    <span class=\"panel-cell\">\n                    ");
   stack1 = helpers['if'].call(depth0, "model.day_mon", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(12, program12, data),fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],data:data});
@@ -516,7 +508,9 @@ function program6(depth0,data) {
   var buffer = '';
   data.buffer.push("\n            <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "editEventDate", "model", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
-  data.buffer.push(" class=\"btn btn-info\">Edit</button>\n            ");
+  data.buffer.push(" class=\"btn btn-info\">Edit</button>\n            <button ");
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "removeEventDate", "model", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
+  data.buffer.push(" class=\"btn btn-danger\" title=\"Delete\"><span class=\"glyphicon glyphicon-remove\"></span></button>\n            ");
   return buffer;
   }
 
@@ -707,7 +701,9 @@ function program31(depth0,data) {
   data.buffer.push("\n        <table class=\"table table-striped\">\n            <tr>\n                <th>Role</th><th>Name</th>\n            </tr>\n            ");
   stack1 = helpers['if'].call(depth0, "isEditing", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(21, program21, data),fn:self.program(18, program18, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n        </table>\n    </div>\n</div>\n");
+  data.buffer.push("\n        </table>\n    </div>\n</div>\n\n");
+  data.buffer.push(escapeExpression((helper = helpers.partial || (depth0 && depth0.partial),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data},helper ? helper.call(depth0, "confirm_dialog", options) : helperMissing.call(depth0, "partial", "confirm_dialog", options))));
+  data.buffer.push("\n");
   return buffer;
   
 });

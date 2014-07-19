@@ -2,7 +2,7 @@ App.EventController = Ember.ObjectController.extend({
     datesRangeSelected: '12',
     ranges: [{value: '12', name:'Upcoming'}, {value: '-12', name:'Recent'}],
     datesLoading: false,
-    frequencies: [{value: 'weekly', name: 'Weekly'}, {value: 'irregular', name: 'Never'}],
+    frequencies: [{value: 'weekly', name: 'Weekly'}, {value: 'monthly', name: 'Monthly'}, {value: 'irregular', name: 'Never'}],
     d_errors: null,
 
     getPermissions: function() {
@@ -48,7 +48,7 @@ App.EventController = Ember.ObjectController.extend({
         createEventDates: function(event) {
             var postdata = {
                 frequency: event.get('frequency'),
-                repeats_every: event.get('repeat_every'),
+                repeats_every: 1, //event.get('repeat_every'),
                 day_mon: event.get('day_mon'),
                 day_tue: event.get('day_tue'),
                 day_wed: event.get('day_wed'),
@@ -75,6 +75,9 @@ App.EventController = Ember.ObjectController.extend({
 App.EventDateController = Ember.ObjectController.extend({
     isEditing: false,
     eventDataLoading: false,
+
+    eventDateForm: {},
+    eventDateError: null,
 
     getPermissions: function() {
         var controller = this;
@@ -128,6 +131,26 @@ App.EventDateController = Ember.ObjectController.extend({
                 controller.send('reloadModel');   // Calls action on the route
             }).catch(function(error) {
                 console.log(error);
+            });
+        },
+
+        removeEventDate: function(ed) {
+            console.log('removeEventDate');
+            this.set('confirmHeader', 'Confirm Deletion');
+            this.set('confirmBody', 'Delete event date?');
+            this.set('eventDateForm', ed);
+
+            Ember.$('#confirmModal').modal('show');
+        },
+
+        confirmYes: function() {
+            var controller = this;
+
+            // Delete the event date
+            App.EventDate.delete(this.get('model').id).then(function(value) {
+                controller.set('eventDateForm', {});
+                Ember.$('#confirmModal').modal('hide');
+                controller.transitionToRoute('event', controller.get('model').event_id);
             });
         },
 

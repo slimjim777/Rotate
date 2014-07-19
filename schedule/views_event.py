@@ -319,6 +319,24 @@ def api_event_date_edit(event_date_id):
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
+@app.route("/api/event_date/<int:event_date_id>", methods=['DELETE'])
+@login_required
+def api_event_date_delete(event_date_id):
+    """
+    Delete an existing event date.
+    """
+    try:
+        ed = EventDate.query.get(event_date_id)
+        if not ed:
+            return jsonify({'response': 'Success'})
+
+        db.session.delete(ed)
+        db.session.commit()
+        return jsonify({'response': 'Success'})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
 @app.route("/api/events/<int:event_id>/event_dates/create", methods=['POST'])
 @login_required
 def event_dates_create(event_id):
@@ -440,3 +458,20 @@ def api_event_admins_remove(event_id):
     except Exception, v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
+
+@app.route("/api/events/<int:event_id>/roles/<int:role_id>", methods=['DELETE'])
+@login_required
+def api_event_role_delete(event_id, role_id):
+    if session['role'] != 'admin':
+        abort(403)
+
+    try:
+        role = Role.query.get(role_id)
+        if not role:
+            return jsonify({'response': 'Success'})
+
+        db.session.delete(role)
+        db.session.commit()
+        return jsonify({'response': 'Success'})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})

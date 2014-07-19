@@ -1,3 +1,4 @@
+from dateutil.relativedelta import relativedelta
 from schedule import db
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import validates
@@ -26,7 +27,7 @@ class Event(db.Model):
     active = db.Column(db.Boolean, default=True)
     created = db.Column(db.DateTime, default=datetime.datetime.now)
     event_dates = db.relationship('EventDate', backref='event_ref', lazy='dynamic', order_by='EventDate.on_date')
-    frequency = db.Column(db.Enum('irregular', 'weekly', name='frequency_types'), default='weekly')
+    frequency = db.Column(db.Enum('irregular', 'weekly', 'monthly', name='frequency_types'), default='weekly')
     repeat_every = db.Column(db.Integer, default=1)
     day_mon = db.Column(db.Boolean, default=False)
     day_tue = db.Column(db.Boolean, default=False)
@@ -79,8 +80,8 @@ class Event(db.Model):
         records = []
         current_date = datetime.datetime.strptime(from_date, '%Y-%m-%d')
         end_date = datetime.datetime.strptime(to_date, '%Y-%m-%d')
-        if frequency == 'weekly':
-            # Create multiple dates for the Event
+        if frequency in ['weekly', 'monthly']:
+            # Create weekly schedule of dates
             while current_date < end_date:
                 for index, day in enumerate(repeats_on):
                     if not day:
@@ -98,9 +99,11 @@ class Event(db.Model):
                     else:
                         new_date = EventDate(this_day, event_id)
                         records.append(new_date)
-
-                # Look a week ahead
-                current_date += datetime.timedelta(7)
+                if frequency == 'weekly':
+                    # Look a week ahead
+                    current_date += datetime.timedelta(7)
+                else:
+                    current_date += relativedelta(months=1)
 
         # Create the new date records
         if len(records) > 0:

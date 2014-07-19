@@ -373,6 +373,38 @@ function eventRole(ev, eventId) {
     });
 }
 
+function deleteRole(ev, roleId, eventId) {
+    ev.preventDefault();
+
+    var postdata = {
+        role_id: roleId,
+        eventId: eventId
+    };
+
+    bootbox.confirm("Confirm deletion of event role", function(result) {
+       if (result) {
+            var request = $.ajax({
+              type: 'DELETE',
+              url: '/api/events/' + eventId + '/roles/' + roleId,
+              data: JSON.stringify(postdata),
+              contentType:"application/json",
+              dataType: "json"
+            })
+            .done(function(data) {
+                if (data.response == 'Success') {
+                    // Refresh the roles list
+                    eventRoles(ev, eventId);
+                } else {
+                    showMessage(data.message);
+                }
+            })
+            .fail(function(a, b, c) {;
+                  bootbox.alert(a.responseText);
+            });
+       }
+    });
+}
+
 function showRoleDialog(ev, roleId, eventId) {
     ev.preventDefault();
 
@@ -448,7 +480,7 @@ function rolePeopleSave(ev, eventId) {
       url: '/admin/event/' + eventId + '/roles/' + roleId + '/people',
       data: JSON.stringify(postdata),
       contentType:"application/json",
-      dataType: "json",
+      dataType: "json"
     }).done( function(data) {
         if (data.response == 'Success') {
             $('#role-people').modal('hide');

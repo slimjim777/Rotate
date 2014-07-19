@@ -3,7 +3,7 @@
     <table class="table">
     <thead>
         <tr>
-            <th></th><th>Name</th><th>Sequence</th><th>People</th>
+            <th></th><th>Name</th><th>Sequence</th><th>People</th><th></th>
         </tr>
     </thead>
     <tbody>
@@ -18,6 +18,9 @@
                 <button class="btn btn-primary" title="Select the people for the role" onclick="rolePeople(event, {{ r.event_id }}, {{ r.id }})">
                     <span class="badge">{{ role_count[r.id] }}</span>
                 </button>
+            </td>
+            <td>
+                <a href="#" onclick="deleteRole(event, {{ r.id }}, {{ r.event_id }})"><span class="glyphicon glyphicon-remove-circle"></span></a>
             </td>
         </tr>
         {% endfor %}

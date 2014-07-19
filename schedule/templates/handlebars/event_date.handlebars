@@ -9,6 +9,7 @@
         {{else}}
             {{#if canAdministrate}}
             <button {{action 'editEventDate' model}} class="btn btn-info">Edit</button>
+            <button {{action 'removeEventDate' model}} class="btn btn-danger" title="Delete"><span class="glyphicon glyphicon-remove"></span></button>
             {{/if}}
         {{/if}}
         On {{formatDate model.on_date}}</h4>
@@ -77,3 +78,5 @@
         </table>
     </div>
 </div>
+
+{{partial "confirm_dialog"}}
