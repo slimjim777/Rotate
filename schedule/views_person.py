@@ -213,8 +213,9 @@ def api_people_page(page_no):
 
 
 def get_people(page):
-    paginate = Person.query.order_by(Person.lastname).paginate(
-        page, PAGE_SIZE, False)
+    paginate = Person.query.filter(Person.active).\
+        order_by(Person.lastname).order_by(Person.firstname).\
+        paginate(page, PAGE_SIZE, False)
     return paginated_people(paginate)
 
 
@@ -269,7 +270,8 @@ def api_people_find():
     elif active == 'inactive':
         query = query.filter(~Person.active)
 
-    paginate = query.order_by(Person.lastname).paginate(1, PAGE_SIZE*10, False)
+    paginate = query.order_by(Person.lastname).order_by(Person.firstname).\
+        paginate(1, PAGE_SIZE*10, False)
     result = paginated_people(paginate)
     return jsonify(result)
 
