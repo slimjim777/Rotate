@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 app.config['GCLIENT_ID'] = os.environ['GCLIENT_ID']
 app.config['GCLIENT_SECRET'] = os.environ['GCLIENT_SECRET']
 app.config['DATE_FORMAT'] = '%Y-%m-%d'
-app.config['PAGE_SIZE'] = os.environ.get('PAGE_SIZE', '10')
+app.config['PAGE_SIZE'] = os.environ.get('PAGE_SIZE', '20')
 
 app.debug = True
 

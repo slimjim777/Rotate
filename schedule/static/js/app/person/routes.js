@@ -49,6 +49,9 @@ App.PeoplePageRoute = Ember.Route.extend({
         // Extract the rows and the pagination metadata
         controller.set('content', model.people);
         controller.set('meta', model.meta);
+        controller.set('stateSelected', 'active');
+        controller.set('find_firstname', null);
+        controller.set('find_lastname', null);
     }
 });
 

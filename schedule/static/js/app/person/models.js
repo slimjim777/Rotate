@@ -88,6 +88,15 @@ App.Person.reopenClass({
         });
     },
 
+    find: function(data) {
+        return ajax(this.url + '/find', {
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
+    },
+
     rota: function(modelId, range) {
         var data = {
             range: null

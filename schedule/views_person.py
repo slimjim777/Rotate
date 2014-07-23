@@ -215,6 +215,10 @@ def api_people_page(page_no):
 def get_people(page):
     paginate = Person.query.order_by(Person.lastname).paginate(
         page, PAGE_SIZE, False)
+    return paginated_people(paginate)
+
+
+def paginated_people(paginate):
     rows = paginate.items
     meta = {
         'total': paginate.pages,
@@ -245,6 +249,29 @@ def api_people_new():
         return jsonify({'response': 'Success', 'person': p.to_dict()})
     except Exception, v:
         return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route('/api/people/find', methods=['POST'])
+@login_required
+def api_people_find():
+    first = request.json.get('firstname')
+    last = request.json.get('lastname', '')
+    active = request.json.get('active', 'active')
+
+    if first:
+        query = Person.query.filter(Person.firstname.ilike('%' + first + '%'))
+    else:
+        query = Person.query
+    if last:
+        query = query.filter(Person.lastname.ilike('%' + last + '%'))
+    if active == 'active':
+        query = query.filter(Person.active)
+    elif active == 'inactive':
+        query = query.filter(~Person.active)
+
+    paginate = query.order_by(Person.lastname).paginate(1, PAGE_SIZE*10, False)
+    result = paginated_people(paginate)
+    return jsonify(result)
 
 
 @app.route('/api/permissions', methods=['POST'])

@@ -127,11 +127,35 @@ App.PersonController = Ember.ObjectController.extend({
 App.PeoplePageController = Ember.ArrayController.extend({
     menu: 'nav-people',
 
+    stateSelected: 'active',
+    states: [{value: 'active', name:'Active Only'},
+            {value: 'inactive', name:'Inactive Only'},
+            {value: 'any', name:'Active & Inactive'}],
+
     getPermissions: function() {
         var controller = this;
         App.Person.permissions().then(function(result) {
             controller.set('permissions', result.permissions);
         });
+    },
+
+    actions: {
+        findPeople: function() {
+            var data = {
+                firstname: this.get('find_firstname'),
+                lastname: this.get('find_lastname'),
+                active: this.get('stateSelected')
+            };
+
+            var controller = this;
+            App.Person.find(data).then(function(result) {
+                console.log(result);
+                controller.get('content').setObjects(result.people);
+                controller.set('meta', result.meta);
+            }).catch(function(error) {
+                controller.set('error', error.message);
+            });
+        }
     }
 });
 
