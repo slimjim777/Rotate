@@ -149,12 +149,18 @@ App.PeoplePageController = Ember.ArrayController.extend({
 
             var controller = this;
             App.Person.find(data).then(function(result) {
-                console.log(result);
                 controller.get('content').setObjects(result.people);
                 controller.set('meta', result.meta);
             }).catch(function(error) {
                 controller.set('error', error.message);
             });
+        },
+
+        clearFind: function() {
+            this.set('stateSelected', 'active');
+            this.set('find_firstname', null);
+            this.set('find_lastname', null);
+            this.transitionToRoute('people');
         }
     }
 });

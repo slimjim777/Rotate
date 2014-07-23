@@ -869,26 +869,20 @@ function program2(depth0,data) {
 function program4(depth0,data) {
   
   
-  data.buffer.push("Clear");
+  data.buffer.push("<th></th>");
   }
 
 function program6(depth0,data) {
   
-  
-  data.buffer.push("<th></th>");
-  }
-
-function program8(depth0,data) {
-  
   var buffer = '', stack1, helper, options;
   data.buffer.push("\n              <tr>\n                ");
-  stack1 = helpers['if'].call(depth0, "permissions.is_admin", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(9, program9, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "permissions.is_admin", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(7, program7, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                <td>");
-  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(12, program12, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "person", options) : helperMissing.call(depth0, "link-to", "person", "person", options));
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "person", options) : helperMissing.call(depth0, "link-to", "person", "person", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</td>\n                <td class=\"center\">\n                    ");
-  stack1 = helpers['if'].call(depth0, "person.active", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(14, program14, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "person.active", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                </td>\n                <td>");
   stack1 = helpers._triageMustache.call(depth0, "person.user_role", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
@@ -898,24 +892,24 @@ function program8(depth0,data) {
   data.buffer.push("</td>\n              </tr>\n            ");
   return buffer;
   }
-function program9(depth0,data) {
+function program7(depth0,data) {
   
   var buffer = '', stack1, helper, options;
   data.buffer.push("\n                <td>");
   stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{
     'class': ("btn btn-default")
-  },hashTypes:{'class': "STRING"},hashContexts:{'class': depth0},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person_edit", "person", options) : helperMissing.call(depth0, "link-to", "person_edit", "person", options));
+  },hashTypes:{'class': "STRING"},hashContexts:{'class': depth0},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person_edit", "person", options) : helperMissing.call(depth0, "link-to", "person_edit", "person", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</td>\n                ");
   return buffer;
   }
-function program10(depth0,data) {
+function program8(depth0,data) {
   
   
   data.buffer.push("Edit");
   }
 
-function program12(depth0,data) {
+function program10(depth0,data) {
   
   var stack1;
   stack1 = helpers._triageMustache.call(depth0, "person.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
@@ -923,7 +917,7 @@ function program12(depth0,data) {
   else { data.buffer.push(''); }
   }
 
-function program14(depth0,data) {
+function program12(depth0,data) {
   
   
   data.buffer.push("\n                    <span class=\"glyphicon glyphicon-ok\"></span>\n                    ");
@@ -960,16 +954,13 @@ function program14(depth0,data) {
   },hashTypes:{'value': "ID",'content': "ID",'optionValuePath': "STRING",'optionLabelPath': "STRING",'class': "STRING"},hashContexts:{'value': depth0,'content': depth0,'optionValuePath': depth0,'optionLabelPath': depth0,'class': depth0},contexts:[depth0],types:["ID"],data:data})));
   data.buffer.push("\n                    </div>\n                    <div class=\"col-xs-3 col-md-3 col-lg-3\">\n                        <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "findPeople", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data})));
-  data.buffer.push(" class=\"btn btn-info\">Find</button>\n                        ");
-  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{
-    'class': ("btn btn-default")
-  },hashTypes:{'class': "STRING"},hashContexts:{'class': depth0},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0,depth0],types:["ID","STRING"],data:data},helper ? helper.call(depth0, "action", "people", options) : helperMissing.call(depth0, "link-to", "action", "people", options));
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n                    </div>\n                </form>\n            </div>\n        </div>\n        <div class=\"table-responsive\">\n            <table class=\"table table-striped\">\n              <thead>\n                <tr>\n                    ");
-  stack1 = helpers['if'].call(depth0, "permissions.is_admin", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],data:data});
+  data.buffer.push(" class=\"btn btn-info\">Find</button>\n                        <button ");
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "clearFind", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data})));
+  data.buffer.push(" class=\"btn btn-default\">Clear</button>\n                    </div>\n                </form>\n            </div>\n        </div>\n        <div class=\"table-responsive\">\n            <table class=\"table table-striped\">\n              <thead>\n                <tr>\n                    ");
+  stack1 = helpers['if'].call(depth0, "permissions.is_admin", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                    <th>Name</th><th>Active</th><th>Permissions</th><th>Last Login</th>\n                </tr>\n              </thead>\n              <tbody>\n            ");
-  stack1 = helpers.each.call(depth0, "person", "in", "model", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
+  stack1 = helpers.each.call(depth0, "person", "in", "model", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n              </tbody>\n           </table>\n            ");
   data.buffer.push(escapeExpression((helper = helpers.partial || (depth0 && depth0.partial),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data},helper ? helper.call(depth0, "_people_pager", options) : helperMissing.call(depth0, "partial", "_people_pager", options))));
