@@ -4,6 +4,7 @@ from flask import request
 from flask import abort
 from flask import session
 from sqlalchemy import or_
+from model.query import FastQuery
 from schedule import app
 from schedule import db
 from schedule.model.event import Event
@@ -11,9 +12,6 @@ from schedule.model.event import EventDate
 from schedule.model.event import Role
 from schedule.model.event import Person
 from schedule.authorize import login_required
-import time
-import datetime
-from datetime import timedelta
 
 
 @app.route('/', methods=['GET'])
@@ -206,22 +204,16 @@ def admin_event_roles_people(event_id, role_id):
 @app.route('/api/events', methods=['GET'])
 @login_required
 def api_events():
-    rows = Event.query.all()
-    evts = [e.to_dict() for e in rows]
-    return jsonify({'response': 'Success', 'events': evts})
+    events = FastQuery.events()
+    return jsonify({'response': 'Success', 'events': events})
 
 
 @app.route("/api/events/<int:event_id>", methods=['GET'])
 @login_required
 def api_event_get(event_id):
     try:
-        start = time.time()
-        row = Event.query.get(event_id)
-        if not row:
-            raise Exception("Cannot find the event")
-
-        app.logger.debug(time.time() - start)
-        return jsonify({'response': 'Success', 'event': row.to_dict()})
+        event = FastQuery.event(event_id)
+        return jsonify({'response': 'Success', 'event': event})
     except Exception, v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
@@ -229,26 +221,8 @@ def api_event_get(event_id):
 @app.route("/api/events/<int:event_id>/event_dates", methods=['POST'])
 @login_required
 def api_event_dates(event_id):
-    start = time.time()
-    weeks = int(request.json.get('range') or 12)
-    delta = datetime.date.today() + timedelta(weeks=weeks)
-
-    event = Event.query.get(event_id)
-
-    if weeks > 0:
-        # Next n weeks
-        event_dates = event.event_dates.filter(EventDate.on_date.between(datetime.date.today().strftime('%Y-%m-%d'),
-                                                                         delta.strftime('%Y-%m-%d')))
-    else:
-        # Last n weeks
-        event_dates = event.event_dates.filter(EventDate.on_date.between(delta.strftime('%Y-%m-%d'),
-                                                                          datetime.date.today().strftime('%Y-%m-%d')))
-    ev_dates = []
-    for ed in event_dates.all():
-        e = ed.to_dict()
-        ev_dates.append(e)
-
-    app.logger.debug(time.time() - start)
+    from_date, to_date = FastQuery.date_range(request.json.get('range'))
+    ev_dates = FastQuery.event_dates(event_id, from_date, to_date)
     return jsonify({'response': 'Success', 'event_dates': ev_dates})
 
 
@@ -256,42 +230,7 @@ def api_event_dates(event_id):
 @login_required
 def api_event_date(event_date_id):
     try:
-        start = time.time()
-        ed = EventDate.query.get(event_date_id)
-        if not ed:
-            raise Exception("Cannot find the event date")
-
-        e = ed.to_dict()
-        e['roles'] = []
-        for r in ed.event.roles:
-            role = r.to_dict()
-            role['people'] = [{}]
-            for person in r.people:
-                if not person.active:
-                    continue
-                p = {
-                    'person_id': person.id,
-                    'person_name': person.name,
-                    'is_away': person.is_away(ed.on_date),
-                }
-                if p['is_away']:
-                    p['person_name_status'] = '%s (away)' % p['person_name']
-                else:
-                    p['person_name_status'] = p['person_name']
-                role['people'].append(p)
-            e['roles'].append(role)
-        e['rota'] = []
-        for index, rota in enumerate(ed.people_for_roles()):
-            r = {
-                'role': e['roles'][index],
-            }
-            if rota:
-                r = rota.to_dict()
-            r['people'] = e['roles'][index]['people'],
-            r['people'] = r['people'][0]
-            e['rota'].append(r)
-
-        app.logger.debug(time.time() - start)
+        e = FastQuery.rota_for_event_date(event_date_id)
         return jsonify({'response': 'Success', 'event_date': e})
     except Exception, v:
         return jsonify({'response': 'Error', 'message': str(v)})

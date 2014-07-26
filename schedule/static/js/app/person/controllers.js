@@ -5,7 +5,7 @@ App.PersonController = Ember.ObjectController.extend({
     ranges: [{value: '12', name:'Upcoming'}, {value: '-12', name:'Recent'}],
     rotaLoading: false,
 
-    awayRangeSelected: null,
+    awayRangeSelected: '12',
     awayLoading: null,
 
     awayForm: {},

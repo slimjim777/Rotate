@@ -1,14 +1,11 @@
+from model.query import FastQuery
 from schedule import app
 from schedule.authorize import login_required
 from schedule.model.event import Person
-from schedule.model.event import Rota
 from flask import render_template, session, url_for
 from flask import request
 from flask import redirect
-from schedule.model.event import EventDate
 from schedule.model.event import AwayDate
-import datetime
-from datetime import timedelta
 from flask import jsonify
 from schedule import db
 
@@ -84,31 +81,13 @@ def api_person_rota(person_id=None):
     """
     if not person_id:
         person_id = session['user_id']
-    weeks = int(request.json.get('range') or 8)
-    delta = datetime.date.today() + timedelta(weeks=weeks)
 
-    if weeks > 0:
-        # Next n weeks
-        rota = Rota.query.join(Person).join(EventDate).filter(
-            Person.id == person_id,
-            EventDate.on_date.between(
-                datetime.date.today().strftime('%Y-%m-%d'),
-                delta.strftime('%Y-%m-%d')))
-    else:
-        # Last n weeks
-        rota = Rota.query.join(Person).join(EventDate).filter(
-            Person.id == person_id,
-            EventDate.on_date.between(
-                delta.strftime('%Y-%m-%d'),
-                datetime.date.today().strftime('%Y-%m-%d')
-            )
-        )
-
+    from_date, to_date = FastQuery.date_range(request.json.get('range'))
+    rota = FastQuery.rota_for_person(person_id, from_date, to_date)
     result = {
         'response': 'Success',
-        'rota': [r.to_dict() for r in rota.order_by(EventDate.on_date).all()]
+        'rota': rota,
     }
-
     return jsonify(result)
 
 
@@ -121,29 +100,13 @@ def api_person_away(person_id=None):
     """
     if not person_id:
         person_id = session['user_id']
-    weeks = int(request.json.get('range') or 8)
-    delta = datetime.date.today() + timedelta(weeks=weeks)
 
-    if weeks > 0:
-        # Next n weeks
-        away_dates = AwayDate.query.filter(
-            AwayDate.person_id == person_id,
-            AwayDate.to_date.between(
-                datetime.date.today().strftime('%Y-%m-%d'),
-                delta.strftime('%Y-%m-%d')))
-    else:
-        # Last n weeks
-        away_dates = AwayDate.query.filter(
-            AwayDate.person_id == person_id,
-            AwayDate.to_date.between(
-                delta.strftime('%Y-%m-%d'),
-                datetime.date.today().strftime('%Y-%m-%d')))
-
+    from_date, to_date = FastQuery.date_range(request.json.get('range'))
+    away_dates = FastQuery.away_date(person_id, from_date, to_date)
     result = {
         'response': 'Success',
-        'away_dates': [a.to_dict() for a in away_dates.all()]
+        'away_dates': away_dates,
     }
-
     return jsonify(result)
 
 
@@ -282,19 +245,5 @@ def api_permissions():
     """
     Get the permissions for the current user.
     """
-    person = Person.query.get(session['user_id'])
-    events_admin = []
-    for e in person.events_admin:
-        events_admin.append({
-            'id': e.id,
-            'name': e.name,
-        })
-
-    permissions = {
-        'name': session['name'],
-        'role': session['role'],
-        'is_admin': session['role'] == 'admin',
-        'user_id': session['user_id'],
-        'events_admin': events_admin,
-    }
+    permissions = FastQuery.permissions(session['user_id'])
     return jsonify({'response': 'Success', 'permissions': permissions})

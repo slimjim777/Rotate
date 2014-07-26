@@ -368,3 +368,11 @@ class AwayDate(db.Model):
 
     def __repr__(self):
         return '<AwayDate %s to %s for %s>' % (self.from_date, self.to_date, self.person_id)
+
+
+#class CacheEvent(db.Model):
+#    id = db.Column(db.Integer, primary_key=True)
+#    event_id = db.Column(db.Integer, index=True)
+#    name = db.Column(db.String(255), unique=True)
+#    active = db.Column(db.Boolean, default=True)
+

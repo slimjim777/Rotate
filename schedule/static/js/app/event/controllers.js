@@ -125,7 +125,7 @@ App.EventDateController = Ember.ObjectController.extend({
                 rota: update_rota
             }
 
-            App.EventDate.updateRota(this.get('model').get('id'), update).then(function(result) {
+            App.EventDate.updateRota(this.get('model').id, update).then(function(result) {
                 controller.set('isEditing', false);
                 controller.set('eventDataLoading', false);
                 controller.send('reloadModel');   // Calls action on the route
