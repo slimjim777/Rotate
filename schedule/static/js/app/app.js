@@ -15,4 +15,8 @@ App.Router.map(function() {
     this.resource('event',  { path: '/events/:event_id'}, function() {
         this.resource('event_date',  { path: '/event_date/:event_date_id'});
     });
+    this.resource('event_overview', { path: '/events/:event_id/overview'}, function() {
+        this.resource('event_date',  { path: '/event_date/:event_date_id'});
+    });
+
 });

@@ -1,0 +1,37 @@
+<h2 class="sub-heading">{{model.event_name}}</h2>
+
+{{#if model.role_names}}
+
+<div class="col-lg-9">
+    <div class="table-wrapper">
+        <table class="table table-striped rota">
+          <thead>
+            <tr>
+                <th class="freeze">Date</th><th class="first-column">Focus</th><th>Notes</th>
+                {{#each role in model.role_names}}<th>{{role}}</th>{{/each}}
+                <th></th>
+            </tr>
+          </thead>
+          <tbody>
+        {{#each ed in model.event_dates}}
+          <tr>
+            <td class="freeze">{{#link-to 'event_date' ed.event_date_id}}{{formatDate ed.on_date}}{{/link-to}}</td>
+            <td>{{ed.focus}}</td>
+            <td>{{ed.notes}}</td>
+            {{#each r in ed.rota }}
+            <td>{{r.person_name}}</td>
+            {{/each}}
+            <td>&nbsp;</td>
+          </tr>
+        {{/each}}
+          </tbody>
+       </table>
+    </div>
+</div>
+
+<div class="col-lg-3">{{outlet}}</div>
+
+
+{{else}}
+    <p>No roles defined for this rota.</p>
+{{/if}}

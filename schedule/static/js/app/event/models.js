@@ -28,6 +28,15 @@ App.Event.reopenClass({
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });
+    },
+
+    overview: function(modelId, data) {
+        return ajax('/api/events/' + modelId + '/overview', {
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
     }
 
 });

@@ -140,6 +140,11 @@ class FastQuery(object):
                     'people': role_people.get(rl, []),
                 })
 
+        # Get some basic details when we have an empty rota
+        if not r.get('event_id'):
+            ed = FastQuery.event_date(event_date_id)
+            r.update(ed)
+
         app.logger.debug('Rota: %s' % (time.time() - start))
         return r
 
@@ -189,11 +194,103 @@ class FastQuery(object):
                 },
             })
 
-        app.logger.debug('Rota: %s' % (time.time() - start))
+        app.logger.debug('Rota (person): %s' % (time.time() - start))
         return rota
 
     @staticmethod
-    def roles(event_date_id):
+    def rota_for_event(event_id, from_date, to_date):
+        """
+        Get the rota dates for an event for a given date range.
+        """
+        start = time.time()
+        sql = """select ev.name event_name, ev.id event_id, on_date, role.name role_name,
+                 firstname, lastname, role.id role_id, ed.id event_date_id,
+                 p.active person_active, p.id person_id,
+                 exists(select 1 from away_date where person_id=p.id
+                  and on_date between from_date and to_date) is_away,
+                 ed.focus, ed.notes
+              from event_date ed
+              left outer join rota r on r.event_date_id=ed.id
+              inner join event ev on ed.event_id=ev.id
+              left outer join person p on r.person_id=p.id
+              inner join role on role.event_id = ev.id
+              where ev.id = :event_id
+              and ed.on_date between :from_date and :to_date
+              order by on_date, sequence"""
+
+        params = {
+            'event_id': event_id,
+            'from_date': from_date,
+            'to_date': to_date,
+        }
+        rows = db.session.execute(sql, params)
+
+        r = None
+        for row in rows.fetchall():
+            if not r:
+                r = {
+                    'event_id': row['event_id'],
+                    'event_name': row['event_name'],
+                    'dates': {},
+                }
+            on_date = row['on_date'].strftime('%Y-%m-%d')
+            if not r['dates'].get(on_date):
+                r['dates'][on_date] = {
+                    'on_date': row['on_date'].strftime('%Y-%m-%d'),
+                    'event_date_id': row['event_date_id'],
+                    'focus': row['focus'],
+                    'notes': row['notes'],
+                    'rota': {},
+                }
+
+            if row['firstname'] and row['lastname']:
+                person_name = '%s %s' % (row['firstname'], row['lastname'])
+            else:
+                person_name = None
+
+            r['dates'][on_date]['rota'][row['role_name']] = {
+                'person_id': row['person_id'],
+                'person_name': person_name,
+                'active': row['person_active'],
+                'is_away': row['is_away'],
+            }
+
+        # Make sure that we at least have some event details
+        if not r:
+            event = FastQuery.event(event_id)
+            r = {
+                'event_id': event_id,
+                'event_name': event['name'],
+            }
+
+        # Get the roles for the event
+        roles, role_people = FastQuery.roles(event_id=event_id)
+        r['role_names'] = [x['name'] for x in roles]
+
+        # Reorganise the dates and rota for each date into lists
+        r['event_dates'] = []
+        for key in sorted(r.get('dates', {}).keys()):
+            on_date = r['dates'][key]
+
+            # Re-organise the rota into the display sequence
+            rota = []
+            for role in roles:
+                if on_date['rota'].get(role['name']):
+                    rota.append(on_date['rota'][role['name']])
+                else:
+                    rota.append({})
+            on_date['rota'] = rota
+
+            # Re-organise the dates into a list
+            r['event_dates'].append(on_date)
+        if r.get('dates'):
+            del r['dates']
+
+        app.logger.debug('Rota (event): %s' % (time.time() - start))
+        return r
+
+    @staticmethod
+    def roles(event_date_id=None, event_id=None):
         sql = """select r.id role_id, r.name role_name, firstname, lastname,
                   p.active person_active, p.id person_id,
                   exists(select 1 from away_date where person_id=p.id
@@ -201,11 +298,18 @@ class FastQuery(object):
                   from role r
                   left outer join role_people rp on rp.role_id=r.id
                   left outer join person p on p.id=rp.person_id
-                  inner join event_date ed on r.event_id=ed.event_id and
-                    ed.id = :param_id
-                  order by sequence, r.id"""
+                  inner join event_date ed on r.event_id=ed.event_id and """
 
-        rows = db.session.execute(sql, {'param_id': event_date_id})
+        if event_date_id:
+            sql += """ed.id = :param_id
+                    order by sequence, r.id"""
+            param_id = event_date_id
+        else:
+            sql += """ed.event_id = :param_id
+                    order by sequence, r.id"""
+            param_id = event_id
+
+        rows = db.session.execute(sql, {'param_id': param_id})
         role_list = []
         role_people = {}
         for row in rows:
@@ -299,6 +403,8 @@ class FastQuery(object):
         Get the from and to date when given an number of weeks. Used for the
         'Recent', 'Upcoming' menus.
         """
+        if not ui_range:
+            ui_range = 12
         weeks = int(ui_range)
         delta = datetime.date.today() + datetime.timedelta(weeks=weeks)
         if weeks > 0:

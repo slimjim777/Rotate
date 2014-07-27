@@ -30,7 +30,9 @@ App.EventRoute = Ember.Route.extend({
 
 App.EventDateRoute = Ember.Route.extend({
     model: function(params) {
+        //var event_id = this.modelFor('event').id;
         return App.EventDate.findById(params.event_date_id).then(function(data) {
+            console.log(data);
             return App.EventDate.create(data.event_date);
         });
     },
@@ -52,3 +54,20 @@ App.EventDateRoute = Ember.Route.extend({
 
 });
 
+App.EventOverviewRoute = Ember.Route.extend({
+    model: function(params) {;
+        return App.Event.overview(params.event_id, {}).then(function(data) {
+            return data.event_dates;
+        });
+    },
+
+    setupController: function(controller, model) {
+        controller.set('content', model);
+        controller.getPermissions();
+
+        if (!model.event_dates) {
+            console.log('No Dates');
+            this.refresh();
+        }
+    }
+});

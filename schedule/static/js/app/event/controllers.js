@@ -47,7 +47,7 @@ App.EventController = Ember.ObjectController.extend({
     actions: {
         createEventDates: function(event) {
             var postdata = {
-                frequency: event.get('frequency'),
+                frequency: event.frequency,
                 repeats_every: 1, //event.get('repeat_every'),
                 day_mon: event.get('day_mon'),
                 day_tue: event.get('day_tue'),
@@ -69,6 +69,31 @@ App.EventController = Ember.ObjectController.extend({
                 controller.set('d_error', error);
             });
         }
+    }
+});
+
+App.EventOverviewController = Ember.ObjectController.extend({
+    getPermissions: function() {
+        var controller = this;
+        App.Person.permissions().then(function(result) {
+            controller.set('permissions', result.permissions);
+            controller.isEventAdmin(controller.get('model').id);
+        });
+    },
+
+    isEventAdmin: function(eventId) {
+        this.set('canAdministrate', false);
+        if (this.get('permissions').is_admin) {
+            this.set('canAdministrate', true);
+            return;
+        }
+
+        this.get('permissions').events_admin.forEach(function(item) {
+            if (item.id==eventId) {
+                this.set('canAdministrate', true);
+                return;
+            }
+        });
     }
 });
 

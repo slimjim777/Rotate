@@ -45,3 +45,32 @@ select.role-select {
 .center {
     text-align: center;
 }
+
+table.rota {
+}
+
+
+.rota td, .rota th {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.freeze {
+    position:absolute;
+    width:10em;
+    left:0;
+    top:auto;
+    border-right: 1px solid #222222;
+}
+
+.first-column {
+
+}
+
+.table-wrapper {
+    /*width: 90%;*/
+    overflow-x:scroll;
+    margin-left:10em;
+    overflow-y: visible;
+    padding-bottom:1px;
+}

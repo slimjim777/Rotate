@@ -8,13 +8,14 @@
         <table class="table table-striped">
           <thead>
             <tr>
-                <th>Name</th><th>Active</th><th>Created</th>
+                <th>Name</th><th></th><th>Active</th><th>Created</th>
             </tr>
           </thead>
           <tbody>
         {{#each event in model}}
           <tr>
             <td>{{#link-to 'event' event}}{{event.name}}{{/link-to}}</td>
+            <td>{{#link-to 'event_overview' event}}Overview{{/link-to}}</td>
             <td class="center">
                 {{#if event.active}}
                 <span class="glyphicon glyphicon-ok"></span>
