@@ -39,7 +39,7 @@ App.EventController = Ember.ObjectController.extend({
             controller.set('event_dates', event_dates);
             controller.set('datesLoading', false);
         }).catch(function(error) {
-            console.log(error);
+            controller.set('error', error.message);
         });
 
     }.observes('datesRangeSelected'),
@@ -73,6 +73,8 @@ App.EventController = Ember.ObjectController.extend({
 });
 
 App.EventOverviewController = Ember.ObjectController.extend({
+    from_date: moment().format('YYYY-MM-DD'),
+
     getPermissions: function() {
         var controller = this;
         App.Person.permissions().then(function(result) {
@@ -94,6 +96,22 @@ App.EventOverviewController = Ember.ObjectController.extend({
                 return;
             }
         });
+    },
+
+    actions: {
+        fromDateChange: function () {
+            var controller = this;
+
+            var postdata = {
+                from_date: this.get('from_date')
+            };
+
+            App.Event.overview(this.get('model').event_id, postdata).then(function (data) {
+                controller.set('model', data.event_dates);
+            }).catch(function (error) {
+                controller.set('error', error.message);
+            });
+        }.observes('from_date')
     }
 });
 
@@ -155,12 +173,11 @@ App.EventDateController = Ember.ObjectController.extend({
                 controller.set('eventDataLoading', false);
                 controller.send('reloadModel');   // Calls action on the route
             }).catch(function(error) {
-                console.log(error);
+                controller.set('error', error.message);
             });
         },
 
         removeEventDate: function(ed) {
-            console.log('removeEventDate');
             this.set('confirmHeader', 'Confirm Deletion');
             this.set('confirmBody', 'Delete event date?');
             this.set('eventDateForm', ed);

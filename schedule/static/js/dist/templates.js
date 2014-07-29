@@ -396,28 +396,34 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 function program1(depth0,data) {
   
   
-  data.buffer.push("<label class=\"spinner\">&nbsp;</label>");
+  data.buffer.push("Overview");
   }
 
 function program3(depth0,data) {
   
   
-  data.buffer.push("\n            <button id=\"create-event-dates\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#dialog-form\" title=\"New Event Dates\"><span class=\"glyphicon glyphicon-plus\"></span></button>\n            ");
+  data.buffer.push("<label class=\"spinner\">&nbsp;</label>");
   }
 
 function program5(depth0,data) {
+  
+  
+  data.buffer.push("\n            <button id=\"create-event-dates\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#dialog-form\" title=\"New Event Dates\"><span class=\"glyphicon glyphicon-plus\"></span></button>\n            ");
+  }
+
+function program7(depth0,data) {
   
   var buffer = '', stack1, helper, options;
   data.buffer.push("\n                ");
   stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{
     'title': ("View Rota"),
     'class': ("list-group-item")
-  },hashTypes:{'title': "STRING",'class': "STRING"},hashContexts:{'title': depth0,'class': depth0},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "event_date", "ed.id", options) : helperMissing.call(depth0, "link-to", "event_date", "ed.id", options));
+  },hashTypes:{'title': "STRING",'class': "STRING"},hashContexts:{'title': depth0,'class': depth0},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "event_date", "ed.id", options) : helperMissing.call(depth0, "link-to", "event_date", "ed.id", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n            ");
   return buffer;
   }
-function program6(depth0,data) {
+function program8(depth0,data) {
   
   var buffer = '', helper, options;
   data.buffer.push("\n                    ");
@@ -426,67 +432,67 @@ function program6(depth0,data) {
   return buffer;
   }
 
-function program8(depth0,data) {
+function program10(depth0,data) {
   
   
   data.buffer.push("\n                            <span class=\"glyphicon glyphicon-ok\"></span>\n                            ");
   }
 
-function program10(depth0,data) {
+function program12(depth0,data) {
   
   
   data.buffer.push("<b>M</b>");
   }
 
-function program12(depth0,data) {
+function program14(depth0,data) {
   
   
   data.buffer.push("M");
   }
 
-function program14(depth0,data) {
+function program16(depth0,data) {
   
   
   data.buffer.push("<b>T</b>");
   }
 
-function program16(depth0,data) {
+function program18(depth0,data) {
   
   
   data.buffer.push("T");
   }
 
-function program18(depth0,data) {
+function program20(depth0,data) {
   
   
   data.buffer.push("<b>W</b>");
   }
 
-function program20(depth0,data) {
+function program22(depth0,data) {
   
   
   data.buffer.push("W");
   }
 
-function program22(depth0,data) {
+function program24(depth0,data) {
   
   
   data.buffer.push("<b>F</b>");
   }
 
-function program24(depth0,data) {
+function program26(depth0,data) {
   
   
   data.buffer.push("F");
   }
 
-function program26(depth0,data) {
+function program28(depth0,data) {
   
   
   data.buffer.push("<b>S</b>");
   }
 
-function program28(depth0,data) {
+function program30(depth0,data) {
   
   
   data.buffer.push("S");
@@ -495,11 +501,14 @@ function program28(depth0,data) {
   data.buffer.push("<h2 class=\"heading center\">");
   stack1 = helpers._triageMustache.call(depth0, "model.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</h2>\n\n<div class=\"col-md-4 col-sm-4 col-xs-12\">\n<div class=\"panel panel-default\">\n    <div class=\"panel-heading\">\n        <h3 class=\"panel-title\">\n    ");
-  stack1 = helpers['if'].call(depth0, "datesLoading", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],data:data});
+  data.buffer.push("</h2>\n<h4 class=\"center\">");
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "event_overview", "model.id", options) : helperMissing.call(depth0, "link-to", "event_overview", "model.id", options));
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</h4>\n\n<div class=\"col-md-4 col-sm-4 col-xs-12\">\n<div class=\"panel panel-default\">\n    <div class=\"panel-heading\">\n        <h3 class=\"panel-title\">\n    ");
+  stack1 = helpers['if'].call(depth0, "datesLoading", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n            Dates&nbsp;\n            ");
-  stack1 = helpers['if'].call(depth0, "canAdministrate", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "canAdministrate", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(5, program5, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n            ");
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "Ember.Select", {hash:{
@@ -509,13 +518,13 @@ function program28(depth0,data) {
     'optionLabelPath': ("content.name")
   },hashTypes:{'value': "ID",'content': "ID",'optionValuePath': "STRING",'optionLabelPath': "STRING"},hashContexts:{'value': depth0,'content': depth0,'optionValuePath': depth0,'optionLabelPath': depth0},contexts:[depth0],types:["ID"],data:data})));
   data.buffer.push("\n        </h3>\n    </div>\n    <div id=\"event-dates\">\n        <div class=\"list-group\">\n            ");
-  stack1 = helpers.each.call(depth0, "ed", "in", "event_dates", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(5, program5, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
+  stack1 = helpers.each.call(depth0, "ed", "in", "event_dates", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(7, program7, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n        </div>\n    </div>\n</div>\n\n<div class=\"panel panel-default hidden-sm hidden-xs\">\n    <div class=\"panel-heading\">\n        <h3 class=\"panel-title\">Details</h3>\n    </div>\n    <div class=\"panel-body\">\n        <table class=\"panel-form\">\n            <tbody>\n            <tr>\n                <td>\n                    <label>Name</label><span class=\"panel-cell\">");
   stack1 = helpers._triageMustache.call(depth0, "model.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</span>\n                </td>\n                <td>\n                    <label>Active</label>\n                        <span class=\"panel-cell\">\n                            ");
-  stack1 = helpers['if'].call(depth0, "model.active", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.active", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                        </span>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <label>Frequency</label><span class=\"panel-cell\">");
   stack1 = helpers._triageMustache.call(depth0, "model.frequency", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
@@ -523,25 +532,25 @@ function program28(depth0,data) {
   data.buffer.push("</span>\n                </td>\n            </tr>\n             <tr>\n                <td>\n                    <label>Created</label><span class=\"panel-cell\">");
   data.buffer.push(escapeExpression((helper = helpers.dateFromNow || (depth0 && depth0.dateFromNow),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "model.created", options) : helperMissing.call(depth0, "dateFromNow", "model.created", options))));
   data.buffer.push("</span>\n                </td>\n                <td>\n                    <label>Repeats On</label>\n                    <span class=\"panel-cell\">\n                    ");
-  stack1 = helpers['if'].call(depth0, "model.day_mon", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(12, program12, data),fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.day_mon", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(14, program14, data),fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                    ");
-  stack1 = helpers['if'].call(depth0, "model.day_tue", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(16, program16, data),fn:self.program(14, program14, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.day_tue", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(18, program18, data),fn:self.program(16, program16, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                    ");
-  stack1 = helpers['if'].call(depth0, "model.day_wed", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(20, program20, data),fn:self.program(18, program18, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.day_wed", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(22, program22, data),fn:self.program(20, program20, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                    ");
-  stack1 = helpers['if'].call(depth0, "model.day_thu", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(16, program16, data),fn:self.program(14, program14, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.day_thu", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(18, program18, data),fn:self.program(16, program16, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                    ");
-  stack1 = helpers['if'].call(depth0, "model.day_fri", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(24, program24, data),fn:self.program(22, program22, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.day_fri", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(26, program26, data),fn:self.program(24, program24, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                    ");
-  stack1 = helpers['if'].call(depth0, "model.day_sat", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(28, program28, data),fn:self.program(26, program26, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.day_sat", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(30, program30, data),fn:self.program(28, program28, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                    ");
-  stack1 = helpers['if'].call(depth0, "model.day_sun", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(28, program28, data),fn:self.program(26, program26, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.day_sun", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(30, program30, data),fn:self.program(28, program28, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                    </span>\n                </td>\n            </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n\n</div>\n\n<div class=\"col-md-8 col-sm-8 col-xs-12\">\n");
   stack1 = helpers._triageMustache.call(depth0, "outlet", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
@@ -797,7 +806,15 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', stack1;
-  data.buffer.push("\n\n<div class=\"col-lg-9\">\n    <div class=\"table-wrapper\">\n        <table class=\"table table-striped rota\">\n          <thead>\n            <tr>\n                <th class=\"freeze\">Date</th><th class=\"first-column\">Focus</th><th>Notes</th>\n                ");
+  data.buffer.push("\n<div class=\"col-lg-3\">\n    <div class=\"form-group  form-horizontal\">\n        <label>From Date:</label>\n        ");
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.CalendarDatePicker", {hash:{
+    'name': ("from_date"),
+    'value': ("from_date"),
+    'placeholder': ("from date")
+  },hashTypes:{'name': "ID",'value': "ID",'placeholder': "STRING"},hashContexts:{'name': depth0,'value': depth0,'placeholder': depth0},contexts:[depth0],types:["ID"],data:data})));
+  data.buffer.push("\n        <button ");
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "fromDateChange", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data})));
+  data.buffer.push(" class=\"btn btn-primary\">Go</button>\n        </div>\n    </div>\n</div>\n\n<div class=\"col-lg-12\">\n    <div class=\"table-wrapper\">\n        <table class=\"table table-striped rota\">\n          <thead>\n            <tr>\n                <th class=\"freeze\">Date</th><th class=\"first-column\">Focus</th><th>Notes</th>\n                ");
   stack1 = helpers.each.call(depth0, "role", "in", "model.role_names", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                <th></th>\n            </tr>\n          </thead>\n          <tbody>\n        ");
@@ -823,7 +840,7 @@ function program4(depth0,data) {
   
   var buffer = '', stack1, helper, options;
   data.buffer.push("\n          <tr>\n            <td class=\"freeze\">");
-  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(5, program5, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "event_date", "ed.event_date_id", options) : helperMissing.call(depth0, "link-to", "event_date", "ed.event_date_id", options));
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(5, program5, data),contexts:[depth0,depth0,depth0],types:["STRING","ID","ID"],data:data},helper ? helper.call(depth0, "event_date", "model.event_id", "ed.event_date_id", options) : helperMissing.call(depth0, "link-to", "event_date", "model.event_id", "ed.event_date_id", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</td>\n            <td>");
   stack1 = helpers._triageMustache.call(depth0, "ed.focus", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
@@ -845,15 +862,22 @@ function program5(depth0,data) {
 
 function program7(depth0,data) {
   
-  var buffer = '', stack1;
+  var buffer = '', stack1, helper, options;
   data.buffer.push("\n            <td>");
-  stack1 = helpers._triageMustache.call(depth0, "r.person_name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "r.person_id", options) : helperMissing.call(depth0, "link-to", "person", "r.person_id", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</td>\n            ");
   return buffer;
   }
+function program8(depth0,data) {
+  
+  var stack1;
+  stack1 = helpers._triageMustache.call(depth0, "r.person_name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  else { data.buffer.push(''); }
+  }
 
-function program9(depth0,data) {
+function program10(depth0,data) {
   
   
   data.buffer.push("\n    <p>No roles defined for this rota.</p>\n");
@@ -863,7 +887,7 @@ function program9(depth0,data) {
   stack1 = helpers._triageMustache.call(depth0, "model.event_name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</h2>\n\n");
-  stack1 = helpers['if'].call(depth0, "model.role_names", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(9, program9, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.role_names", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(10, program10, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
   return buffer;

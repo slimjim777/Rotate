@@ -210,10 +210,10 @@ class FastQuery(object):
                   and on_date between from_date and to_date) is_away,
                  ed.focus, ed.notes
               from event_date ed
-              left outer join rota r on r.event_date_id=ed.id
               inner join event ev on ed.event_id=ev.id
-              left outer join person p on r.person_id=p.id
-              inner join role on role.event_id = ev.id
+              inner join rota r on r.event_date_id=ed.id
+              inner join role on r.role_id = role.id
+              inner join person p on r.person_id=p.id
               where ev.id = :event_id
               and ed.on_date between :from_date and :to_date
               order by on_date, sequence"""
@@ -226,7 +226,9 @@ class FastQuery(object):
         rows = db.session.execute(sql, params)
 
         r = None
+        got_event_date_ids = []
         for row in rows.fetchall():
+            got_event_date_ids.append(row['event_date_id'])
             if not r:
                 r = {
                     'event_id': row['event_id'],
@@ -286,8 +288,45 @@ class FastQuery(object):
         if r.get('dates'):
             del r['dates']
 
+        # Add in blank rows with dates without a rota
+        r['event_dates'].extend(FastQuery._dates_without_rota(event_id,
+            got_event_date_ids, from_date, to_date, roles))
+
         app.logger.debug('Rota (event): %s' % (time.time() - start))
         return r
+
+    @staticmethod
+    def _dates_without_rota(event_id, ignore_ids, from_date, to_date, roles):
+        """
+        Add the event_dates where we don't have any rota defined that
+        still meet the date range: got_event_date_ids
+        """
+        on_dates = []
+        if len(ignore_ids) == 0:
+            return on_dates
+
+        sql = """select e.id event_id, e.name event_name, on_date,
+                  ed.id event_date_id, focus, notes
+                  from event_date ed
+                  inner join event e on e.id=ed.event_id
+                  where ed.id not in :ids
+                  and ed.on_date between :from_date and :to_date
+                  and ed.event_id = :event_id
+                  order by on_date"""
+        rows = db.session.execute(sql, {'ids': tuple(ignore_ids),
+                                        'event_id': event_id,
+                                        'from_date': from_date,
+                                        'to_date': to_date})
+        for row in rows.fetchall():
+            on_date = {
+                'on_date': row['on_date'].strftime('%Y-%m-%d'),
+                'event_date_id': row['event_date_id'],
+                'focus': row['focus'],
+                'notes': row['notes'],
+                'rota': [{} for role in roles],
+            }
+            on_dates.append(on_date)
+        return on_dates
 
     @staticmethod
     def roles(event_date_id=None, event_id=None):
@@ -416,3 +455,14 @@ class FastQuery(object):
             from_date = delta.strftime('%Y-%m-%d')
             to_date = datetime.date.today().strftime('%Y-%m-%d')
         return from_date, to_date
+
+    @staticmethod
+    def date_range_from(from_str):
+        """
+        Get the from and to date when given an number of weeks.
+        """
+        if not from_str:
+            from_date = datetime.date.today()
+        from_date = datetime.datetime.strptime(from_str, '%Y-%m-%d')
+        to_date = from_date + datetime.timedelta(weeks=12)
+        return from_date.strftime('%Y-%m-%d'), to_date.strftime('%Y-%m-%d')

@@ -30,9 +30,7 @@ App.EventRoute = Ember.Route.extend({
 
 App.EventDateRoute = Ember.Route.extend({
     model: function(params) {
-        //var event_id = this.modelFor('event').id;
         return App.EventDate.findById(params.event_date_id).then(function(data) {
-            console.log(data);
             return App.EventDate.create(data.event_date);
         });
     },

@@ -229,7 +229,11 @@ def api_event_dates(event_id):
 @app.route("/api/events/<int:event_id>/overview", methods=['POST'])
 @login_required
 def api_event_overview(event_id):
-    from_date, to_date = FastQuery.date_range(request.json.get('range'))
+    if request.json.get('from_date'):
+        from_date, to_date = FastQuery.date_range_from(
+            request.json.get('from_date'))
+    else:
+        from_date, to_date = FastQuery.date_range(request.json.get('range'))
     ev_dates = FastQuery.rota_for_event(event_id, from_date, to_date)
     return jsonify({'response': 'Success', 'event_dates': ev_dates})
 
