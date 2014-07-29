@@ -421,8 +421,12 @@ class FastQuery(object):
         """
         start = time.time()
         sql = """select * from away_date
-                  where person_id = :person_id"""
-        rows = db.session.execute(sql, {'person_id': person_id})
+                  where person_id = :person_id
+                  and from_date >= :from_date
+                  and from_date < :to_date"""
+        rows = db.session.execute(sql, {'person_id': person_id,
+                                        'from_date': from_date,
+                                        'to_date': to_date})
 
         away_dates = []
         for row in rows.fetchall():
