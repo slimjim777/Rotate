@@ -338,7 +338,7 @@ class FastQuery(object):
 
             on_date = {
                 'on_date': row['on_date'].strftime('%Y-%m-%d'),
-                'event_date_id': row['event_date_id'],
+                'id': row['event_date_id'],
                 'focus': row['focus'],
                 'notes': row['notes'],
                 'isEditing': False,

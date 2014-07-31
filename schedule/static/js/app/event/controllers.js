@@ -122,8 +122,6 @@ App.EventOverviewController = Ember.ObjectController.extend({
         },
 
         saveEventDate: function(ed) {
-            console.log('saveEventDate')  ;
-            console.log(ed);
             var update_rota = [];
             ed.get('rota').forEach(function(r) {
                 update_rota.addObject({
@@ -138,7 +136,6 @@ App.EventOverviewController = Ember.ObjectController.extend({
                 notes: ed.get('notes'),
                 rota: update_rota
             }
-            console.log(update);
 
             App.EventDate.updateRota(ed.id, update).then(function(result) {
                 ed.set('isEditing', false);
