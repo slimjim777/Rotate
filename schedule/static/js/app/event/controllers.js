@@ -111,7 +111,48 @@ App.EventOverviewController = Ember.ObjectController.extend({
             }).catch(function (error) {
                 controller.set('error', error.message);
             });
-        }.observes('from_date')
+        }.observes('from_date'),
+
+        editEventDate: function(ed) {
+            ed.set('isEditing', true);
+        },
+
+        cancelEventDate: function(ed) {
+            ed.set('isEditing', false);
+        },
+
+        saveEventDate: function(ed) {
+            console.log('saveEventDate')  ;
+            console.log(ed);
+            var update_rota = [];
+            ed.get('rota').forEach(function(r) {
+                update_rota.addObject({
+                    role_id: r.role.id,
+                    person_id: r.person_id || 0
+                });
+            });
+
+            var controller = this;
+            var update = {
+                focus: ed.get('focus'),
+                notes: ed.get('notes'),
+                rota: update_rota
+            }
+            console.log(update);
+
+            App.EventDate.updateRota(ed.id, update).then(function(result) {
+                ed.set('isEditing', false);
+                var event_date = App.EventDate.create(result.event_date);
+
+                var index = controller.get('model').event_dates.indexOf(ed);
+                var dates = controller.get('model').event_dates;
+                dates[index] = event_date;
+
+                controller.get('model').event_dates.setObjects(dates);
+            }).catch(function(error) {
+                controller.set('error', error.message);
+            });
+        }
     }
 });
 

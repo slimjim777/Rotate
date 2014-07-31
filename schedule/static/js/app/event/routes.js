@@ -53,9 +53,15 @@ App.EventDateRoute = Ember.Route.extend({
 });
 
 App.EventOverviewRoute = Ember.Route.extend({
-    model: function(params) {;
+    model: function(params) {
         return App.Event.overview(params.event_id, {}).then(function(data) {
-            return data.event_dates;
+            var event_dates = data.event_dates.event_dates.map(function (ed) {
+                return App.EventDate.create(ed);
+            });
+            data.event_dates.event_dates = event_dates;
+
+            var event = App.Event.create(data.event_dates);
+            return event;
         });
     },
 

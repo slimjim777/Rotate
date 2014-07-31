@@ -106,6 +106,7 @@ class FastQuery(object):
                     'focus': row['focus'],
                     'notes': row['notes'],
                     'on_date': row['on_date'].strftime('%Y-%m-%d'),
+                    'isEditing': False,
                     'rota': [],
                 }
 
@@ -238,10 +239,11 @@ class FastQuery(object):
             on_date = row['on_date'].strftime('%Y-%m-%d')
             if not r['dates'].get(on_date):
                 r['dates'][on_date] = {
-                    'on_date': row['on_date'].strftime('%Y-%m-%d'),
-                    'event_date_id': row['event_date_id'],
+                    'id': row['event_date_id'],
                     'focus': row['focus'],
                     'notes': row['notes'],
+                    'on_date': row['on_date'].strftime('%Y-%m-%d'),
+                    'isEditing': False,
                     'rota': {},
                 }
 
@@ -252,6 +254,8 @@ class FastQuery(object):
 
             r['dates'][on_date]['rota'][row['role_name']] = {
                 'person_id': row['person_id'],
+                'firstname': row['firstname'],
+                'lastname': row['lastname'],
                 'person_name': person_name,
                 'active': row['person_active'],
                 'is_away': row['is_away'],
@@ -277,10 +281,16 @@ class FastQuery(object):
             # Re-organise the rota into the display sequence
             rota = []
             for role in roles:
+                people = [p for p in role_people[role['name']] if p.get('on_date')==key]
+                people.insert(0, {})
+
                 if on_date['rota'].get(role['name']):
-                    rota.append(on_date['rota'][role['name']])
+                    r_rota = on_date['rota'][role['name']]
+                    r_rota['people'] = people
+                    r_rota['role'] = role
+                    rota.append(r_rota)
                 else:
-                    rota.append({})
+                    rota.append({'people': people, 'role': role})
             on_date['rota'] = rota
 
             # Re-organise the dates into a list
@@ -290,13 +300,14 @@ class FastQuery(object):
 
         # Add in blank rows with dates without a rota
         r['event_dates'].extend(FastQuery._dates_without_rota(event_id,
-            got_event_date_ids, from_date, to_date, roles))
+            got_event_date_ids, from_date, to_date, roles, role_people))
 
         app.logger.debug('Rota (event): %s' % (time.time() - start))
         return r
 
     @staticmethod
-    def _dates_without_rota(event_id, ignore_ids, from_date, to_date, roles):
+    def _dates_without_rota(event_id, ignore_ids, from_date, to_date, roles,
+                            role_people):
         """
         Add the event_dates where we don't have any rota defined that
         still meet the date range: got_event_date_ids
@@ -318,12 +329,20 @@ class FastQuery(object):
                                         'from_date': from_date,
                                         'to_date': to_date})
         for row in rows.fetchall():
+            rota = []
+            for role in roles:
+                key = row['on_date'].strftime('%Y-%m-%d')
+                people = [p for p in role_people[role['name']] if p.get('on_date')==key]
+                people.insert(0, {})
+                rota.append({'people': people, 'role': role})
+
             on_date = {
                 'on_date': row['on_date'].strftime('%Y-%m-%d'),
                 'event_date_id': row['event_date_id'],
                 'focus': row['focus'],
                 'notes': row['notes'],
-                'rota': [{} for role in roles],
+                'isEditing': False,
+                'rota': rota,
             }
             on_dates.append(on_date)
         return on_dates
@@ -331,7 +350,7 @@ class FastQuery(object):
     @staticmethod
     def roles(event_date_id=None, event_id=None):
         sql = """select r.id role_id, r.name role_name, firstname, lastname,
-                  p.active person_active, p.id person_id,
+                  p.active person_active, p.id person_id, on_date,
                   exists(select 1 from away_date where person_id=p.id
                     and on_date between from_date and to_date) is_away
                   from role r
@@ -374,6 +393,7 @@ class FastQuery(object):
                 'person_name': '%s %s' % (row['firstname'], row['lastname']),
                 'is_away': row['is_away'],
                 'person_name_status': person_name_status,
+                'on_date': row['on_date'].strftime('%Y-%m-%d')
             })
 
         return role_list, role_people

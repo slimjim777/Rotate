@@ -263,7 +263,8 @@ def api_event_date_edit(event_date_id):
         records = request.json.get('rota')
         result = ed.update_rota(records)
         if not result:
-            return jsonify({'response': 'Success'})
+            e = FastQuery.rota_for_event_date(event_date_id)
+            return jsonify({'response': 'Success', 'event_date': e})
         else:
             return jsonify({'response': 'Failed', 'message': result})
     except Exception, v:

@@ -23,13 +23,35 @@
           <tbody>
         {{#each ed in model.event_dates}}
           <tr>
-            <td class="freeze">{{#link-to "event_date" model.event_id ed.event_date_id}}{{formatDate ed.on_date}}{{/link-to}}</td>
-            <td>{{ed.focus}}</td>
-            <td>{{ed.notes}}</td>
-            {{#each r in ed.rota }}
-            <td>{{#link-to "person" r.person_id}}{{r.person_name}}{{/link-to}}</td>
-            {{/each}}
+            {{#if ed.isEditing }}
+                <td class="freeze">
+                    {{formatDate ed.on_date}}<br>
+                    <button {{action "saveEventDate" ed}} class="btn btn-success">Save</button>
+                    <button {{action "cancelEventDate" ed}} class="btn btn-danger">Cancel</button>
+                </td>
+                <td>{{textarea value=ed.focus class="form-control"}}</td>
+                <td>{{textarea value=ed.notes class="form-control"}}</td>
+                {{#each r in ed.rota }}
+                <td>
+                    {{view Ember.Select
+                            value=r.person_id
+                            content=r.people
+                            optionValuePath="content.person_id"
+                            optionLabelPath="content.person_name_status"
+                            class="form-control"
+                    }}
+                </td>
+                {{/each}}
+            {{else}}
+                <td class="freeze"><button {{action "editEventDate" ed}} class="btn-link"><span class="glyphicon glyphicon-edit"></span>&nbsp;{{formatDate ed.on_date}}</button></td>
+                <td>{{ed.focus}}</td>
+                <td>{{ed.notes}}</td>
+                {{#each r in ed.rota }}
+                <td>{{#link-to "person" r.person_id}}{{r.person_name}}{{/link-to}}</td>
+                {{/each}}
+            {{/if}}
             <td>&nbsp;</td>
+
           </tr>
         {{/each}}
           </tbody>
