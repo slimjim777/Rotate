@@ -578,9 +578,9 @@ function program3(depth0,data) {
   var buffer = '';
   data.buffer.push("\n            <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "saveEventDate", "model", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
-  data.buffer.push(" class=\"btn btn-success\">Save</button>&nbsp;\n            <button ");
+  data.buffer.push(" class=\"btn btn-primary\">Save</button>&nbsp;\n            <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "cancelEventDate", "model", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
-  data.buffer.push(" class=\"btn btn-danger\">Cancel</button>\n        ");
+  data.buffer.push(" class=\"btn btn-default\">Cancel</button>\n        ");
   return buffer;
   }
 
@@ -598,9 +598,9 @@ function program6(depth0,data) {
   var buffer = '';
   data.buffer.push("\n            <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "editEventDate", "model", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
-  data.buffer.push(" class=\"btn btn-info\">Edit</button>\n            <button ");
+  data.buffer.push(" class=\"btn btn-primary\">Edit</button>\n            <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "removeEventDate", "model", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
-  data.buffer.push(" class=\"btn btn-danger\" title=\"Delete\"><span class=\"glyphicon glyphicon-remove\"></span></button>\n            ");
+  data.buffer.push(" class=\"btn btn-default\" title=\"Delete\"><span class=\"glyphicon glyphicon-remove\"></span></button>\n            ");
   return buffer;
   }
 
@@ -852,9 +852,9 @@ function program5(depth0,data) {
   data.buffer.push(escapeExpression((helper = helpers.formatDate || (depth0 && depth0.formatDate),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "ed.on_date", options) : helperMissing.call(depth0, "formatDate", "ed.on_date", options))));
   data.buffer.push("<br>\n                    <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "saveEventDate", "ed", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
-  data.buffer.push(" class=\"btn btn-success\">Save</button>\n                    <button ");
+  data.buffer.push(" class=\"btn btn-primary\" title=\"Save\"><span class=\"glyphicon glyphicon-ok\"></span></button>\n                    <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "cancelEventDate", "ed", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
-  data.buffer.push(" class=\"btn btn-danger\">Cancel</button>\n                </td>\n                <td>");
+  data.buffer.push(" class=\"btn btn-default\" title=\"Cancel\"><span class=\"glyphicon glyphicon-ban-circle\"></span></button>\n                </td>\n                <td>");
   data.buffer.push(escapeExpression((helper = helpers.textarea || (depth0 && depth0.textarea),options={hash:{
     'value': ("ed.focus"),
     'class': ("form-control")
@@ -1109,7 +1109,7 @@ function program12(depth0,data) {
   },hashTypes:{'value': "ID",'content': "ID",'optionValuePath': "STRING",'optionLabelPath': "STRING",'class': "STRING"},hashContexts:{'value': depth0,'content': depth0,'optionValuePath': depth0,'optionLabelPath': depth0,'class': depth0},contexts:[depth0],types:["ID"],data:data})));
   data.buffer.push("\n                    </div>\n                    <div class=\"col-xs-3 col-md-3 col-lg-3\">\n                        <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "findPeople", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data})));
-  data.buffer.push(" class=\"btn btn-info\">Find</button>\n                        <button ");
+  data.buffer.push(" class=\"btn btn-primary\">Find</button>\n                        <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "clearFind", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data})));
   data.buffer.push(" class=\"btn btn-default\">Clear</button>\n                    </div>\n                </form>\n            </div>\n        </div>\n        <div class=\"table-responsive\">\n            <table class=\"table table-striped\">\n              <thead>\n                <tr>\n                    ");
   stack1 = helpers['if'].call(depth0, "permissions.is_admin", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],data:data});

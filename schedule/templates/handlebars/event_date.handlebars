@@ -4,12 +4,12 @@
         <h4 class="sub-heading">
         {{#if eventDataLoading}}<label class="spinner">&nbsp;</label>{{/if}}
         {{#if isEditing}}
-            <button {{action 'saveEventDate' model}} class="btn btn-success">Save</button>&nbsp;
-            <button {{action 'cancelEventDate' model}} class="btn btn-danger">Cancel</button>
+            <button {{action 'saveEventDate' model}} class="btn btn-primary">Save</button>&nbsp;
+            <button {{action 'cancelEventDate' model}} class="btn btn-default">Cancel</button>
         {{else}}
             {{#if canAdministrate}}
-            <button {{action 'editEventDate' model}} class="btn btn-info">Edit</button>
-            <button {{action 'removeEventDate' model}} class="btn btn-danger" title="Delete"><span class="glyphicon glyphicon-remove"></span></button>
+            <button {{action 'editEventDate' model}} class="btn btn-primary">Edit</button>
+            <button {{action 'removeEventDate' model}} class="btn btn-default" title="Delete"><span class="glyphicon glyphicon-remove"></span></button>
             {{/if}}
         {{/if}}
         On {{formatDate model.on_date}}</h4>

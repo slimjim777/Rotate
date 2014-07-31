@@ -26,8 +26,8 @@
             {{#if ed.isEditing }}
                 <td class="freeze">
                     {{formatDate ed.on_date}}<br>
-                    <button {{action "saveEventDate" ed}} class="btn btn-success">Save</button>
-                    <button {{action "cancelEventDate" ed}} class="btn btn-danger">Cancel</button>
+                    <button {{action "saveEventDate" ed}} class="btn btn-primary" title="Save"><span class="glyphicon glyphicon-ok"></span></button>
+                    <button {{action "cancelEventDate" ed}} class="btn btn-default" title="Cancel"><span class="glyphicon glyphicon-ban-circle"></span></button>
                 </td>
                 <td>{{textarea value=ed.focus class="form-control"}}</td>
                 <td>{{textarea value=ed.notes class="form-control"}}</td>
