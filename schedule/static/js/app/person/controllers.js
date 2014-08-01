@@ -11,6 +11,10 @@ App.PersonController = Ember.ObjectController.extend({
     awayForm: {},
     awayError: null,
 
+    reset: function() {
+        setMenu(this);
+    },
+
     getPermissions: function() {
         var controller = this;
         App.Person.permissions().then(function(result) {
@@ -137,6 +141,14 @@ App.PeoplePageController = Ember.ArrayController.extend({
         App.Person.permissions().then(function(result) {
             controller.set('permissions', result.permissions);
         });
+    },
+
+    reset: function() {
+        setMenu(this);
+
+        this.set('stateSelected', 'active');
+        this.set('find_firstname', null);
+        this.set('find_lastname', null);
     },
 
     actions: {

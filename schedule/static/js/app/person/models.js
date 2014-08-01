@@ -38,6 +38,20 @@ Ember.Handlebars.registerBoundHelper('dateFromNow', function(date) {
     }
 });
 
+function setMenu(controller) {
+    // Set the menu
+    var menu = Ember.$('ul.navbar-nav li');
+
+    $('ul.navbar-nav li').each(function() {
+        var li = $(this);
+        if (li.attr('id') == controller.get('menu')) {
+            $(li).toggleClass('active', true);
+        } else {
+            $(li).toggleClass('active', false);
+        }
+    });
+}
+
 // Date picker widget for view
 App.CalendarDatePicker = Ember.TextField.extend({
     _picker: null,

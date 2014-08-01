@@ -3,6 +3,11 @@ App.EventsRoute = Ember.Route.extend({
         return App.Event.getAll().then(function(data) {
             return data.events;
         })
+    },
+
+    setupController: function(controller, model) {
+        controller.set('content', model);
+        controller.reset();
     }
 });
 
@@ -16,6 +21,7 @@ App.EventRoute = Ember.Route.extend({
     setupController: function(controller, model) {
         controller.set('content', model);
         controller.getPermissions();
+        controller.reset();
 
         // Trigger load of the event dates
         controller.datesRangeChange();

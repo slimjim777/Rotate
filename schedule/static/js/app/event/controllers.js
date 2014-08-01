@@ -1,9 +1,23 @@
+App.EventsController = Ember.ObjectController.extend({
+    menu: 'nav-events',
+
+    reset: function() {
+        setMenu(this);
+    }
+});
+
+
 App.EventController = Ember.ObjectController.extend({
+    menu: 'nav-events',
     datesRangeSelected: '12',
     ranges: [{value: '12', name:'Upcoming'}, {value: '-12', name:'Recent'}],
     datesLoading: false,
     frequencies: [{value: 'weekly', name: 'Weekly'}, {value: 'monthly', name: 'Monthly'}, {value: 'irregular', name: 'Never'}],
     d_errors: null,
+
+    reset: function() {
+        setMenu(this);
+    },
 
     getPermissions: function() {
         var controller = this;
@@ -11,6 +25,10 @@ App.EventController = Ember.ObjectController.extend({
             controller.set('permissions', result.permissions);
             controller.isEventAdmin(controller.get('model').id);
         });
+    },
+
+    reset: function() {
+        setMenu(this);
     },
 
     isEventAdmin: function(eventId) {

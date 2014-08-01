@@ -15,6 +15,19 @@ h2, h3, h4 {
     font-weight: 400;
 }
 
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover, .navbar-inverse .navbar-nav>.active>a:focus,
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary
+{
+    background-color: #a5bfb2;
+    border-color: #a5bfb2;
+}
+
+ul.nav a, a.navbar-brand {
+    font-family: 'Roboto Condensed', sans-serif;
+    text-transform:uppercase;
+    font-weight: 300;
+}
+
 label.dialog {
     padding-top: 10px;
     display: block;

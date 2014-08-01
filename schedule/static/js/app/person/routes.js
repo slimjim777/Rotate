@@ -17,6 +17,7 @@ App.PersonRoute = Ember.Route.extend({
     setupController: function(controller, model) {
         controller.set('content', model);
         controller.getPermissions();
+        controller.reset();
 
         // Trigger load of the person's rota
         controller.rotaRangeChange();
@@ -49,9 +50,7 @@ App.PeoplePageRoute = Ember.Route.extend({
         // Extract the rows and the pagination metadata
         controller.set('content', model.people);
         controller.set('meta', model.meta);
-        controller.set('stateSelected', 'active');
-        controller.set('find_firstname', null);
-        controller.set('find_lastname', null);
+        controller.reset();
     }
 });
 
