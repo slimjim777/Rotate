@@ -1085,21 +1085,21 @@ function program12(depth0,data) {
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "findPeople", {hash:{
     'on': ("submit")
   },hashTypes:{'on': "STRING"},hashContexts:{'on': depth0},contexts:[depth0],types:["STRING"],data:data})));
-  data.buffer.push(">\n                    <div class=\"col-xs-3 col-md-3 col-lg-3\">\n                        ");
+  data.buffer.push(">\n                    <div class=\"col-xs-6 col-md-6 col-lg-3\">\n                        ");
   data.buffer.push(escapeExpression((helper = helpers.input || (depth0 && depth0.input),options={hash:{
     'text': ("search"),
     'value': ("find_firstname"),
     'placeholder': ("firstname"),
     'class': ("form-control")
   },hashTypes:{'text': "STRING",'value': "ID",'placeholder': "STRING",'class': "STRING"},hashContexts:{'text': depth0,'value': depth0,'placeholder': depth0,'class': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "input", options))));
-  data.buffer.push("\n                    </div>\n                    <div class=\"col-xs-3 col-md-3 col-lg-3\">\n                        ");
+  data.buffer.push("\n                    </div>\n                    <div class=\"col-xs-6 col-md-6 col-lg-3\">\n                        ");
   data.buffer.push(escapeExpression((helper = helpers.input || (depth0 && depth0.input),options={hash:{
     'text': ("search"),
     'value': ("find_lastname"),
     'placeholder': ("lastname"),
     'class': ("form-control")
   },hashTypes:{'text': "STRING",'value': "ID",'placeholder': "STRING",'class': "STRING"},hashContexts:{'text': depth0,'value': depth0,'placeholder': depth0,'class': depth0},contexts:[],types:[],data:data},helper ? helper.call(depth0, options) : helperMissing.call(depth0, "input", options))));
-  data.buffer.push("\n                    </div>\n                    <div class=\"col-xs-3 col-md-3 col-lg-3\">\n                        ");
+  data.buffer.push("\n                    </div>\n                    <div class=\"col-xs-6 col-md-6 col-lg-3\">\n                        ");
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "Ember.Select", {hash:{
     'value': ("stateSelected"),
     'content': ("states"),
@@ -1107,11 +1107,11 @@ function program12(depth0,data) {
     'optionLabelPath': ("content.name"),
     'class': ("form-control")
   },hashTypes:{'value': "ID",'content': "ID",'optionValuePath': "STRING",'optionLabelPath': "STRING",'class': "STRING"},hashContexts:{'value': depth0,'content': depth0,'optionValuePath': depth0,'optionLabelPath': depth0,'class': depth0},contexts:[depth0],types:["ID"],data:data})));
-  data.buffer.push("\n                    </div>\n                    <div class=\"col-xs-3 col-md-3 col-lg-3\">\n                        <button ");
+  data.buffer.push("\n                    </div>\n                    <div class=\"col-xs-6 col-md-6 col-lg-3\">\n                        <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "findPeople", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data})));
-  data.buffer.push(" class=\"btn btn-primary\">Find</button>\n                        <button ");
+  data.buffer.push(" class=\"btn btn-primary\" title=\"Find\"><span class=\"glyphicon glyphicon-search\"></span></button>\n                        <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "clearFind", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data})));
-  data.buffer.push(" class=\"btn btn-default\">Clear</button>\n                    </div>\n                </form>\n            </div>\n        </div>\n        <div class=\"table-responsive\">\n            <table class=\"table table-striped\">\n              <thead>\n                <tr>\n                    ");
+  data.buffer.push(" class=\"btn btn-default\" title=\"Clear\"><span class=\"glyphicon glyphicon-remove-circle\"></span></button>\n                    </div>\n                </form>\n            </div>\n        </div>\n        <div class=\"table-responsive\">\n            <table class=\"table table-striped\">\n              <thead>\n                <tr>\n                    ");
   stack1 = helpers['if'].call(depth0, "permissions.is_admin", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n                    <th>Name</th><th>Active</th><th>Permissions</th><th>Last Login</th>\n                </tr>\n              </thead>\n              <tbody>\n            ");
