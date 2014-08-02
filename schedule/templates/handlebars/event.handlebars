@@ -14,13 +14,14 @@
                     value=datesRangeSelected
                     content=ranges
                     optionValuePath="content.value"
-                    optionLabelPath="content.name"}}
+                    optionLabelPath="content.name"
+            }}
         </h3>
     </div>
-    <div id="event-dates">
-        <div class="list-group">
+    <div class="panel-body">
+        <div>
             {{#each ed in event_dates}}
-                {{#link-to 'event_date' ed.id  title="View Rota" class="list-group-item"}}
+                {{#link-to 'event_date' ed.id  title="View Rota" class="btn btn-primary btn-sm"}}
                     {{formatDate ed.on_date}}
                 {{/link-to}}
             {{/each}}

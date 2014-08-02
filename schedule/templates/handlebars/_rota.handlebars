@@ -12,28 +12,40 @@
         </div>
         <div class="panel-body" id="person-rota">
         {{#if rota}}
-            <table class="table">
+        <div class="table-responsive">
+            <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Event</th><th>Date</th><th>Role</th>
+                    <th>Date</th><th>Event</th>
                 </tr>
             </thead>
             <tbody>
             {{#each r in rota}}
             <tr>
-                <td>{{#link-to 'event_date' r.event_date.event_id r.event_date.id}}{{r.event_date.event}}{{/link-to}}</td>
                 <td>
                     {{#if r.is_away}}
-                        <span class="alert-danger">{{formatDate r.event_date.on_date}}</span>
+                        <span class="alert-danger" title="You are away for this date. Please arrange a swap.">{{formatDate r.on_date}}</span>
                     {{else}}
-                        {{formatDate r.event_date.on_date}}
+                        {{formatDate r.on_date}}
                     {{/if}}
                 </td>
-                <td>{{r.role.name}}</td>
+                <td>
+                    {{#each event in r.events}}
+                        <div>
+                            {{#link-to "event_date" event.event_id event.event_date_id}}{{event.event}}{{/link-to}}
+                        <span>
+                            {{#each role in event.roles}}
+                                <span class="label label-default">{{role.name}}</span>
+                            {{/each}}
+                        </span>
+                        </div>
+                    {{/each}}
+                </td>
             </tr>
             {{/each}}
             </tbody>
             </table>
+        </div>
         {{else}}
             <p>Dude! You've got nothing to do!</p>
         {{/if}}

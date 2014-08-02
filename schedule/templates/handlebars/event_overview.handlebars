@@ -43,7 +43,13 @@
                 </td>
                 {{/each}}
             {{else}}
-                <td class="freeze"><button {{action "editEventDate" ed}} class="btn-link"><span class="glyphicon glyphicon-edit"></span>&nbsp;{{formatDate ed.on_date}}</button></td>
+                <td class="freeze">
+                    {{#if canAdministrate}}
+                        <button {{action "editEventDate" ed}} class="btn-link"><span class="glyphicon glyphicon-edit"></span>&nbsp;{{formatDate ed.on_date}}</button>
+                    {{else}}
+                        {{#link-to "event_date" model.event_id ed.id}}{{formatDate ed.on_date}}{{/link-to}}
+                    {{/if}}
+                </td>
                 <td>{{ed.focus}}</td>
                 <td>{{ed.notes}}</td>
                 {{#each r in ed.rota }}

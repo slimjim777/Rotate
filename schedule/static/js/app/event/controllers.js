@@ -64,6 +64,7 @@ App.EventController = Ember.ObjectController.extend({
 
     actions: {
         createEventDates: function(event) {
+            console.log(event);
             var postdata = {
                 frequency: event.frequency,
                 repeats_every: 1, //event.get('repeat_every'),

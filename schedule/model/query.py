@@ -167,7 +167,8 @@ class FastQuery(object):
               inner join person p on r.person_id=p.id
               inner join role on role.id = r.role_id
               where p.id = :person_id
-              and ed.on_date between :from_date and :to_date"""
+              and ed.on_date between :from_date and :to_date
+              order by ed.on_date, ev.name"""
         params = {
             'person_id': person_id,
             'from_date': from_date,
@@ -175,25 +176,61 @@ class FastQuery(object):
         }
         rows = db.session.execute(sql, params)
 
-        rota = []
+        rota_for_date = {}
         for row in rows.fetchall():
-            rota.append({
-                'id': row['id'],
-                'person_id': row['person_id'],
-                'person_name': '%s %s' % (row['firstname'], row['lastname']),
-                'active': row['person_active'],
-                'is_away': row['is_away'],
-                'role': {
-                    'id': row['role_id'],
-                    'name': row['role_name'],
-                },
-                'event_date': {
-                    'id': row['event_date_id'],
-                    'event_id': row['event_id'],
-                    'event': row['event_name'],
-                    'on_date': row['on_date'].strftime('%Y-%m-%dT%H:%M:%S'),
-                },
-            })
+            on_date = row['on_date'].strftime('%Y-%m-%dT%H:%M:%S')
+            event_name = row['event_name']
+            if rota_for_date.get(on_date):
+                # See if we a rota for this event
+                if rota_for_date[on_date]['events'].get(event_name):
+                    # Already have a role for this event date, add another
+                    rota_for_date[on_date]['events'][event_name]['roles'].append({
+                        'id': row['role_id'],
+                        'name': row['role_name'],
+                    })
+                else:
+                    # New event and role to add to this date
+                    rota_for_date[on_date]['events'][event_name] = {
+                        'event_id': row['event_id'],
+                        'event': event_name,
+                        'event_date_id': row['event_date_id'],
+                        'roles': [{
+                            'id': row['role_id'],
+                            'name': row['role_name'],
+                        }]
+                    }
+            else:
+                # New date to add
+                rota_for_date[on_date] = {
+                    'on_date': on_date,
+                    'person_id': row['person_id'],
+                    'person_name': '%s %s' % (row['firstname'], row['lastname']),
+                    'active': row['person_active'],
+                    'is_away': row['is_away'],
+                    'events': {
+                        event_name: {
+                            'event_id': row['event_id'],
+                            'event': event_name,
+                            'event_date_id': row['event_date_id'],
+                            'roles': [{
+                                'id': row['role_id'],
+                                'name': row['role_name'],
+                            }]
+                        }
+                    }
+                }
+
+        # Sort the rota into date order
+        rota = []
+        for r in sorted(rota_for_date.keys()):
+            # Sort the events by name
+            on_date = rota_for_date[r]
+            events = []
+            for key in sorted(on_date['events'].keys()):
+                events.append(on_date['events'][key])
+                del on_date['events'][key]
+            on_date['events'] = events
+            rota.append(on_date)
 
         app.logger.debug('Rota (person): %s' % (time.time() - start))
         return rota

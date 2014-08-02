@@ -21,10 +21,10 @@ function program3(depth0,data) {
 function program5(depth0,data) {
   
   var buffer = '', stack1;
-  data.buffer.push("\n            <table class=\"table\">\n            <thead>\n                <tr>\n                    <th></th><th>From Date</th><th>To Date</th><th></th>\n                </tr>\n            </thead>\n            <tbody>\n            ");
+  data.buffer.push("\n        <div class=\"table-responsive\">\n            <table class=\"table\">\n            <thead>\n                <tr>\n                    <th></th><th>From Date</th><th>To Date</th><th></th>\n                </tr>\n            </thead>\n            <tbody>\n            ");
   stack1 = helpers.each.call(depth0, "r", "in", "away_dates", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n            </tbody>\n            </table>\n        ");
+  data.buffer.push("\n            </tbody>\n            </table>\n        </div>\n        ");
   return buffer;
   }
 function program6(depth0,data) {
@@ -301,54 +301,73 @@ function program1(depth0,data) {
 function program3(depth0,data) {
   
   var buffer = '', stack1;
-  data.buffer.push("\n            <table class=\"table\">\n            <thead>\n                <tr>\n                    <th>Event</th><th>Date</th><th>Role</th>\n                </tr>\n            </thead>\n            <tbody>\n            ");
+  data.buffer.push("\n        <div class=\"table-responsive\">\n            <table class=\"table table-striped\">\n            <thead>\n                <tr>\n                    <th>Date</th><th>Event</th>\n                </tr>\n            </thead>\n            <tbody>\n            ");
   stack1 = helpers.each.call(depth0, "r", "in", "rota", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n            </tbody>\n            </table>\n        ");
+  data.buffer.push("\n            </tbody>\n            </table>\n        </div>\n        ");
   return buffer;
   }
 function program4(depth0,data) {
   
-  var buffer = '', stack1, helper, options;
-  data.buffer.push("\n            <tr>\n                <td>");
-  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(5, program5, data),contexts:[depth0,depth0,depth0],types:["STRING","ID","ID"],data:data},helper ? helper.call(depth0, "event_date", "r.event_date.event_id", "r.event_date.id", options) : helperMissing.call(depth0, "link-to", "event_date", "r.event_date.event_id", "r.event_date.id", options));
+  var buffer = '', stack1;
+  data.buffer.push("\n            <tr>\n                <td>\n                    ");
+  stack1 = helpers['if'].call(depth0, "r.is_away", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(7, program7, data),fn:self.program(5, program5, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</td>\n                <td>\n                    ");
-  stack1 = helpers['if'].call(depth0, "r.is_away", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(9, program9, data),fn:self.program(7, program7, data),contexts:[depth0],types:["ID"],data:data});
+  data.buffer.push("\n                </td>\n                <td>\n                    ");
+  stack1 = helpers.each.call(depth0, "event", "in", "r.events", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(9, program9, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n                </td>\n                <td>");
-  stack1 = helpers._triageMustache.call(depth0, "r.role.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</td>\n            </tr>\n            ");
+  data.buffer.push("\n                </td>\n            </tr>\n            ");
   return buffer;
   }
 function program5(depth0,data) {
   
-  var stack1;
-  stack1 = helpers._triageMustache.call(depth0, "r.event_date.event", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  else { data.buffer.push(''); }
+  var buffer = '', helper, options;
+  data.buffer.push("\n                        <span class=\"alert-danger\" title=\"You are away for this date. Please arrange a swap.\">");
+  data.buffer.push(escapeExpression((helper = helpers.formatDate || (depth0 && depth0.formatDate),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "r.on_date", options) : helperMissing.call(depth0, "formatDate", "r.on_date", options))));
+  data.buffer.push("</span>\n                    ");
+  return buffer;
   }
 
 function program7(depth0,data) {
   
   var buffer = '', helper, options;
-  data.buffer.push("\n                        <span class=\"alert-danger\">");
-  data.buffer.push(escapeExpression((helper = helpers.formatDate || (depth0 && depth0.formatDate),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "r.event_date.on_date", options) : helperMissing.call(depth0, "formatDate", "r.event_date.on_date", options))));
-  data.buffer.push("</span>\n                    ");
+  data.buffer.push("\n                        ");
+  data.buffer.push(escapeExpression((helper = helpers.formatDate || (depth0 && depth0.formatDate),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "r.on_date", options) : helperMissing.call(depth0, "formatDate", "r.on_date", options))));
+  data.buffer.push("\n                    ");
   return buffer;
   }
 
 function program9(depth0,data) {
   
-  var buffer = '', helper, options;
-  data.buffer.push("\n                        ");
-  data.buffer.push(escapeExpression((helper = helpers.formatDate || (depth0 && depth0.formatDate),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "r.event_date.on_date", options) : helperMissing.call(depth0, "formatDate", "r.event_date.on_date", options))));
-  data.buffer.push("\n                    ");
+  var buffer = '', stack1, helper, options;
+  data.buffer.push("\n                        <div>\n                            ");
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0,depth0,depth0],types:["STRING","ID","ID"],data:data},helper ? helper.call(depth0, "event_date", "event.event_id", "event.event_date_id", options) : helperMissing.call(depth0, "link-to", "event_date", "event.event_id", "event.event_date_id", options));
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n                        <span>\n                            ");
+  stack1 = helpers.each.call(depth0, "role", "in", "event.roles", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(12, program12, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n                        </span>\n                        </div>\n                    ");
+  return buffer;
+  }
+function program10(depth0,data) {
+  
+  var stack1;
+  stack1 = helpers._triageMustache.call(depth0, "event.event", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  else { data.buffer.push(''); }
+  }
+
+function program12(depth0,data) {
+  
+  var buffer = '', stack1;
+  data.buffer.push("\n                                <span class=\"label label-default\">");
+  stack1 = helpers._triageMustache.call(depth0, "role.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</span>\n                            ");
   return buffer;
   }
 
-function program11(depth0,data) {
+function program14(depth0,data) {
   
   
   data.buffer.push("\n            <p>Dude! You've got nothing to do!</p>\n        ");
@@ -367,7 +386,7 @@ function program11(depth0,data) {
   data.buffer.push("&nbsp;\n                <button class=\"btn\" ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "refreshRota", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data})));
   data.buffer.push(" title=\"Refresh Rota\"><span class=\"glyphicon glyphicon-refresh\"></span></button>\n            </h3>\n        </div>\n        <div class=\"panel-body\" id=\"person-rota\">\n        ");
-  stack1 = helpers['if'].call(depth0, "rota", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(11, program11, data),fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "rota", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(14, program14, data),fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n        </div>\n    </div>\n\n");
   return buffer;
@@ -417,7 +436,7 @@ function program7(depth0,data) {
   data.buffer.push("\n                ");
   stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{
     'title': ("View Rota"),
-    'class': ("list-group-item")
+    'class': ("btn btn-primary btn-sm")
   },hashTypes:{'title': "STRING",'class': "STRING"},hashContexts:{'title': depth0,'class': depth0},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "event_date", "ed.id", options) : helperMissing.call(depth0, "link-to", "event_date", "ed.id", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n            ");
@@ -517,7 +536,7 @@ function program30(depth0,data) {
     'optionValuePath': ("content.value"),
     'optionLabelPath': ("content.name")
   },hashTypes:{'value': "ID",'content': "ID",'optionValuePath': "STRING",'optionLabelPath': "STRING"},hashContexts:{'value': depth0,'content': depth0,'optionValuePath': depth0,'optionLabelPath': depth0},contexts:[depth0],types:["ID"],data:data})));
-  data.buffer.push("\n        </h3>\n    </div>\n    <div id=\"event-dates\">\n        <div class=\"list-group\">\n            ");
+  data.buffer.push("\n        </h3>\n    </div>\n    <div class=\"panel-body\">\n        <div>\n            ");
   stack1 = helpers.each.call(depth0, "ed", "in", "event_dates", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(7, program7, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n        </div>\n    </div>\n</div>\n\n<div class=\"panel panel-default hidden-sm hidden-xs\">\n    <div class=\"panel-heading\">\n        <h3 class=\"panel-title\">Details</h3>\n    </div>\n    <div class=\"panel-body\">\n        <table class=\"panel-form\">\n            <tbody>\n            <tr>\n                <td>\n                    <label>Name</label><span class=\"panel-cell\">");
@@ -887,33 +906,58 @@ function program6(depth0,data) {
 
 function program8(depth0,data) {
   
-  var buffer = '', stack1, helper, options;
-  data.buffer.push("\n                <td class=\"freeze\"><button ");
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "editEventDate", "ed", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
-  data.buffer.push(" class=\"btn-link\"><span class=\"glyphicon glyphicon-edit\"></span>&nbsp;");
-  data.buffer.push(escapeExpression((helper = helpers.formatDate || (depth0 && depth0.formatDate),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "ed.on_date", options) : helperMissing.call(depth0, "formatDate", "ed.on_date", options))));
-  data.buffer.push("</button></td>\n                <td>");
+  var buffer = '', stack1;
+  data.buffer.push("\n                <td class=\"freeze\">\n                    ");
+  stack1 = helpers['if'].call(depth0, "canAdministrate", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(11, program11, data),fn:self.program(9, program9, data),contexts:[depth0],types:["ID"],data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n                </td>\n                <td>");
   stack1 = helpers._triageMustache.call(depth0, "ed.focus", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</td>\n                <td>");
   stack1 = helpers._triageMustache.call(depth0, "ed.notes", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</td>\n                ");
-  stack1 = helpers.each.call(depth0, "r", "in", "ed.rota", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(9, program9, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
+  stack1 = helpers.each.call(depth0, "r", "in", "ed.rota", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(14, program14, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n            ");
   return buffer;
   }
 function program9(depth0,data) {
   
+  var buffer = '', helper, options;
+  data.buffer.push("\n                        <button ");
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "editEventDate", "ed", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0,depth0],types:["STRING","ID"],data:data})));
+  data.buffer.push(" class=\"btn-link\"><span class=\"glyphicon glyphicon-edit\"></span>&nbsp;");
+  data.buffer.push(escapeExpression((helper = helpers.formatDate || (depth0 && depth0.formatDate),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "ed.on_date", options) : helperMissing.call(depth0, "formatDate", "ed.on_date", options))));
+  data.buffer.push("</button>\n                    ");
+  return buffer;
+  }
+
+function program11(depth0,data) {
+  
+  var buffer = '', stack1, helper, options;
+  data.buffer.push("\n                        ");
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(12, program12, data),contexts:[depth0,depth0,depth0],types:["STRING","ID","ID"],data:data},helper ? helper.call(depth0, "event_date", "model.event_id", "ed.id", options) : helperMissing.call(depth0, "link-to", "event_date", "model.event_id", "ed.id", options));
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n                    ");
+  return buffer;
+  }
+function program12(depth0,data) {
+  
+  var helper, options;
+  data.buffer.push(escapeExpression((helper = helpers.formatDate || (depth0 && depth0.formatDate),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "ed.on_date", options) : helperMissing.call(depth0, "formatDate", "ed.on_date", options))));
+  }
+
+function program14(depth0,data) {
+  
   var buffer = '', stack1, helper, options;
   data.buffer.push("\n                <td>");
-  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "r.person_id", options) : helperMissing.call(depth0, "link-to", "person", "r.person_id", options));
+  stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(15, program15, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "person", "r.person_id", options) : helperMissing.call(depth0, "link-to", "person", "r.person_id", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</td>\n                ");
   return buffer;
   }
-function program10(depth0,data) {
+function program15(depth0,data) {
   
   var stack1;
   stack1 = helpers._triageMustache.call(depth0, "r.person_name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
@@ -921,7 +965,7 @@ function program10(depth0,data) {
   else { data.buffer.push(''); }
   }
 
-function program12(depth0,data) {
+function program17(depth0,data) {
   
   
   data.buffer.push("\n    <p>No roles defined for this rota.</p>\n");
@@ -931,7 +975,7 @@ function program12(depth0,data) {
   stack1 = helpers._triageMustache.call(depth0, "model.event_name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</h2>\n\n");
-  stack1 = helpers['if'].call(depth0, "model.role_names", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(12, program12, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],data:data});
+  stack1 = helpers['if'].call(depth0, "model.role_names", {hash:{},hashTypes:{},hashContexts:{},inverse:self.program(17, program17, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
   return buffer;
