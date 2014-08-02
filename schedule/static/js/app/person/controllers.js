@@ -110,7 +110,7 @@ App.PersonController = Ember.ObjectController.extend({
             var controller = this;
 
             // Delete the away date
-            App.Person.deleteAwayDate(this.get('model').id, this.get('awayForm')).then(function(value) {
+            App.Person.deleteAwayDate(this.get('model').id, this.get('awayForm')).then(function() {
                 controller.get('away_dates').removeObject(controller.get('awayForm'));
                 controller.set('awayForm', {});
                 Ember.$('#confirmModal').modal('hide');
