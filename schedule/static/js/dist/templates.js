@@ -1171,36 +1171,16 @@ function program12(depth0,data) {
 Ember.TEMPLATES["person"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-  var buffer = '', stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+  var buffer = '', stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
-function program1(depth0,data) {
-  
-  var buffer = '', stack1;
-  data.buffer.push("\n                        <span class=\"label label-default\">");
-  stack1 = helpers._triageMustache.call(depth0, "r.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</span>\n                        ");
-  return buffer;
-  }
 
-  data.buffer.push("\n    <h2 class=\"sub-heading\">");
+  data.buffer.push("    <h2 class=\"sub-heading\">");
   stack1 = helpers._triageMustache.call(depth0, "model.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</h2>\n    <div class=\"panel panel-default\">\n        <div class=\"panel-heading\">\n            <h3 class=\"panel-title\">Person Details</h3>\n            <div id=\"message\" hidden></div>\n        </div>\n        <div class=\"panel-body\">\n            <table class=\"panel-form\">\n            <tbody>\n                <tr>\n                    <td>\n                        <label>Name</label><span class=\"panel-cell\">");
-  stack1 = helpers._triageMustache.call(depth0, "model.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</span>\n                    </td>\n                    <td>\n                        <label>Email</label><span class=\"panel-cell\">");
+  data.buffer.push("</h2>\n    <p class=\"sub-heading\">");
   stack1 = helpers._triageMustache.call(depth0, "model.email", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</span>\n                    </td>\n                </tr>\n                <tr>\n                    <td>\n                        <label>Permissions</label><span class=\"panel-cell\">");
-  stack1 = helpers._triageMustache.call(depth0, "model.user_role", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</span>\n                    </td>\n                    <td>\n                        <label>Last Access</label><span class=\"panel-cell\">");
-  data.buffer.push(escapeExpression((helper = helpers.dateFromNow || (depth0 && depth0.dateFromNow),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data},helper ? helper.call(depth0, "model.last_login", options) : helperMissing.call(depth0, "dateFromNow", "model.last_login", options))));
-  data.buffer.push("</span>\n                    </td>\n                </tr>\n                <tr>\n                     <td colspan=\"2\">\n                        <label>Roles</label>\n                        <span class=\"panel-cell\">\n                        ");
-  stack1 = helpers.each.call(depth0, "r", "in", "model.person_roles", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n                        </span>\n                    </td>\n                </tr>\n            </tbody>\n            </table>\n        </div>\n    </div>\n\n    ");
+  data.buffer.push("</p>\n\n    ");
   data.buffer.push(escapeExpression((helper = helpers.partial || (depth0 && depth0.partial),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data},helper ? helper.call(depth0, "rota", options) : helperMissing.call(depth0, "partial", "rota", options))));
   data.buffer.push("\n    ");
   data.buffer.push(escapeExpression((helper = helpers.partial || (depth0 && depth0.partial),options={hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["STRING"],data:data},helper ? helper.call(depth0, "away_dates", options) : helperMissing.call(depth0, "partial", "away_dates", options))));
