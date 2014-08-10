@@ -79,7 +79,7 @@ function program10(depth0,data) {
   data.buffer.push("\n        </div>\n    </div>\n\n\n<div class=\"modal fade\" id=\"awayModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <h4 class=\"modal-title\">Away Dates</h4>\n      </div>\n      <div class=\"modal-body\">\n        ");
   stack1 = helpers['if'].call(depth0, "awayError", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n        ");
+  data.buffer.push("\n        <p></p><em>Click the date entry box to select a date.</em></p>\n        ");
   data.buffer.push(escapeExpression((helper = helpers.input || (depth0 && depth0.input),options={hash:{
     'type': ("hidden"),
     'name': ("awayForm.id"),
@@ -91,15 +91,19 @@ function program10(depth0,data) {
     'name': ("awayForm.from_date"),
     'value': ("awayForm.from_date"),
     'class': ("form-control"),
-    'placeholder': ("from date")
-  },hashTypes:{'name': "ID",'value': "ID",'class': "STRING",'placeholder': "STRING"},hashContexts:{'name': depth0,'value': depth0,'class': depth0,'placeholder': depth0},contexts:[depth0],types:["ID"],data:data})));
+    'placeholder': ("from date"),
+    'readonly': ("true"),
+    'title': ("Click to enter the date")
+  },hashTypes:{'name': "ID",'value': "ID",'class': "STRING",'placeholder': "STRING",'readonly': "STRING",'title': "STRING"},hashContexts:{'name': depth0,'value': depth0,'class': depth0,'placeholder': depth0,'readonly': depth0,'title': depth0},contexts:[depth0],types:["ID"],data:data})));
   data.buffer.push("\n        <label>To Date</label>\n        ");
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.CalendarDatePicker", {hash:{
     'name': ("awayForm.to_date"),
     'value': ("awayForm.to_date"),
     'class': ("form-control"),
-    'placeholder': ("to date")
-  },hashTypes:{'name': "ID",'value': "ID",'class': "STRING",'placeholder': "STRING"},hashContexts:{'name': depth0,'value': depth0,'class': depth0,'placeholder': depth0},contexts:[depth0],types:["ID"],data:data})));
+    'placeholder': ("to date"),
+    'readonly': ("true"),
+    'title': ("Click to enter the date")
+  },hashTypes:{'name': "ID",'value': "ID",'class': "STRING",'placeholder': "STRING",'readonly': "STRING",'title': "STRING"},hashContexts:{'name': depth0,'value': depth0,'class': depth0,'placeholder': depth0,'readonly': depth0,'title': depth0},contexts:[depth0],types:["ID"],data:data})));
   data.buffer.push("\n      </div>\n      <div class=\"modal-footer\">\n        <button ");
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "saveAwayDate", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data})));
   data.buffer.push(" class=\"btn btn-primary\">Save</button>\n        <button class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n  </div>\n</div>\n");

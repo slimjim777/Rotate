@@ -51,11 +51,12 @@
         {{#if awayError}}
             <div class="alert alert-danger">{{awayError}}</div>
         {{/if}}
+        <p></p><em>Click the date entry box to select a date.</em></p>
         {{input type="hidden" name=awayForm.id value=awayForm.id class="form-control"}}
         <label>From Date</label>
-        {{view App.CalendarDatePicker name=awayForm.from_date value=awayForm.from_date class="form-control" placeholder="from date"}}
+        {{view App.CalendarDatePicker name=awayForm.from_date value=awayForm.from_date class="form-control" placeholder="from date" readonly="true" title="Click to enter the date"}}
         <label>To Date</label>
-        {{view App.CalendarDatePicker name=awayForm.to_date value=awayForm.to_date class="form-control" placeholder="to date"}}
+        {{view App.CalendarDatePicker name=awayForm.to_date value=awayForm.to_date class="form-control" placeholder="to date" readonly="true" title="Click to enter the date"}}
       </div>
       <div class="modal-footer">
         <button {{action saveAwayDate}} class="btn btn-primary">Save</button>

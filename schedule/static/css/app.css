@@ -107,9 +107,31 @@ table.rota {
  .rota, .rota th{
  	text-align: center;
  }
+ .container {
+ 	margin: 0 auto;
+ 	display: block;
+ 	position: relative;
+ 	width: 100%;
+ }
+ .jumbotron .container {
+ 	padding: 16px 8px;
+ }
+ .navbar .container {
+ 	margin: 0;
+ }
  .btn {
  	font-family: Roboto Condensed;
  	border-color: #dcdcdc;
+ 	background-color: #2f9966;
+ 	color: white;
+ }
+ .btn:hover {
+ 	background-color: #a5bfb2;
+ 	color: white;
+ }
+ .btn.active {
+ 	-webkit-box-shadow: none;
+ 	box-shadow: none;
  }
  .glyphicon {
  	color: white;
@@ -117,21 +139,21 @@ table.rota {
  .glyphicon-edit {
  	color:  #2f9966;
  }
- form .btn-default, .rota .btn-default {
- 	background-color: #2f9966;
+ .glyphicon-ok {
+ 	color: #404040;
  }
  .jumbotron {
  	margin: 50px 0 0px;
- 	padding: 16px;
+ 	padding: 0;
+ 	width: 100%;
  }
- .jumbotron h1, .jumbotron h2, .jumbotron .container {
+ .jumbotron h1, .jumbotron h2 {
  	margin: 0;
  	padding: 0;
  }
  .jumbotron .btn {
- 	margin: 20px auto 0;
- 	position: relative;
- 	display:block;
+ 	margin: 16px auto 0;
+ 	display: block;
  }
  .sub-heading {
  	margin: 16px 8px;
@@ -162,12 +184,23 @@ table.rota {
  	padding: 0;
  	margin: 0;
  }
+ .panel-body>div {
+ 	padding: 8px;
+ }
+ .panel-body .table-reponsive {
+ 	padding: 0;
+ }
  .panel {
  	margin-bottom: 8px;
  }
- .table-responsive, .table>thead>tr>th {
+ .table-responsive {
  	border: 0;
  	margin: 0;
+ 	padding: 0 !important;
+ }
+ .table>thead>tr>th {
+ 	padding: 8px;
+ 	border: 0;
  }
  form {
  	margin: 0;
@@ -189,4 +222,7 @@ table.rota {
  	padding: 16px;
  	font-size: 16px;
  	line-height: 1em;
+ }
+ .table-striped, .table-striped th {
+ 	text-align: center;
  }
