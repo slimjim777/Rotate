@@ -252,7 +252,7 @@ function program3(depth0,data) {
 function program5(depth0,data) {
   
   var buffer = '', stack1, helper, options;
-  data.buffer.push("\n        <li class=\"previous disabled\">");
+  data.buffer.push("\n        <li class=\"previous hidden\">");
   stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "people_page", "meta.prev_num", options) : helperMissing.call(depth0, "link-to", "people_page", "meta.prev_num", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</li>\n    ");
@@ -277,7 +277,7 @@ function program8(depth0,data) {
 function program10(depth0,data) {
   
   var buffer = '', stack1, helper, options;
-  data.buffer.push("\n        <li class=\"next disabled\">");
+  data.buffer.push("\n        <li class=\"next hidden\">");
   stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0,depth0],types:["STRING","ID"],data:data},helper ? helper.call(depth0, "people_page", "meta.next_num", options) : helperMissing.call(depth0, "link-to", "people_page", "meta.next_num", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("</li>\n    ");
