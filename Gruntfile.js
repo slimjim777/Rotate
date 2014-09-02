@@ -57,7 +57,7 @@ module.exports = function(grunt) {
     watch: {
         emberTemplates: {
             files: ['schedule/templates/handlebars/*.handlebars'],
-            tasks: ['emberTemplates']
+            tasks: ['emberTemplates', 'concat', 'uglify']
         },
         concat: {
             files: ['schedule/static/js/app/**/*.js'],
@@ -78,7 +78,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task(s).
-  grunt.registerTask('default', ['watch','emberTemplates', 'cssmin', 'concat','uglify']);
+  grunt.registerTask('default', ['watch']);
 
 };
 

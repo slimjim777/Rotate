@@ -25,7 +25,7 @@
           <tr>
             {{#if ed.isEditing }}
                 <td class="freeze">
-                    {{formatDate ed.on_date}}<br>
+                    {{shortDate ed.on_date}}<br>
                     <button {{action "saveEventDate" ed}} class="btn btn-primary" title="Save"><span class="glyphicon glyphicon-ok"></span></button>
                     <button {{action "cancelEventDate" ed}} class="btn btn-default" title="Cancel"><span class="glyphicon glyphicon-ban-circle"></span></button>
                 </td>
@@ -45,15 +45,26 @@
             {{else}}
                 <td class="freeze">
                     {{#if canAdministrate}}
-                        <button {{action "editEventDate" ed}} class="btn-link"><span class="glyphicon glyphicon-edit"></span>&nbsp;{{formatDate ed.on_date}}</button>
+                        <button {{action "editEventDate" ed}} class="btn-link"><span class="glyphicon glyphicon-edit"></span>&nbsp;{{shortDate ed.on_date}}</button>
                     {{else}}
-                        {{#link-to "event_date" model.event_id ed.id}}{{formatDate ed.on_date}}{{/link-to}}
+                        {{#link-to "event_date" model.event_id ed.id}}{{shortDate ed.on_date}}{{/link-to}}
                     {{/if}}
                 </td>
                 <td>{{ed.focus}}</td>
                 <td>{{ed.notes}}</td>
                 {{#each r in ed.rota }}
-                <td>{{#link-to "person" r.person_id}}{{r.person_name}}{{/link-to}}</td>
+                <td>
+                    {{#if r.is_away}}
+                            {{#link-to "person" r.person_id}}<span class="alert-danger" title="Person is away, swap needed.">{{r.person_name}}</span>{{/link-to}}
+                        </span>
+                    {{else}}
+                        {{#if r.active}}
+                            {{#link-to "person" r.person_id}}{{r.person_name}}{{/link-to}}
+                        {{else}}
+                            {{#link-to "person" r.person_id}}<span class="alert-warning" title="Person is deactivated, swap needed.">{{r.person_name}}</span>{{/link-to}}
+                        {{/if}}
+                    {{/if}}
+                </td>
                 {{/each}}
             {{/if}}
             <td>&nbsp;</td>
@@ -66,7 +77,6 @@
 </div>
 
 <div class="col-lg-3">{{outlet}}</div>
-
 
 {{else}}
     <p>No roles defined for this rota.</p>

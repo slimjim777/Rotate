@@ -712,6 +712,14 @@ Ember.Handlebars.registerBoundHelper('formatDate', function(date) {
     }
 });
 
+Ember.Handlebars.registerBoundHelper('shortDate', function(date) {
+    if (date) {
+        return moment(date, 'YYYY-MM-DD').format('DD MMM');
+    } else {
+        return '';
+    }
+});
+
 Ember.Handlebars.registerBoundHelper('dateFromNow', function(date) {
     if (date) {
         return moment.utc(date, 'YYYY-MM-DDThh:mm:ss').fromNow();

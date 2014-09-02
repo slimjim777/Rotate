@@ -236,7 +236,7 @@ class FastQuery(object):
         return rota
 
     @staticmethod
-    def rota_for_event(event_id, from_date, to_date):
+    def rota_for_event(event_id, from_date, to_date, date_format='%Y-%m-%d'):
         """
         Get the rota dates for an event for a given date range.
         """
@@ -279,7 +279,7 @@ class FastQuery(object):
                     'id': row['event_date_id'],
                     'focus': row['focus'],
                     'notes': row['notes'],
-                    'on_date': row['on_date'].strftime('%Y-%m-%d'),
+                    'on_date': row['on_date'].strftime(date_format),
                     'isEditing': False,
                     'rota': {},
                 }
@@ -337,14 +337,15 @@ class FastQuery(object):
 
         # Add in blank rows with dates without a rota
         r['event_dates'].extend(FastQuery._dates_without_rota(event_id,
-            got_event_date_ids, from_date, to_date, roles, role_people))
+            got_event_date_ids, from_date, to_date, roles, role_people,
+            date_format))
 
         app.logger.debug('Rota (event): %s' % (time.time() - start))
         return r
 
     @staticmethod
     def _dates_without_rota(event_id, ignore_ids, from_date, to_date, roles,
-                            role_people):
+                            role_people, date_format='%Y-%m-%d'):
         """
         Add the event_dates where we don't have any rota defined that
         still meet the date range: got_event_date_ids
@@ -374,7 +375,7 @@ class FastQuery(object):
                 rota.append({'people': people, 'role': role})
 
             on_date = {
-                'on_date': row['on_date'].strftime('%Y-%m-%d'),
+                'on_date': row['on_date'].strftime(date_format),
                 'id': row['event_date_id'],
                 'focus': row['focus'],
                 'notes': row['notes'],
@@ -527,3 +528,45 @@ class FastQuery(object):
         from_date = datetime.datetime.strptime(from_str, '%Y-%m-%d')
         to_date = from_date + datetime.timedelta(weeks=12)
         return from_date.strftime('%Y-%m-%d'), to_date.strftime('%Y-%m-%d')
+
+    @staticmethod
+    def notify_people_on_rota(days):
+        """
+        Get the people that are on rota in x days time.
+        """
+        start = time.time()
+        sql = """select p.firstname, p.lastname, p.email, e.id event_id,
+                        e.name event_name, ed.on_date, ed.id event_date_id,
+                        rl.name role_name, p.id person_id,
+                        exists(select 1 from away_date where person_id=p.id
+                    and on_date between from_date and to_date) is_away
+              from rota r
+              inner join event_date ed on ed.id=r.event_date_id
+              inner join event e on e.id=ed.event_id
+              inner join person p on p.id=r.person_id and p.active
+              inner join role rl on rl.id=r.role_id
+              where ed.on_date = current_date + :days
+              """
+        rows = db.session.execute(sql, {'days': days})
+
+        notify_people = []
+        notify = {}
+        for row in rows.fetchall():
+            record = {
+                'person_id': row['person_id'],
+                'person_name': '%s %s' % (row['firstname'], row['lastname']),
+                'person_email': row['email'],
+                'person_away': row['is_away'],
+                'event_id': row['event_id'],
+                'event_name': row['event_name'],
+                'on_date': row['on_date'].strftime('%Y-%m-%d'),
+                'event_date_id': row['event_date_id'],
+                'role': row['role_name'],
+            }
+            if notify.get(record['person_name']):
+                notify[record['person_name']].append(record)
+            else:
+                notify[record['person_name']] = [record]
+
+        app.logger.debug('Notify People: %s' % (time.time() - start))
+        return notify

@@ -86,7 +86,7 @@ table.rota {
 
 .freeze {
     position:absolute;
-    width:10em;
+    width:8em;
     left:0;
     top:auto;
     border-right: 1px solid #222222;
@@ -98,7 +98,7 @@ table.rota {
 
 .table-wrapper {
     overflow-x:scroll;
-    margin-left:10em;
+    margin-left:8em;
     overflow-y: visible;
     padding-bottom:1px;
 }

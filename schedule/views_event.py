@@ -4,6 +4,7 @@ from flask import request
 from flask import abort
 from flask import session
 from sqlalchemy import or_
+import time
 from model.query import FastQuery
 from schedule import app
 from schedule import db
@@ -22,6 +23,20 @@ def home():
 @app.route('/error')
 def error():
     return render_template('alerts.html')
+
+
+@app.route('/overview/<int:event_id>')
+def overview(event_id):
+    try:
+        from_date, to_date = FastQuery.date_range_from(time.strftime('%Y-%m-%d'))
+        model = FastQuery.rota_for_event(
+            event_id, from_date, to_date, date_format='%d %b')
+        error_message = None
+    except Exception, e:
+        error_message = str(e)
+        model = None
+
+    return render_template('overview.html', model=model, error=error_message)
 
 
 @app.errorhandler(404)
@@ -427,3 +442,13 @@ def api_event_role_delete(event_id, role_id):
         return jsonify({'response': 'Success'})
     except Exception, v:
         return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/events/notify/<int:days>", methods=['GET'])
+def api_event_notifications(days):
+    """
+    Find event dates that are in x days time and send an Email to the people
+    that are on rota.
+    """
+    on_rota = FastQuery.notify_people_on_rota(days)
+    return jsonify({'response': 'Success', 'on_rota': on_rota})
