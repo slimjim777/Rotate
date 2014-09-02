@@ -62,6 +62,12 @@ def api_person(person_id=None):
             p.active = request.json.get('active')
             p.email = request.json.get('email')
             p.user_role = request.json.get('user_role')
+            p.guest = request.json.get('guest')
+
+            if not p.guest:
+                if not p.email or len(p.email.strip()) == 0:
+                    raise Exception("Email must be entered for non-guest users")
+
             db.session.commit()
             result = {
                 'response': 'Success',
@@ -208,6 +214,11 @@ def api_people_new():
 
         p = Person(request.json.get('email'), request.json.get('firstname'),
                    request.json.get('lastname'))
+        p.guest = request.json.get('guest')
+        if not p.guest:
+            if not p.email or len(p.email.strip()) == 0:
+                raise Exception("Email must be entered for non-guest users")
+
         db.session.add(p)
         db.session.commit()
         return jsonify({'response': 'Success', 'person': p.to_dict()})

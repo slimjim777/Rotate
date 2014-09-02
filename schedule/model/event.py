@@ -241,6 +241,7 @@ class Person(db.Model):
     active = db.Column(db.Boolean, default=True)
     away_dates = db.relationship('AwayDate', backref='person_ref', lazy='dynamic')
     events_admin = db.relationship('Event', secondary=event_admins, backref=db.backref('person_ref', lazy='joined'))
+    guest = db.Column(db.Boolean, default=False)
 
     def __init__(self, email, firstname, lastname):
         self.firstname = firstname
@@ -250,7 +251,7 @@ class Person(db.Model):
     def __repr__(self):
         return '<Person %r>' % self.name
 
-    @validates('firstname', 'lastname', 'email')
+    @validates('firstname', 'lastname')
     def check_not_empty(self, key, value):
         if not value or len(value.strip()) == 0:
             raise ValueError('The field `%s` must not be empty' % key)
@@ -287,6 +288,7 @@ class Person(db.Model):
             'user_role': self.user_role,
             'last_login': self.last_login.strftime('%Y-%m-%dT%H:%M:%S') if self.last_login else None,
             'active': self.active,
+            'guest': self.guest,
             'person_roles': [r.to_dict() for r in self.person_roles],
         }
 

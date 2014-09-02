@@ -631,6 +631,7 @@ App.PersonCreateController = Ember.ObjectController.extend({
     firstname: null,
     lastname: null,
     email: null,
+    guest: null,
     error: null,
 
     reset: function() {
@@ -647,7 +648,8 @@ App.PersonCreateController = Ember.ObjectController.extend({
                 firstname: this.get('firstname'),
                 lastname: this.get('lastname'),
                 email: this.get('email'),
-                user_role: this.get('user_role')
+                user_role: this.get('user_role'),
+                guest: this.get('guest')
             };
 
             var controller = this;
