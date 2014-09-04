@@ -310,10 +310,31 @@ class FastQuery(object):
         roles, role_people = FastQuery.roles(event_id=event_id)
         r['role_names'] = [x['name'] for x in roles]
 
-        # Reorganise the dates and rota for each date into lists
-        r['event_dates'] = []
+        # Get a list of the dates that we have planned
+        date_list = []
         for key in sorted(r.get('dates', {}).keys()):
-            on_date = r['dates'][key]
+            on_date = r['dates'][key]['on_date']
+            if on_date not in date_list:
+                date_list.append(on_date)
+
+        # Add in the dates that have not been planned yet
+        unplanned = FastQuery._dates_without_rota(event_id,
+            got_event_date_ids, from_date, to_date, roles, role_people,
+            date_format)
+        unplanned_rota = {}
+        for row in unplanned:
+            date_list.append(row['on_date'])
+            unplanned_rota[row['on_date']] = row
+
+        # Bring the planned and unplanned rotas into a single list in date order
+        r['event_dates'] = []
+        for key in sorted(date_list):
+            if r['dates'].get(key):
+                on_date = r['dates'][key]
+            else:
+                on_date = unplanned_rota[key]
+                r['event_dates'].append(on_date)
+                continue
 
             # Re-organise the rota into the display sequence
             rota = []
@@ -334,11 +355,6 @@ class FastQuery(object):
             r['event_dates'].append(on_date)
         if r.get('dates'):
             del r['dates']
-
-        # Add in blank rows with dates without a rota
-        r['event_dates'].extend(FastQuery._dates_without_rota(event_id,
-            got_event_date_ids, from_date, to_date, roles, role_people,
-            date_format))
 
         app.logger.debug('Rota (event): %s' % (time.time() - start))
         return r
@@ -519,14 +535,14 @@ class FastQuery(object):
         return from_date, to_date
 
     @staticmethod
-    def date_range_from(from_str):
+    def date_range_from(from_str, weeks=12):
         """
         Get the from and to date when given an number of weeks.
         """
         if not from_str:
             from_date = datetime.date.today()
         from_date = datetime.datetime.strptime(from_str, '%Y-%m-%d')
-        to_date = from_date + datetime.timedelta(weeks=12)
+        to_date = from_date + datetime.timedelta(weeks=weeks)
         return from_date.strftime('%Y-%m-%d'), to_date.strftime('%Y-%m-%d')
 
     @staticmethod

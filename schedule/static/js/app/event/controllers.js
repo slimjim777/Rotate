@@ -68,15 +68,15 @@ App.EventController = Ember.ObjectController.extend({
             var postdata = {
                 frequency: event.frequency,
                 repeats_every: 1, //event.get('repeat_every'),
-                day_mon: event.get('day_mon'),
-                day_tue: event.get('day_tue'),
-                day_wed: event.get('day_wed'),
-                day_thu: event.get('day_thu'),
-                day_fri: event.get('day_fri'),
-                day_sat: event.get('day_sat'),
-                day_sun: event.get('day_sun'),
-                from_date: event.get('from_date'),
-                to_date: event.get('to_date')
+                day_mon: event.day_mon,
+                day_tue: event.day_tue,
+                day_wed: event.day_wed,
+                day_thu: event.day_thu,
+                day_fri: event.day_fri,
+                day_sat: event.day_sat,
+                day_sun: event.day_sun,
+                from_date: event.from_date,
+                to_date: event.to_date
             };
 
             var controller = this;
