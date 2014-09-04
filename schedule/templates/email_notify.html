@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<pre>
+{{rota.person_firstname}},
+
+A friendly reminder that you are on the {{rota.event_name}} rota:
+
+ Date: {{rota.on_date}}
+ Roles: {{rota.roles}}
+
+{% if rota.person_away %}
+You have indicated that you are away, so please make sure that you have made
+arrangements for cover.
+{% endif %}
+
+You can check the rota at {{request.url_root}}rota#/people/me.
+
+--
+Your neighbourhood rota robot.
+</pre>
+<hr>
+</html>

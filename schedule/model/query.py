@@ -562,6 +562,7 @@ class FastQuery(object):
               inner join person p on p.id=r.person_id and p.active
               inner join role rl on rl.id=r.role_id
               where ed.on_date = current_date + :days
+              and not p.guest
               """
         rows = db.session.execute(sql, {'days': days})
 
@@ -570,12 +571,13 @@ class FastQuery(object):
         for row in rows.fetchall():
             record = {
                 'person_id': row['person_id'],
+                'person_firstname': row['firstname'],
                 'person_name': '%s %s' % (row['firstname'], row['lastname']),
                 'person_email': row['email'],
                 'person_away': row['is_away'],
                 'event_id': row['event_id'],
                 'event_name': row['event_name'],
-                'on_date': row['on_date'].strftime('%Y-%m-%d'),
+                'on_date': row['on_date'],
                 'event_date_id': row['event_date_id'],
                 'role': row['role_name'],
             }

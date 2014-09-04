@@ -452,4 +452,25 @@ def api_event_notifications(days):
     that are on rota.
     """
     on_rota = FastQuery.notify_people_on_rota(days)
-    return jsonify({'response': 'Success', 'on_rota': on_rota})
+
+    messages = ''
+
+    for name, rotas in on_rota.items():
+        rota = rotas[0]
+
+        rota['on_date'] = custom_date_format('%A {S} %B', rota['on_date'])
+
+        rota['roles'] = ', '.join([r['role'] for r in rotas])
+        message = render_template('email_notify.html', rota=rota)
+        messages += message
+
+    return messages
+
+
+def suffix(d):
+    return 'th' if 11 <= d <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(
+        d % 10, 'th')
+
+
+def custom_date_format(fmt, t):
+    return t.strftime(fmt).replace('{S}', str(t.day) + suffix(t.day))
