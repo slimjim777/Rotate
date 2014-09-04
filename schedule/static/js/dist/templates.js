@@ -347,10 +347,10 @@ function program9(depth0,data) {
   data.buffer.push("\n                        <div>\n                            ");
   stack1 = (helper = helpers['link-to'] || (depth0 && depth0['link-to']),options={hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0,depth0,depth0],types:["STRING","ID","ID"],data:data},helper ? helper.call(depth0, "event_date", "event.event_id", "event.event_date_id", options) : helperMissing.call(depth0, "link-to", "event_date", "event.event_id", "event.event_date_id", options));
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n                        <span>\n                            ");
+  data.buffer.push("\n                            <div>\n                                ");
   stack1 = helpers.each.call(depth0, "role", "in", "event.roles", {hash:{},hashTypes:{},hashContexts:{},inverse:self.noop,fn:self.program(12, program12, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n                        </span>\n                        </div>\n                    ");
+  data.buffer.push("\n                            </div>\n                        </div>\n                    ");
   return buffer;
   }
 function program10(depth0,data) {
@@ -364,10 +364,10 @@ function program10(depth0,data) {
 function program12(depth0,data) {
   
   var buffer = '', stack1;
-  data.buffer.push("\n                                <span class=\"label label-default\">");
+  data.buffer.push("\n                                    <span class=\"label label-default\">");
   stack1 = helpers._triageMustache.call(depth0, "role.name", {hash:{},hashTypes:{},hashContexts:{},contexts:[depth0],types:["ID"],data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("</span>\n                            ");
+  data.buffer.push("</span>\n                                ");
   return buffer;
   }
 

@@ -32,11 +32,11 @@
                     {{#each event in r.events}}
                         <div>
                             {{#link-to "event_date" event.event_id event.event_date_id}}{{event.event}}{{/link-to}}
-                        <span>
-                            {{#each role in event.roles}}
-                                <span class="label label-default">{{role.name}}</span>
-                            {{/each}}
-                        </span>
+                            <div>
+                                {{#each role in event.roles}}
+                                    <span class="label label-default">{{role.name}}</span>
+                                {{/each}}
+                            </div>
                         </div>
                     {{/each}}
                 </td>
