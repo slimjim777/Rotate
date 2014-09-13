@@ -185,9 +185,9 @@ def admin_event_roles_people(event_id, role_id):
 
         # Get the people that are not in the role
         if len(selected_ids) > 0:
-            unselected = Person.query.filter(~ Person.id.in_(selected_ids), Person.active)
+            unselected = Person.query.filter(~ Person.id.in_(selected_ids), Person.active).order_by(Person.firstname, Person.lastname)
         else:
-            unselected = Person.query.filter(Person.active).all()
+            unselected = Person.query.filter(Person.active).order_by(Person.firstname, Person.lastname).all()
         return render_template('snippet_event_role_people.html', role_id=role_id, selected=selected, unselected=unselected)
     elif request.method == 'POST':
         try:
