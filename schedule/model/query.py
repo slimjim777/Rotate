@@ -313,14 +313,15 @@ class FastQuery(object):
         # Get a list of the dates that we have planned
         date_list = []
         for key in sorted(r.get('dates', {}).keys()):
-            on_date = r['dates'][key]['on_date']
+            on_date = key
             if on_date not in date_list:
                 date_list.append(on_date)
 
         # Add in the dates that have not been planned yet
         unplanned = FastQuery._dates_without_rota(event_id,
             got_event_date_ids, from_date, to_date, roles, role_people,
-            date_format)
+            date_format='%Y-%m-%d')
+
         unplanned_rota = {}
         for row in unplanned:
             date_list.append(row['on_date'])
@@ -333,6 +334,8 @@ class FastQuery(object):
                 on_date = r['dates'][key]
             else:
                 on_date = unplanned_rota[key]
+                on_date['on_date'] = time.strftime(
+                    date_format, time.strptime(key, '%Y-%m-%d'))
                 r['event_dates'].append(on_date)
                 continue
 
