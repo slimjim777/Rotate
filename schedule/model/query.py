@@ -557,6 +557,7 @@ class FastQuery(object):
         sql = """select p.firstname, p.lastname, p.email, e.id event_id,
                         e.name event_name, ed.on_date, ed.id event_date_id,
                         rl.name role_name, p.id person_id,
+                        p.user_role user_role,
                         exists(select 1 from away_date where person_id=p.id
                     and on_date between from_date and to_date) is_away
               from rota r
@@ -583,6 +584,7 @@ class FastQuery(object):
                 'on_date': row['on_date'],
                 'event_date_id': row['event_date_id'],
                 'role': row['role_name'],
+                'user_role': row['user_role'],
             }
             if notify.get(record['person_name']):
                 notify[record['person_name']].append(record)

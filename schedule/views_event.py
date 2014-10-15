@@ -458,6 +458,11 @@ def api_event_notifications(days):
     for name, rotas in on_rota.items():
         rota = rotas[0]
 
+        # TODO: Temporarily limit the email to a few admins for testing
+        if rota['user_role'] != 'admin' \
+                or rota['person_firstname'] not in ['James', 'Mike', 'Luke']:
+            continue
+
         rota['on_date'] = custom_date_format('%A {S} %B', rota['on_date'])
 
         rota['roles'] = ', '.join([r['role'] for r in rotas])
