@@ -119,7 +119,8 @@ def admin_event(event_id):
     event = Event.query.get(event_id)
     if not event:
         abort(404)
-    return render_template('admin_event.html', row=event)
+    return render_template('admin_event.html', row=event,
+                           events=FastQuery.events())
 
 
 @app.route("/admin/event/<int:event_id>/roles", methods=['POST'])
@@ -134,7 +135,8 @@ def admin_event_roles(event_id):
     for r in event.roles:
         role_count[r.id] = len([p.id for p in r.people if p.active])
 
-    return render_template('snippet_event_roles.html', roles=event.roles, role_count=role_count)
+    return render_template('snippet_event_roles.html', roles=event.roles,
+                           role_count=role_count)
 
 
 @app.route("/admin/event/<int:event_id>/roles/update", methods=['POST', 'PUT'])
@@ -165,6 +167,21 @@ def admin_event_roles_update(event_id):
             return jsonify({'response': 'Success'})
         except Exception, v:
             return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/admin/event/<int:event_id>/roles/copy", methods=['POST'])
+@login_required
+def admin_event_roles_copy(event_id):
+    if session['role'] != 'admin':
+        abort(403)
+
+    try:
+        from_event_id = request.form.get('from_event_id')
+        copy_type = request.form.get('copy_type')
+        Event.copy_roles(from_event_id, event_id, copy_type)
+        return jsonify({'response': 'Success'})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})
 
 
 @app.route("/admin/event/<int:event_id>/roles/<int:role_id>/people", methods=['GET', 'POST'])

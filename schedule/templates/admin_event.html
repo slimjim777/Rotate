@@ -65,7 +65,7 @@
             {% for p in row.event_admins %}
             <tr id="person{{p.id}}">
                 <td>{{ p.name }}</td>
-                <td><a href="#" onclick="eventAdminRemove(event, '{{row.id}}', '{{p.id}}')" title="Remove event administrator"><span class="glyphicon glyphicon-remove-circle"></span></a></td>
+                <td><a href="#" onclick="eventAdminRemove(event, '{{row.id}}', '{{p.id}}')" title="Remove event administrator">Remove</a></td>
             </tr>
             {% endfor %}
         </table>
@@ -78,6 +78,7 @@
             <label id="roles-spinner" class="spinner" hidden>&nbsp;</label>
             Event Roles&nbsp;
             <button id="create-event-role" class="btn btn-primary" onclick="showRoleDialog(event, null, {{ row.id }})" title="New Event Role"><span class="glyphicon glyphicon-plus"></span></button>
+            <button id="copy-event-roles" class="btn btn-primary" onclick="copyRolesDialog(event, {{ row.id }})" title="Copy Roles">Copy</button>
         </h3>
     </div>
     <div id="roles" class="table-responsive">
@@ -126,6 +127,40 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="eventRole(event, {{ row.id }})">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Copy Event Roles -->
+<div id="dialog-copy" title="Copy Event Roles" class="modal fade">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Copy Event Roles</h4>
+              <br />
+              <div id="d-message-copy"></div>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <fieldset>
+                      <label>Copy roles from Event</label>
+                      <select id="d-from_event_id" name="d-from_event_id" class="form-control">
+                        {% for ev in events if ev.id != row.id %}
+                          <option value="{{ev.id}}">{{ev.name}}</option>
+                        {% endfor %}
+                      </select>
+                      <label>What to copy</label>
+                      <select id="d-type" name="d-type" class="form-control">
+                          <option value="role">Roles Only</option>
+                          <option value="rolepeople">Roles and People</option>
+                      </select>
+                  </fieldset>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="eventRolesCopy(event, {{ row.id }})">Copy</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
       </div>

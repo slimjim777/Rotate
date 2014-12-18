@@ -373,6 +373,33 @@ function eventRole(ev, eventId) {
     });
 }
 
+function eventRolesCopy(ev, eventId) {
+    ev.preventDefault();
+
+    // Set the parameters for the copy
+    var data = {
+        from_event_id: $('#d-from_event_id').val(),
+        copy_type: $('#d-type').val()
+    };
+
+    var request = $.ajax({
+      type: 'POST',
+      url: '/admin/event/' + eventId + '/roles/copy',
+      data: data
+    }).done( function(data) {
+        if (data.response == 'Success') {
+            $('#dialog-copy').modal('hide');
+            eventRoles(ev, eventId);
+        } else {
+            // Display the error
+            showMessage(data.message, $("#d-message-copy"));
+        }
+    }).fail( function(a, b, c) {
+        showMessage(a.status + ': ' + a.statusText);
+    });
+
+}
+
 function deleteRole(ev, roleId, eventId) {
     ev.preventDefault();
 
@@ -427,6 +454,19 @@ function showRoleDialog(ev, roleId, eventId) {
 
     // Show the dialog
     $('#dialog-form').modal('show');
+}
+
+function copyRolesDialog(ev, eventId) {
+    ev.preventDefault();
+
+    // Clear the message on the dialog
+    var message = $('#d-message-copy');
+    message.text('');
+    message.toggleClass('alert', false);
+    message.toggleClass('alert-danger', false);
+
+    // Show the dialog
+    $('#dialog-copy').modal('show');
 }
 
 function rolePeople(ev, eventId, roleId) {

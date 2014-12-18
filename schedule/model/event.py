@@ -112,6 +112,40 @@ class Event(db.Model):
         app.logger.debug(records)
         return True, len(records)
 
+    @staticmethod
+    def copy_roles(from_event_id, to_event_id, copy_type):
+        """
+        Copy the roles and assigned people from one event to another.
+        """
+        app.logger.debug(from_event_id)
+        from_event = Event.query.get(from_event_id)
+        to_event = Event.query.get(to_event_id)
+
+        for role in from_event.roles:
+            # Check that a role with the name does not exist in 'to-event'
+            role_new =  None
+            for to_role in to_event.roles:
+                if to_role.name == role.name:
+                    role_new = to_role
+                    break
+
+            # Create the role for the 'to-event', if it does not exist
+            if not role_new:
+                role_new = Role(role.name, to_event_id)
+                role_new.sequence = role.sequence
+                db.session.add(role_new)
+
+            # Add people to the role, if requested
+            if copy_type == 'role':
+                continue
+
+            # Add the people to the role
+            for person in role.people:
+                if person not in role_new.people:
+                    role_new.people.append(person)
+
+        db.session.commit()
+
 
 class EventDate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
