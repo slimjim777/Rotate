@@ -447,11 +447,11 @@ App.EventOverviewRoute = Ember.Route.extend({
 ;
 App.PersonController = Ember.ObjectController.extend({
     menu: 'nav-myrota',
-    rotaRangeSelected: '12',
-    ranges: [{value: '12', name:'Upcoming'}, {value: '-12', name:'Recent'}],
+    rotaRangeSelected: '52',
+    ranges: [{value: '52', name:'Upcoming'}, {value: '-12', name:'Recent'}],
     rotaLoading: false,
 
-    awayRangeSelected: '12',
+    awayRangeSelected: '52',
     awayLoading: null,
 
     awayForm: {},
