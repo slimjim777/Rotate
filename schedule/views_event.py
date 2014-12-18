@@ -250,6 +250,7 @@ def api_event_overview(event_id):
             request.json.get('from_date'), weeks=weeks_to_view)
     else:
         from_date, to_date = FastQuery.date_range(ui_range=weeks_to_view)
+
     ev_dates = FastQuery.rota_for_event(event_id, from_date, to_date)
     return jsonify({'response': 'Success', 'event_dates': ev_dates})
 

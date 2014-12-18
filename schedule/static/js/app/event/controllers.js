@@ -81,7 +81,7 @@ App.EventController = Ember.ObjectController.extend({
 
             var controller = this;
 
-            App.Event.createDates(event.get('id'), postdata).then(function(result) {
+            App.Event.createDates(event.id, postdata).then(function(result) {
                 Ember.$('#dialog-form').modal('hide');
                 controller.transitionToRoute('event', controller.get('model').get('id'));
             }).catch(function(error) {

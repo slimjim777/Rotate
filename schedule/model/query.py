@@ -263,17 +263,16 @@ class FastQuery(object):
         }
         rows = db.session.execute(sql, params)
 
-        r = None
+        r = {
+            'event_id': event_id,
+            'event_name': FastQuery.event(event_id)['name'],
+            'dates': {},
+        }
         got_event_date_ids = []
         for row in rows.fetchall():
             got_event_date_ids.append(row['event_date_id'])
-            if not r:
-                r = {
-                    'event_id': row['event_id'],
-                    'event_name': row['event_name'],
-                    'dates': {},
-                }
             on_date = row['on_date'].strftime('%Y-%m-%d')
+
             if not r['dates'].get(on_date):
                 r['dates'][on_date] = {
                     'id': row['event_date_id'],
@@ -371,7 +370,7 @@ class FastQuery(object):
         """
         on_dates = []
         if len(ignore_ids) == 0:
-            return on_dates
+            ignore_ids = [0]
 
         sql = """select e.id event_id, e.name event_name, on_date,
                   ed.id event_date_id, focus, notes
