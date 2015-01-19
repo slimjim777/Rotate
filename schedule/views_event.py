@@ -1,10 +1,13 @@
+import time
+
 from flask import render_template
 from flask import jsonify
 from flask import request
 from flask import abort
 from flask import session
 from sqlalchemy import or_
-import time
+
+from model.helper import custom_date_format, notify_days_ahead
 from model.query import FastQuery
 from schedule import app
 from schedule import db
@@ -28,7 +31,8 @@ def error():
 @app.route('/overview/<int:event_id>')
 def overview(event_id):
     try:
-        from_date, to_date = FastQuery.date_range_from(time.strftime('%Y-%m-%d'))
+        from_date, to_date = FastQuery.date_range_from(
+            time.strftime('%Y-%m-%d'))
         model = FastQuery.rota_for_event(
             event_id, from_date, to_date, date_format='%d %b')
         error_message = None
@@ -184,7 +188,8 @@ def admin_event_roles_copy(event_id):
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
-@app.route("/admin/event/<int:event_id>/roles/<int:role_id>/people", methods=['GET', 'POST'])
+@app.route("/admin/event/<int:event_id>/roles/<int:role_id>/people",
+           methods=['GET', 'POST'])
 @login_required
 def admin_event_roles_people(event_id, role_id):
     if session['role'] != 'admin':
@@ -202,15 +207,20 @@ def admin_event_roles_people(event_id, role_id):
 
         # Get the people that are not in the role
         if len(selected_ids) > 0:
-            unselected = Person.query.filter(~ Person.id.in_(selected_ids), Person.active).order_by(Person.firstname, Person.lastname)
+            unselected = Person.query.filter(
+                ~ Person.id.in_(selected_ids),
+                Person.active).order_by(Person.firstname, Person.lastname)
         else:
-            unselected = Person.query.filter(Person.active).order_by(Person.firstname, Person.lastname).all()
-        return render_template('snippet_event_role_people.html', role_id=role_id, selected=selected, unselected=unselected)
+            unselected = Person.query.filter(Person.active).order_by(
+                Person.firstname, Person.lastname).all()
+        return render_template(
+            'snippet_event_role_people.html',
+            role_id=role_id, selected=selected, unselected=unselected)
     elif request.method == 'POST':
         try:
             # Update the selected people for the role
             role = Role.query.get(role_id)
-            if not 'selected' in request.json:
+            if 'selected' not in request.json:
                 raise Exception('The selected Person IDs are missing.')
             selected = [int(s) for s in request.json['selected']]
             done = []
@@ -332,22 +342,29 @@ def event_dates_create(event_id):
     frequency = request.json.get('frequency', 'irregular')
     repeats_every = int(request.json.get('repeats_every', 1))
     repeats_on = [
-        request.json.get('day_mon'), request.json.get('day_tue'), request.json.get('day_wed'),
-        request.json.get('day_thu'), request.json.get('day_fri'), request.json.get('day_sat'),
+        request.json.get('day_mon'), request.json.get('day_tue'),
+        request.json.get('day_wed'),
+        request.json.get('day_thu'), request.json.get('day_fri'),
+        request.json.get('day_sat'),
         request.json.get('day_sun')
     ]
     from_date = request.json.get('from_date', None)
     to_date = request.json.get('to_date', None)
     if not from_date and not to_date:
-        return jsonify({'response': 'Failed', 'message': "Both 'From Date' and 'To Date' must be entered"})
+        return jsonify({
+            'response': 'Failed',
+            'message': "Both 'From Date' and 'To Date' must be entered"})
 
     # Get the event
     event = Event.query.get(event_id)
     if not event:
-        return jsonify({'response': 'Failed', 'message': "Could not find the event with ID '%s'" % event_id})
+        return jsonify({
+            'response': 'Failed',
+            'message': "Could not find the event with ID '%s'" % event_id})
 
     # Create the dates for the event
-    result, qty = event.create_dates(event_id, frequency, repeats_every, repeats_on, from_date, to_date)
+    result, qty = event.create_dates(event_id, frequency, repeats_every,
+                                     repeats_on, from_date, to_date)
     app.logger.debug(result)
 
     return jsonify({'response': 'Success'})
@@ -373,21 +390,26 @@ def api_event_admins_find(event_id):
         for p in event.event_admins:
             person_ids.append(p.id)
 
-        not_admins = []
         if len(q1) > 0 and len(q2) > 0:
-            query = Person.query.filter(Person.firstname.ilike('%%%s%%' % q1), Person.lastname.\
-                                        ilike('%%%s%%' % q2)).filter(~Person.id.in_(person_ids))
+            query = Person.query.filter(
+                Person.firstname.ilike('%%%s%%' % q1),
+                Person.lastname.ilike('%%%s%%' % q2)).filter(
+                ~Person.id.in_(person_ids))
         elif len(q) > 0:
-            query = Person.query.filter(or_(Person.firstname.ilike('%%%s%%' % q), Person.lastname.\
-                                            ilike('%%%s%%' % q))).filter(~Person.id.in_(person_ids))
+            query = Person.query.filter(
+                or_(Person.firstname.ilike('%%%s%%' % q),
+                    Person.lastname.ilike('%%%s%%' % q))).filter(
+                ~Person.id.in_(person_ids))
         else:
             query = Person.query.filter(~Person.id.in_(person_ids))
 
         people = query.filter(Person.active).order_by(Person.lastname).limit(20)
         not_admins = [p.to_dict() for p in people]
-        return render_template('snippet_event_admins_find.html', event=event, people=not_admins, error='')
+        return render_template('snippet_event_admins_find.html', event=event,
+                               people=not_admins, error='')
     except Exception, v:
-        return render_template('snippet_event_admins_find.html', event=event, people=[], error=str(v))
+        return render_template('snippet_event_admins_find.html', event=event,
+                               people=[], error=str(v))
 
 
 @app.route("/api/events/<int:event_id>/event_admins/add", methods=['POST'])
@@ -409,14 +431,15 @@ def api_event_admins_add(event_id):
             raise Exception('The person is inactive')
 
         # Check that the person is not already an admin
-        is_existing = [p.id for p in event.event_admins if p.id==person.id]
+        is_existing = [p.id for p in event.event_admins if p.id == person.id]
         if len(is_existing) > 0:
             return jsonify({'response': 'Success'})
         else:
             # Add the person as an event admin
             event.event_admins.append(person)
             db.session.commit()
-            return jsonify({'response': 'Success', 'message': '%s can now administrate this event' % person.name})
+            return jsonify({'response': 'Success',
+                            'message': '%s can now administrate this event' % person.name})
     except Exception, v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
@@ -426,7 +449,8 @@ def api_event_admins_add(event_id):
 def api_event_admins_remove(event_id):
     try:
         if session['role'] != 'admin':
-            raise Exception('You do not have permissions to remove event admins')
+            raise Exception(
+                'You do not have permissions to remove event admins')
 
         event = Event.query.get(event_id)
         if not event:
@@ -461,39 +485,3 @@ def api_event_role_delete(event_id, role_id):
         return jsonify({'response': 'Success'})
     except Exception, v:
         return jsonify({'response': 'Error', 'message': str(v)})
-
-
-@app.route("/api/events/notify/<int:days>", methods=['GET'])
-def api_event_notifications(days):
-    """
-    Find event dates that are in x days time and send an Email to the people
-    that are on rota.
-    """
-    on_rota = FastQuery.notify_people_on_rota(days)
-
-    messages = ''
-
-    for name, rotas in on_rota.items():
-        rota = rotas[0]
-
-        # TODO: Temporarily limit the email to a few admins for testing
-        if rota['user_role'] != 'admin' \
-                or rota['person_firstname'] not in ['James', 'Mike', 'Luke']:
-            continue
-
-        rota['on_date'] = custom_date_format('%A {S} %B', rota['on_date'])
-
-        rota['roles'] = ', '.join([r['role'] for r in rotas])
-        message = render_template('email_notify.html', rota=rota)
-        messages += message
-
-    return messages
-
-
-def suffix(d):
-    return 'th' if 11 <= d <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(
-        d % 10, 'th')
-
-
-def custom_date_format(fmt, t):
-    return t.strftime(fmt).replace('{S}', str(t.day) + suffix(t.day))

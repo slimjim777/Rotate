@@ -569,26 +569,49 @@ class FastQuery(object):
               """
         rows = db.session.execute(sql, {'days': days})
 
-        notify_people = []
         notify = {}
         for row in rows.fetchall():
-            record = {
-                'person_id': row['person_id'],
-                'person_firstname': row['firstname'],
-                'person_name': '%s %s' % (row['firstname'], row['lastname']),
-                'person_email': row['email'],
-                'person_away': row['is_away'],
-                'event_id': row['event_id'],
-                'event_name': row['event_name'],
-                'on_date': row['on_date'],
-                'event_date_id': row['event_date_id'],
-                'role': row['role_name'],
-                'user_role': row['user_role'],
-            }
-            if notify.get(record['person_name']):
-                notify[record['person_name']].append(record)
+            # record = {
+            #     'person_id': row['person_id'],
+            #     'person_firstname': row['firstname'],
+            #     'person_name': '%s %s' % (row['firstname'], row['lastname']),
+            #     'person_email': row['email'],
+            #     'person_away': row['is_away'],
+            #     'event_id': row['event_id'],
+            #     'event_name': row['event_name'],
+            #     'on_date': row['on_date'],
+            #     'event_date_id': row['event_date_id'],
+            #     'role': row['role_name'],
+            #     'user_role': row['user_role'],
+            # }
+
+            person_name = '%s %s' % (row['firstname'], row['lastname'])
+            event_name = row['event_name']
+            if not notify.get(person_name):
+                notify[person_name] = {
+                    'person_firstname': row['firstname'],
+                    'person_email': row['email'],
+                    'events': {
+                        event_name: {
+                            'event_name': row['event_name'],
+                            'on_date': row['on_date'],
+                            'roles': [row['role_name']],
+                            'person_away': row['is_away'],
+                        }
+                    },
+                }
             else:
-                notify[record['person_name']] = [record]
+                if notify[person_name]['events'].get(event_name):
+                    notify[person_name]['events'][event_name]['roles'].append(
+                        row['role_name']
+                    )
+                else:
+                    notify[person_name]['events'][event_name] = {
+                        'event_name': row['event_name'],
+                        'on_date': row['on_date'],
+                        'roles': [row['role_name']],
+                        'person_away': row['is_away'],
+                    }
 
         app.logger.debug('Notify People: %s' % (time.time() - start))
         return notify
