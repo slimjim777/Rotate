@@ -591,6 +591,8 @@ class FastQuery(object):
                 notify[person_name] = {
                     'person_firstname': row['firstname'],
                     'person_email': row['email'],
+                    'person_away': row['is_away'],
+                    'on_date': row['on_date'],
                     'events': {
                         event_name: {
                             'event_name': row['event_name'],

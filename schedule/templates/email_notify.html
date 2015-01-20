@@ -1,15 +1,64 @@
-{{ rotas.person_firstname }},
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+body {
+    font-family: "Roboto", sans-serif;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+td {text-align: center;}
+h1 {font-size: 36px;}
+h2 {font-size: 26px;}
+h3 {color: #2e3b4e; font-size: 16px; font-weight: 300;}
+h4 {color: #319966;}
+p {text-align: center; color: #000000; font-size: medium;}
+p.footer {text-align: center; font-size: x-small; color: #ccc;}
+div {margin-left: auto; margin-right: auto; width: 300px;}
+a {text-align: center; display: block; padding: 1em; background-color: #319966; color: white; text-decoration: none; font-weight: bold;}
+    </style>
+</head>
+<body>
 
-A friendly reminder that you are on rota:
-
+<table>
+    <tr><td><img src="http://www.lifechurch.eu/email/Life_Logo-06.png" alt="Life Church"/></td></tr>
+    <tr><td><h1>{{ rotas.person_firstname }}!</h1></td></tr>
+    <tr>
+        <td>
+            <h2>Your Rota Commitments</h2>
+            <h2>{{week}} {{rotas.on_date.strftime('%A')}} ({{rotas.on_date.strftime('%d %b')}})</h2>
+        </td>
+    </tr>
 {% for event_name, rota in rotas.events.items() %}
- Event: {{ event_name }}
- Date : {{rota.on_date}}
- Roles: {{ ', '.join(rota.roles) }}
-
-{% if rota.person_away %}You have indicated that you are away, so please make sure that you have made arrangements for cover.{% endif %}
+    <tr>
+        <td>
+            <h3><b>The Event</b>: {{ event_name }}</h3>
+            <h3><b>Your Roles</b>: {{ ', '.join(rota.roles) }}</h3>
+        </td>
+    </tr>
 {% endfor %}
-You can check the rota at {{url_root}}rota#/people/me.
 
---
-Your neighbourhood rota robot.
+    {% if rotas.person_away %}
+    <tr>
+        <td><h4>You have indicated that you are away, so please make sure that you have made arrangements for cover.</h4></td>
+    </tr>
+    {% endif %}
+
+</table>
+
+<br>
+<p>This is just a friendly reminder that you're on rota. You can check the rota using the button below.</p>
+<div><a href="{{url_root}}rota#/people/me">Click Here for the Rota</a></div>
+
+<div>
+    <p class="footer">This is an automated email sent from the Life Church Rota Robot.<br>
+    Though we are efficient, we cannot read to please do not reply to this email.</p>
+</div>
+
+</body>
+</html>

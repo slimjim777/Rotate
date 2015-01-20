@@ -1,0 +1,19 @@
+{{ rotas.person_firstname }}!
+
+Your Rota Commitments
+{{week}} {{rotas.on_date.strftime('%A')}} ({{rotas.on_date.strftime('%d %b')}})
+
+A friendly reminder that you are on rota:
+
+{% for event_name, rota in rotas.events.items() %}
+ The Event:  {{ event_name }}
+ Your Roles: {{ ', '.join(rota.roles) }}
+
+{% if rota.person_away %}You have indicated that you are away, so please make sure that you have made arrangements for cover.{% endif %}
+{% endfor %}
+You can check the rota at {{url_root}}rota#/people/me.
+
+--
+This is an automated email sent from the Life Church Rota Robot.
+
+
