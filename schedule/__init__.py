@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 from flask import Flask
-from flask.ext.mail import Mail
 from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-mail = Mail(app)
 
 app.secret_key = os.environ["SECRET_KEY"]
 
