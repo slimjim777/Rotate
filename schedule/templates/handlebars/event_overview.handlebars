@@ -56,12 +56,15 @@
                 <td>
                     {{#if r.is_away}}
                             {{#link-to "person" r.person_id}}<span class="alert-danger" title="Person is away, swap needed.">{{r.person_name}}</span>{{/link-to}}
-                        </span>
                     {{else}}
-                        {{#if r.active}}
-                            {{#link-to "person" r.person_id}}{{r.person_name}}{{/link-to}}
+                        {{#if r.on_rota}}
+                            {{#link-to "person" r.person_id}}<span class="alert-warning" title="Person is on another rota.">{{r.person_name}}</span>{{/link-to}}
                         {{else}}
-                            {{#link-to "person" r.person_id}}<span class="alert-warning" title="Person is deactivated, swap needed.">{{r.person_name}}</span>{{/link-to}}
+                            {{#if r.active}}
+                                {{#link-to "person" r.person_id}}{{r.person_name}}{{/link-to}}
+                            {{else}}
+                                {{#link-to "person" r.person_id}}<span class="alert-warning" title="Person is deactivated, swap needed.">{{r.person_name}}</span>{{/link-to}}
+                            {{/if}}
                         {{/if}}
                     {{/if}}
                 </td>

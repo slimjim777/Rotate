@@ -83,7 +83,12 @@ class FastQuery(object):
                  p.active person_active, p.id person_id,
                  exists(select 1 from away_date where person_id=p.id
                   and on_date between from_date and to_date) is_away,
-                 ed.focus, ed.notes
+                 ed.focus, ed.notes,
+                 exists(select 1 from rota rr
+                        inner join event_date eded on rr.event_date_id=eded.id
+                        where rr.person_id=p.id
+                        and eded.id<>ed.id
+                        and eded.on_date=ed.on_date) on_rota
               from rota r
               inner join event_date ed on r.event_date_id=ed.id
               inner join event ev on ed.event_id=ev.id
@@ -122,6 +127,7 @@ class FastQuery(object):
                 'person_name': '%s %s' % (row['firstname'], row['lastname']),
                 'active': row['person_active'],
                 'is_away': row['is_away'],
+                'on_rota': row['on_rota'],
                 'people': role_people.get(row['role_name'], [])
             }
             role_dict[row['role_name']] = on_rota
@@ -246,7 +252,12 @@ class FastQuery(object):
                  p.active person_active, p.id person_id,
                  exists(select 1 from away_date where person_id=p.id
                   and on_date between from_date and to_date) is_away,
-                 ed.focus, ed.notes
+                 ed.focus, ed.notes,
+                 exists(select 1 from rota rr
+                        inner join event_date eded on rr.event_date_id=eded.id
+                        where rr.event_date_id<>ed.id
+                        and rr.person_id=p.id
+                        and eded.on_date=ed.on_date) on_rota
               from event_date ed
               inner join event ev on ed.event_id=ev.id
               inner join rota r on r.event_date_id=ed.id
@@ -295,6 +306,7 @@ class FastQuery(object):
                 'person_name': person_name,
                 'active': row['person_active'],
                 'is_away': row['is_away'],
+                'on_rota': row['on_rota'],
             }
 
         # Make sure that we at least have some event details
@@ -571,20 +583,6 @@ class FastQuery(object):
 
         notify = {}
         for row in rows.fetchall():
-            # record = {
-            #     'person_id': row['person_id'],
-            #     'person_firstname': row['firstname'],
-            #     'person_name': '%s %s' % (row['firstname'], row['lastname']),
-            #     'person_email': row['email'],
-            #     'person_away': row['is_away'],
-            #     'event_id': row['event_id'],
-            #     'event_name': row['event_name'],
-            #     'on_date': row['on_date'],
-            #     'event_date_id': row['event_date_id'],
-            #     'role': row['role_name'],
-            #     'user_role': row['user_role'],
-            # }
-
             person_name = '%s %s' % (row['firstname'], row['lastname'])
             event_name = row['event_name']
             if not notify.get(person_name):

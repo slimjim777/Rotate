@@ -67,9 +67,17 @@
                     <tr>
                         <td>{{r.role.name}}</td>
                         <td>{{#if r.active}}
-                            {{#if r.is_away}}{{#link-to 'person' r.person_id}}<span class="alert-danger" title="Away">{{r.person_name}}</span>{{/link-to}}{{else}}{{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}{{/if}}
+                                {{#if r.is_away}}
+                                    {{#link-to 'person' r.person_id}}<span class="alert-danger" title="Away">{{r.person_name}}</span>{{/link-to}}
+                                {{else}}
+                                    {{#if r.on_rota}}
+                                        {{#link-to 'person' r.person_id}}<span class="alert-warning" title="On rota for another team">{{r.person_name}}</span>{{/link-to}}
+                                    {{else}}
+                                        {{#link-to 'person' r.person_id}}{{r.person_name}}{{/link-to}}
+                                    {{/if}}
+                                {{/if}}
                             {{else}}
-                            {{#link-to 'person' r.person_id}}<span class="alert-warning" title="Inactive User">{{r.person_name}}</span>{{/link-to}}
+                                {{#link-to 'person' r.person_id}}<span class="alert-warning" title="Inactive User">{{r.person_name}}</span>{{/link-to}}
                             {{/if}}
                         </td>
                     </tr>

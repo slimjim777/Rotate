@@ -88,12 +88,15 @@
                     <td>
                         {% if r.is_away %}
                                 <span class="alert-danger" title="Person is away, swap needed.">{{r.person_name}}</span>
-                            </span>
                         {% else %}
-                            {% if r.active %}
-                                {{r.person_name}}
+                            {% if r.on_rota %}
+                                <span class="alert-warning" title="Person is on another rota.">{{r.person_name}}</span>
                             {% else %}
-                                <span class="alert-warning" title="Person is deactivated, swap needed.">{{r.person_name}}</span>
+                                {% if r.active %}
+                                    {{r.person_name}}
+                                {% else %}
+                                    <span class="alert-warning" title="Person is deactivated, swap needed.">{{r.person_name}}</span>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </td>
