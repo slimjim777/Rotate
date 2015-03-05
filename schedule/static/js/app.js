@@ -18,8 +18,13 @@ function showSuccessMessage(msg, message) {
     message.fadeIn(1000);
 }
 
-function clearMessage() {
-    var message = $('#d-message');
+function clearMessage(msg) {
+    var message;
+    if (!msg) {
+        message = $('#d-message');
+    } else{
+        message = $(msg);
+    }
     message.text('');
     message.toggleClass('alert', false);
     message.toggleClass('alert-danger', false);
@@ -373,6 +378,34 @@ function eventRole(ev, eventId) {
     });
 }
 
+function eventRoleCopy(ev, eventId) {
+    ev.preventDefault();
+    var method = 'POST'
+    var roleId = $('#dr-role_id').val();
+
+    // Get the details of the new person
+    var data = {
+        name: $("#dr-name").val(),
+        sequence: $("#dr-sequence").val()
+    };
+
+     var request = $.ajax({
+      type: 'POST',
+      url: '/admin/event/' + eventId + '/roles/' + roleId + '/copy',
+      data: data
+    }).done( function(data) {
+        if (data.response == 'Success') {
+            $('#dialog-copy-role').modal('hide');
+            eventRoles(ev, eventId);
+        } else {
+            // Display the error
+            showMessage(data.message, $('#dr-message'));
+        }
+    }).fail( function(a, b, c) {
+        showMessage(a.status + ': ' + a.statusText, $('#dr-message'));
+    });
+}
+
 function eventRolesCopy(ev, eventId) {
     ev.preventDefault();
 
@@ -454,6 +487,30 @@ function showRoleDialog(ev, roleId, eventId) {
 
     // Show the dialog
     $('#dialog-form').modal('show');
+}
+
+function showRoleCopyDialog(ev, roleId, eventId) {
+    ev.preventDefault();
+
+    // Set defaults for a new role
+    clearMessage('#dr-message');
+    var name = '';
+    var sequence = 1;
+
+    // Populate the form
+    $('#dr-role_id').val(roleId);
+
+    if (roleId) {
+        // Editing existing role, so get the values
+        name = $('#name'+roleId).text();
+        sequence = $('#sequence'+roleId).text();
+    }
+
+    $('#dr-name').val('Copy of ' + name);
+    $('#dr-sequence').val(sequence);
+
+    // Show the dialog
+    $('#dialog-copy-role').modal('show');
 }
 
 function copyRolesDialog(ev, eventId) {

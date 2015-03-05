@@ -260,6 +260,24 @@ class Role(db.Model):
             'sequence': self.sequence,
         }
 
+    @staticmethod
+    def clone(from_role_id, name, sequence):
+        """
+        Copy the assigned people from one role to another.
+        """
+        from_role = Role.query.get(from_role_id)
+
+        # Create a new role
+        new_role = Role(name, from_role.event_id)
+        new_role.sequence = sequence
+        db.session.add(new_role)
+
+        for person in from_role.people:
+            if person not in new_role.people:
+                new_role.people.append(person)
+
+        db.session.commit()
+
     def __repr__(self):
         return '<Role %r>' % self.name
 

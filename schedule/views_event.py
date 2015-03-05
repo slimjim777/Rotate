@@ -173,6 +173,29 @@ def admin_event_roles_update(event_id):
             return jsonify({'response': 'Error', 'message': str(v)})
 
 
+@app.route("/admin/event/<int:event_id>/roles/<int:role_id>/copy", methods=['POST'])
+@login_required
+def admin_event_role_copy(event_id, role_id):
+    if session['role'] != 'admin':
+        abort(403)
+
+    try:
+        # Check to see if the role already exists
+        name = request.form.get('name')
+        sequence = int(request.form.get('sequence'))
+
+        roles = Role.query.filter_by(name=name, event_id=event_id).all()
+        if len(roles) > 0:
+            raise Exception("The role name '%s' already exists" % name)
+
+        # Clone the role
+        Role.clone(role_id, name, sequence)
+
+        return jsonify({'response': 'Success'})
+    except Exception, v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
 @app.route("/admin/event/<int:event_id>/roles/copy", methods=['POST'])
 @login_required
 def admin_event_roles_copy(event_id):

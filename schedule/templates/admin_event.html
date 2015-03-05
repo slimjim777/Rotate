@@ -190,6 +190,34 @@
   </div>
 </div>
 
+<!-- Copy Event Role (single role) -->
+<div id="dialog-copy-role" title="Copy Event Role" class="modal fade">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Copy an Event Role</h4>
+              <br />
+              <div id="dr-message"></div>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <fieldset>
+                      <input id="dr-role_id" type="text" hidden name="role_id" />
+                      <label>Role Name</label>
+                      <input type="text" name="name" id="dr-name" class="form-control" placeholder="role name" />
+                      <label>Sequence</label>
+                      <input type="number" name="sequence" id="dr-sequence" value="1" min=0 max=100 class="form-control" placeholder="sequence" />
+                  </fieldset>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="eventRoleCopy(event, {{ row.id }})">Copy</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
 <script>
     $( document ).ready(function() {
         // Set the current page
