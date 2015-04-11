@@ -3,14 +3,14 @@
         <div class="panel-heading">
             <h3 class="panel-title">{{#if awayLoading}}<label id="person-rota-spinner" class="spinner">&nbsp;</label>{{/if}}Away Dates&nbsp;
                 {{#if canAdministratePerson}}
-                <button class="btn btn-primary" title="New Away Dates" {{action newAwayDates}}><span class="glyphicon glyphicon-plus"></span></button>
+                <button class="btn btn-primary" title="New Away Dates" {{action 'newAwayDates'}}><span class="glyphicon glyphicon-plus"></span></button>
                 {{/if}}
                 {{view Ember.Select
                     value=awayRangeSelected
                     content=ranges
                     optionValuePath="content.value"
                     optionLabelPath="content.name"}}&nbsp;
-                <button class="btn" {{action refreshAwayDates}} title="Refresh Away Dates"><span class="glyphicon glyphicon-refresh"></span></button>
+                <button class="btn" {{action 'refreshAwayDates'}} title="Refresh Away Dates"><span class="glyphicon glyphicon-refresh"></span></button>
             </h3>
         </div>
         <div class="panel-body table-responsive" id="person-rota">
@@ -24,10 +24,10 @@
             <tbody>
             {{#each r in away_dates}}
             <tr>
-                <td><button {{action editAwayDate r}} class="btn btn-default">Edit</button></td>
+                <td><button {{action 'editAwayDate' r}} class="btn btn-default">Edit</button></td>
                 <td>{{formatDate r.from_date}}</td>
                 <td>{{formatDate r.to_date}}</td>
-                <td><button {{action deleteAwayDate r}} class="btn btn-link"><span class="glyphicon glyphicon-remove-circle"></span></button></td>
+                <td><button {{action 'deleteAwayDate' r}} class="btn btn-link"><span class="glyphicon glyphicon-remove-circle"></span></button></td>
             </tr>
             {{/each}}
             </tbody>
@@ -39,7 +39,7 @@
     </div>
 
 
-<div class="modal fade" id="awayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal" id="awayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -49,7 +49,7 @@
         {{#if awayError}}
             <div class="alert alert-danger">{{awayError}}</div>
         {{/if}}
-        <p></p><em>Click the date entry box to select a date.</em></p>
+        <p><em>Click the date entry box to select a date.</em></p>
         {{input type="hidden" name=awayForm.id value=awayForm.id class="form-control"}}
         <label>From Date</label>
         {{view App.CalendarDatePicker name=awayForm.from_date value=awayForm.from_date class="form-control" placeholder="from date" readonly="true" title="Click to enter the date"}}
@@ -57,7 +57,7 @@
         {{view App.CalendarDatePicker name=awayForm.to_date value=awayForm.to_date class="form-control" placeholder="to date" readonly="true" title="Click to enter the date"}}
       </div>
       <div class="modal-footer">
-        <button {{action saveAwayDate}} class="btn btn-primary">Save</button>
+        <button {{action 'saveAwayDate'}} class="btn btn-primary">Save</button>
         <button class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>

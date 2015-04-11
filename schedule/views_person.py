@@ -22,7 +22,7 @@ def view_person_my_rota():
 @app.route('/rota', methods=['GET'])
 @login_required
 def view_person():
-    return render_template('ember_person.hbs')
+    return render_template('ember_person.html')
 
 
 @app.route('/api/people/me', methods=['GET'])

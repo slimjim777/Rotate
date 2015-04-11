@@ -7,7 +7,10 @@ module.exports = function(grunt) {
     emberTemplates: {
         compile: {
             options: {
-                templateBasePath: /schedule\/templates\/handlebars\//
+                templateCompilerPath: 'bower_components/ember/ember-template-compiler.js',
+                handlebarsPath: 'node_modules/handlebars/dist/handlebars.js',
+                templateBasePath: /schedule\/templates\/handlebars\//,
+                templateNamespace: 'HTMLBars'
             },
             files: {
                 "schedule/static/js/dist/templates.js": ["schedule/templates/handlebars/*.handlebars"]
@@ -20,10 +23,24 @@ module.exports = function(grunt) {
         separator: ';'
       },
       dist: {
-        // the files to concatenate
         src: ['schedule/static/js/app/**/*.js'],
-        // the location of the resulting JS file
         dest: 'schedule/static/js/dist/<%= pkg.name %>.js'
+      },
+      vendor: {
+        src: ['bower_components/ember/*.prod.js', 
+              'bower_components/bootstrap/dist/js/**/*.min.js', 'bower_components/moment/min/moment.min.js',
+              'bower_components/pikaday/pikaday.js'],
+        dest: 'schedule/static/js/dist/vendor.js'
+      },
+      jquery: {
+        // Just copy the jquery file
+        src: ['bower_components/jquery/dist/*.min.js'],
+        dest: 'schedule/static/js/dist/jquery.min.js'
+      },
+      jquery: {
+        // Just copy the jquery file
+        src: ['bower_components/jquery/dist/*.min.map'],
+        dest: 'schedule/static/js/dist/jquery.min.map'
       }
     },
 
@@ -49,6 +66,7 @@ module.exports = function(grunt) {
         dist: {
             files: {
               'schedule/static/js/dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>'],
+              'schedule/static/js/dist/vendor.min.js': ['<%= concat.vendor.dest %>'],
               'schedule/static/js/dist/templates.min.js': ['schedule/static/js/dist/templates.js']
             }
         }
@@ -81,5 +99,3 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['watch']);
 
 };
-
-

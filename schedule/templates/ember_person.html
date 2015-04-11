@@ -28,7 +28,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/dist/jquery.min.js"></script>
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/dist/schedule.min.css" rel="stylesheet">
 </head>
@@ -59,31 +59,10 @@
       </div>
     </div>
 
-<br>
-
-{% raw %}
-<script type="text/x-handlebars">
-<div id="main" class="container-fluid" role="main">
     <br>
-    {{outlet}}
-</div>
-</script>
 
 
-<script type="text/x-handlebars" data-template-name="event/loading">
-    <div class="container">
-        <p><small>Loading rota...</small></p>
-        <label class="spinner">&nbsp;</label>
-    </div>
-</script>
-{% endraw %}
-
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/bower_components/handlebars/handlebars.min.js"></script>
-    <script src="/static/bower_components/moment/min/moment.min.js"></script>
-    <script src="/static/bower_components/ember/ember.min.js"></script>
-    <script src="/static/bower_components/pikaday/pikaday.js"></script>
-
+    <script src="/static/js/dist/vendor.min.js"></script>
     <script src="/static/js/dist/templates.min.js"></script>
     <script src="/static/js/dist/schedule.min.js"></script>
 

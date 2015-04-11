@@ -5,8 +5,7 @@
     <div class="form-group  form-horizontal">
         <label>From Date:</label>
         {{view App.CalendarDatePicker name=from_date value=from_date placeholder="from date"}}
-        <button {{action fromDateChange}} class="btn btn-primary">Go</button>
-        </div>
+        <button {{action 'fromDateChange'}} class="btn btn-primary">Go</button>
     </div>
 </div>
 

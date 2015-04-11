@@ -56,6 +56,7 @@ App.PersonController = Ember.ObjectController.extend({
 
     actions: {
         newAwayDates: function() {
+            console.log('newAwayDates');
             this.set('awayForm', {});
             this.set('awayError', null);
             Ember.$('#awayModal').modal('show');
