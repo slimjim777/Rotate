@@ -122,11 +122,18 @@ App.EventOverviewController = Ember.ObjectController.extend({
             var controller = this;
 
             var postdata = {
-                from_date: this.get('from_date')
+                from_date: controller.get('from_date')
             };
 
             App.Event.overview(this.get('model').event_id, postdata).then(function (data) {
-                controller.set('model', data.event_dates);
+                var event_dates = data.event_dates.event_dates.map(function (ed) {
+                    return App.EventDate.create(ed);
+                });
+                data.event_dates.event_dates = event_dates;
+
+                var event = App.Event.create(data.event_dates);
+                controller.set('model', event);
+                controller.getPermissions();
             }).catch(function (error) {
                 controller.set('error', error.message);
             });

@@ -2,7 +2,8 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
+    // The package.json file makes Heroku think this is a node app
+    pkg: {name: 'schedule'}, //grunt.file.readJSON('package.json'),
 
     emberTemplates: {
         compile: {
@@ -27,9 +28,8 @@ module.exports = function(grunt) {
         dest: 'schedule/static/js/dist/<%= pkg.name %>.js'
       },
       vendor: {
-        src: ['bower_components/ember/*.prod.js', 
-              'bower_components/bootstrap/dist/js/**/*.min.js', 'bower_components/moment/min/moment.min.js',
-              'bower_components/pikaday/pikaday.js'],
+        src: ['bower_components/ember/*.prod.js', 'bower_components/bootstrap/dist/js/**/*.min.js',
+              'bower_components/moment/min/moment.min.js', 'bower_components/pikaday/pikaday.js'],
         dest: 'schedule/static/js/dist/vendor.js'
       },
       jquery: {
@@ -47,12 +47,13 @@ module.exports = function(grunt) {
     cssmin: {
       combine: {
         files: {
-          'schedule/static/css/dist/schedule.css': ['schedule/static/bower_components/pikaday/css/pikaday.css', 'schedule/static/css/app.css']
+          'schedule/static/css/schedule.css': ['bower_components/pikaday/css/pikaday.css',
+                                               'schedule/static/css/app.css']
         }
       },
       minify: {
         expand: true,
-        cwd: 'schedule/static/css/dist/',
+        cwd: 'schedule/static/css/',
         src: ['*.css', '!*.min.css'],
         dest: 'schedule/static/css/dist/',
         ext: '.min.css'
@@ -75,7 +76,7 @@ module.exports = function(grunt) {
     watch: {
         emberTemplates: {
             files: ['schedule/templates/handlebars/*.handlebars'],
-            tasks: ['emberTemplates', 'concat', 'uglify']
+            tasks: ['emberTemplates', 'concat', 'uglify', 'cssmin']
         },
         concat: {
             files: ['schedule/static/js/app/**/*.js'],

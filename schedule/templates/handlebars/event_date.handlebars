@@ -44,9 +44,12 @@
             {{/if}}
         {{/if}}
         <table class="table table-striped">
+          <thead>
             <tr>
                 <th>Role</th><th>Name</th>
             </tr>
+          </thead>
+          <tbody>
             {{#if isEditing}}
                 {{#each r in model.rota}}
                     <tr>
@@ -83,6 +86,7 @@
                     </tr>
                 {{/each}}
             {{/if}}
+         </tbody>
         </table>
     </div>
 </div>
