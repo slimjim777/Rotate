@@ -3060,7 +3060,7 @@ Ember.TEMPLATES["event"] = Ember.HTMLBars.template((function() {
       var el8 = dom.createTextNode("\n                    ");
       dom.appendChild(el7, el8);
       var el8 = dom.createElement("span");
-      dom.setAttribute(el8,"class","panel-cell");
+      dom.setAttribute(el8,"class","panel-cell panel-repeats");
       var el9 = dom.createTextNode("\n                    ");
       dom.appendChild(el8, el9);
       var el9 = dom.createComment("");

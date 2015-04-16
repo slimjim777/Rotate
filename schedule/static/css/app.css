@@ -49,10 +49,19 @@ label.dialog {
     margin-bottom: 0px;
     color: #666;
 }
+
 .panel-cell {
     display: block;
 }
 
+.panel-cell.panel-repeats {
+    color: #ccc;
+}
+
+.panel-cell.panel-repeats b {
+    font-weight: 900;
+    color: #000;
+}
 .datepicker {
     z-index: 1200;
 }
