@@ -47,8 +47,9 @@ def login():
 
 
 @app.route('/login/authorized')
-@google.authorized_handler
-def authorized(resp):
+#@google.authorized_handler
+def authorized():
+    resp = google.authorized_response()
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
@@ -81,9 +82,11 @@ def check_user(email):
     if not user:
         # Reset the Google token and forbid access
         session.pop('google_token', None)
-        session['messages'] = """Your Email address (%s) is not registered with this site.
-                If you know you have an account here, please logout of your Google Account
-                and login with the account that has been registered with this site.""" % email
+        session['messages'] = """Your Email address (%s) is not registered
+            with this site. If you know you have an account here, please
+            <a href="https://accounts.google.com/Logout">logout</a> of your
+            Google Account and login with the account that has been registered
+            with this site.""" % email
         return False
     else:
         # Save the user details in the session

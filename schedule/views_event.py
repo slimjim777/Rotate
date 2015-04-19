@@ -7,8 +7,7 @@ from flask import abort
 from flask import session
 from sqlalchemy import or_
 
-from model.helper import custom_date_format, notify_days_ahead
-from model.query import FastQuery
+from schedule.model.query import FastQuery
 from schedule import app
 from schedule import db
 from schedule.model.event import Event
@@ -36,7 +35,7 @@ def overview(event_id):
         model = FastQuery.rota_for_event(
             event_id, from_date, to_date, date_format='%d %b')
         error_message = None
-    except Exception, e:
+    except Exception as e:
         error_message = str(e)
         model = None
 
@@ -79,7 +78,7 @@ def admin_event_new():
         db.session.add(event)
         db.session.commit()
         return jsonify({'response': 'Success'})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -110,7 +109,7 @@ def admin_event_update(event_id):
         db.session.add(event)
         db.session.commit()
         return jsonify({'response': 'Success'})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -157,7 +156,7 @@ def admin_event_roles_update(event_id):
             db.session.add(role)
             db.session.commit()
             return jsonify({'response': 'Success'})
-        except Exception, v:
+        except Exception as v:
             return jsonify({'response': 'Error', 'message': str(v)})
     elif request.method == 'PUT':
         try:
@@ -169,7 +168,7 @@ def admin_event_roles_update(event_id):
             role.sequence = int(request.form.get('sequence'))
             db.session.commit()
             return jsonify({'response': 'Success'})
-        except Exception, v:
+        except Exception as v:
             return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -192,7 +191,7 @@ def admin_event_role_copy(event_id, role_id):
         Role.clone(role_id, name, sequence)
 
         return jsonify({'response': 'Success'})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -207,7 +206,7 @@ def admin_event_roles_copy(event_id):
         copy_type = request.form.get('copy_type')
         Event.copy_roles(from_event_id, event_id, copy_type)
         return jsonify({'response': 'Success'})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -260,7 +259,7 @@ def admin_event_roles_people(event_id, role_id):
                 role.people.append(p)
             db.session.commit()
             return jsonify({'response': 'Success'})
-        except Exception, v:
+        except Exception as v:
             return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -279,7 +278,7 @@ def api_event_get(event_id):
     try:
         event = FastQuery.event(event_id)
         return jsonify({'response': 'Success', 'event': event})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -311,7 +310,7 @@ def api_event_date(event_date_id):
     try:
         e = FastQuery.rota_for_event_date(event_date_id)
         return jsonify({'response': 'Success', 'event_date': e})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -334,7 +333,7 @@ def api_event_date_edit(event_date_id):
             return jsonify({'response': 'Success', 'event_date': e})
         else:
             return jsonify({'response': 'Failed', 'message': result})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -352,7 +351,7 @@ def api_event_date_delete(event_date_id):
         db.session.delete(ed)
         db.session.commit()
         return jsonify({'response': 'Success'})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -430,7 +429,7 @@ def api_event_admins_find(event_id):
         not_admins = [p.to_dict() for p in people]
         return render_template('snippet_event_admins_find.html', event=event,
                                people=not_admins, error='')
-    except Exception, v:
+    except Exception as v:
         return render_template('snippet_event_admins_find.html', event=event,
                                people=[], error=str(v))
 
@@ -463,7 +462,7 @@ def api_event_admins_add(event_id):
             db.session.commit()
             return jsonify({'response': 'Success',
                             'message': '%s can now administrate this event' % person.name})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -488,7 +487,7 @@ def api_event_admins_remove(event_id):
         event.event_admins.remove(person)
         db.session.commit()
         return jsonify({'response': 'Success'})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -506,5 +505,5 @@ def api_event_role_delete(event_id, role_id):
         db.session.delete(role)
         db.session.commit()
         return jsonify({'response': 'Success'})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})

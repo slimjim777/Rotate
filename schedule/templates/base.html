@@ -51,7 +51,7 @@
             <li id="nav-myrota" class="active"><a href="/rota#/people/me">My Rota</a></li>
             <li id="nav-people"><a href="/rota#/people">People</a></li>
             <li id="nav-events"><a href="/rota#/events">Events</a></li>
-            {% if 'admin' in session.role %}
+            {% if 'admin' == session.role %}
             <li id="nav-admin"><a href="/admin">Admin</a></li>
             {% endif %}
             <li><a href="https://accounts.google.com">{{ session.name }}</a></li>

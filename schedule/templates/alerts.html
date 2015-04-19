@@ -57,7 +57,9 @@
     </div>
     
     <div id="main" class="container" role="main">
-        <div class="alert alert-danger">{{ session.messages if session.messages else 'Unknown Error' }}</div>
+        <div class="alert alert-danger">
+            {{ session.messages|safe if session.messages else 'Unknown Error' }}
+        </div>
     </div>
 </body>
 </html>

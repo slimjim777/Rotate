@@ -1,4 +1,4 @@
-from model.query import FastQuery
+from schedule.model.query import FastQuery
 from schedule import app
 from schedule.authorize import login_required
 from schedule.model.event import Person
@@ -44,7 +44,7 @@ def api_person(person_id=None):
                 'person': p.to_dict(),
             }
             return jsonify(result)
-        except Exception, v:
+        except Exception as v:
             return jsonify({'response': 'Error', 'message': str(v)})
 
     elif request.method == "POST":
@@ -74,7 +74,7 @@ def api_person(person_id=None):
                 'person': p.to_dict(),
             }
             return jsonify(result)
-        except Exception, v:
+        except Exception as v:
             return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -149,7 +149,7 @@ def person_away_date_update(person_id):
                 db.session.add(away)
             db.session.commit()
             return jsonify({'response': 'Success', 'away_date': away.to_dict()})
-        except Exception, v:
+        except Exception as v:
             return jsonify({'response': 'Error', 'message': str(v)})
 
     elif request.method == 'DELETE':
@@ -161,7 +161,7 @@ def person_away_date_update(person_id):
             db.session.delete(away)
             db.session.commit()
             return jsonify({'response': 'Success'})
-        except Exception, v:
+        except Exception as v:
             return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -222,7 +222,7 @@ def api_people_new():
         db.session.add(p)
         db.session.commit()
         return jsonify({'response': 'Success', 'person': p.to_dict()})
-    except Exception, v:
+    except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
 

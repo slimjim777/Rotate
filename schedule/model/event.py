@@ -23,11 +23,16 @@ event_admins = db.Table(
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True)
-    roles = db.relationship('Role', backref='event', lazy='joined', order_by='Role.sequence',)
+    roles = db.relationship(
+        'Role', backref='event', lazy='joined', order_by='Role.sequence',)
     active = db.Column(db.Boolean, default=True)
     created = db.Column(db.DateTime, default=datetime.datetime.now)
-    event_dates = db.relationship('EventDate', backref='event_ref', lazy='dynamic', order_by='EventDate.on_date')
-    frequency = db.Column(db.Enum('irregular', 'weekly', 'monthly', name='frequency_types'), default='weekly')
+    event_dates = db.relationship(
+        'EventDate', backref='event_ref', lazy='dynamic',
+        order_by='EventDate.on_date')
+    frequency = db.Column(
+        db.Enum('irregular', 'weekly', 'monthly', name='frequency_types'),
+        default='weekly')
     repeat_every = db.Column(db.Integer, default=1)
     day_mon = db.Column(db.Boolean, default=False)
     day_tue = db.Column(db.Boolean, default=False)
@@ -36,7 +41,9 @@ class Event(db.Model):
     day_fri = db.Column(db.Boolean, default=False)
     day_sat = db.Column(db.Boolean, default=False)
     day_sun = db.Column(db.Boolean, default=False)
-    event_admins = db.relationship('Person', secondary=event_admins, backref=db.backref('event_ref', lazy='joined'))
+    event_admins = db.relationship(
+        'Person', secondary=event_admins,
+        backref=db.backref('event_ref', lazy='joined'))
 
     def __init__(self, name):
         self.name = name
@@ -73,7 +80,9 @@ class Event(db.Model):
         else:
             return None
 
-    def create_dates(self, event_id, frequency, repeats_every, repeats_on, from_date, to_date):
+    def create_dates(
+            self, event_id, frequency, repeats_every, repeats_on, from_date,
+            to_date):
         """
         Create one or more event dates for the event.
         """
@@ -123,7 +132,7 @@ class Event(db.Model):
 
         for role in from_event.roles:
             # Check that a role with the name does not exist in 'to-event'
-            role_new =  None
+            role_new = None
             for to_role in to_event.roles:
                 if to_role.name == role.name:
                     role_new = to_role
@@ -175,8 +184,8 @@ class EventDate(db.Model):
 
     def people_for_roles(self):
         """
-        Get the scheduled people for the rota in the role-sequence order, leaving gaps
-        for when no one is scheduled for a role.
+        Get the scheduled people for the rota in the role-sequence order,
+        leaving gaps for when no one is scheduled for a role.
         """
         scheduled = []
 
@@ -198,7 +207,7 @@ class EventDate(db.Model):
 
     def update_rota(self, records):
         """
-        Update the rota by updating the people for each role on this event date.
+        Update the rota by updating the people for each role on this event date
         """
         try:
             for rec in records:
@@ -220,7 +229,7 @@ class EventDate(db.Model):
 
             db.session.commit()
             return None
-        except Exception, e:
+        except Exception as e:
             db.session.rollback()
             return str(e)
 
@@ -236,7 +245,9 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
-    people = db.relationship('Person', secondary=role_people, backref=db.backref('roles_ref', lazy='joined'))
+    people = db.relationship(
+        'Person', secondary=role_people,
+        backref=db.backref('roles_ref', lazy='joined'))
     sequence = db.Column(db.Integer, default=1)
 
     UniqueConstraint('event_id', 'name')
@@ -287,12 +298,18 @@ class Person(db.Model):
     email = db.Column(db.String(255))
     firstname = db.Column(db.String(100))
     lastname = db.Column(db.String(100))
-    person_roles = db.relationship('Role', secondary=role_people, backref=db.backref('people_ref', lazy='joined'))
-    user_role = db.Column(db.Enum('admin', 'standard', name='user_roles'), default='standard')
+    person_roles = db.relationship(
+        'Role', secondary=role_people,
+        backref=db.backref('people_ref', lazy='joined'))
+    user_role = db.Column(
+        db.Enum('admin', 'standard', name='user_roles'), default='standard')
     last_login = db.Column(db.DateTime())
     active = db.Column(db.Boolean, default=True)
-    away_dates = db.relationship('AwayDate', backref='person_ref', lazy='dynamic')
-    events_admin = db.relationship('Event', secondary=event_admins, backref=db.backref('person_ref', lazy='joined'))
+    away_dates = db.relationship(
+        'AwayDate', backref='person_ref', lazy='dynamic')
+    events_admin = db.relationship(
+        'Event', secondary=event_admins,
+        backref=db.backref('person_ref', lazy='joined'))
     guest = db.Column(db.Boolean, default=False)
 
     def __init__(self, email, firstname, lastname):
@@ -312,9 +329,12 @@ class Person(db.Model):
 
     def is_on_rota(self, event_date_id, role_id):
         """
-        Check to see if this person is on rota for a specific role on a specific date.
+        Check to see if this person is on rota for a specific role on a
+        specific date.
         """
-        r = Rota.query.filter_by(person_id=self.id, event_date_id=event_date_id, role_id=role_id).first()
+        r = Rota.query.filter_by(
+            person_id=self.id,
+            event_date_id=event_date_id, role_id=role_id).first()
         if r:
             return True
         else:
@@ -324,7 +344,9 @@ class Person(db.Model):
         """
         Check to see if the person has away dates booked for a date.
         """
-        a = AwayDate.query.filter(AwayDate.person_id == self.id, AwayDate.from_date <= event_date, AwayDate.to_date >= event_date).first()
+        a = AwayDate.query.filter(
+            AwayDate.person_id == self.id, AwayDate.from_date <= event_date,
+            AwayDate.to_date >= event_date).first()
         if a:
             return True
         else:
@@ -338,7 +360,8 @@ class Person(db.Model):
             'lastname': self.lastname,
             'email': self.email,
             'user_role': self.user_role,
-            'last_login': self.last_login.strftime('%Y-%m-%dT%H:%M:%S') if self.last_login else None,
+            'last_login': self.last_login.strftime(
+                '%Y-%m-%dT%H:%M:%S') if self.last_login else None,
             'active': self.active,
             'guest': self.guest,
             'person_roles': [r.to_dict() for r in self.person_roles],
@@ -389,7 +412,8 @@ class Rota(db.Model):
         }
 
     def __repr__(self):
-        return '<Rota %s as %s on %s>' % (self.person_id, self.role_id, self.event_date_id)
+        return '<Rota %s as %s on %s>' % (self.person_id, self.role_id,
+                                          self.event_date_id)
 
 
 class AwayDate(db.Model):
@@ -410,23 +434,19 @@ class AwayDate(db.Model):
         f = datetime.datetime.strptime(self.from_date, '%Y-%m-%d')
         t = datetime.datetime.strptime(self.to_date, '%Y-%m-%d')
         if t < f:
-            raise ValueError("The 'from date' must not be less than the 'to date'")
+            raise ValueError(
+                "The 'from date' must not be less than the 'to date'")
 
     def to_dict(self):
         return {
             'id': self.id,
             'person_id': self.person_id,
-            'from_date': self.from_date.strftime('%Y-%m-%dT%H:%M:%S') if self.from_date else None,
-            'to_date': self.to_date.strftime('%Y-%m-%dT%H:%M:%S') if self.to_date else None,
+            'from_date': self.from_date.strftime(
+                '%Y-%m-%dT%H:%M:%S') if self.from_date else None,
+            'to_date': self.to_date.strftime(
+                '%Y-%m-%dT%H:%M:%S') if self.to_date else None,
         }
 
     def __repr__(self):
-        return '<AwayDate %s to %s for %s>' % (self.from_date, self.to_date, self.person_id)
-
-
-#class CacheEvent(db.Model):
-#    id = db.Column(db.Integer, primary_key=True)
-#    event_id = db.Column(db.Integer, index=True)
-#    name = db.Column(db.String(255), unique=True)
-#    active = db.Column(db.Boolean, default=True)
-
+        return '<AwayDate %s to %s for %s>' % (
+            self.from_date, self.to_date, self.person_id)
