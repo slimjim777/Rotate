@@ -6,6 +6,15 @@
     <div class="panel-heading">
         <h3 class="panel-title">Events
             <button class="btn btn-primary" title="New Event" onclick="showEventDialog(event)"><span class="glyphicon glyphicon-plus"></span></button>
+            <form class="form-inline panel-title-form">
+                {% if status == 'active' %}
+                <button type="submit" name="status" value="active" class="btn btn-primary">Active</button>
+                <button type="submit" name="status" value="inactive">Inactive</button>
+                {% else %}
+                <button type="submit" name="status" value="active">Active</button>
+                <button type="submit" name="status" value="inactive" class="btn btn-primary">Inactive</button>
+                {% endif %}
+            </form>
         </h3>
     </div>
     <div id="events" class="panel panel-body">

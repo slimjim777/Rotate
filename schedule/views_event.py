@@ -50,8 +50,20 @@ def not_found(e):
 @app.route("/admin", methods=['GET'])
 @login_required
 def admin():
-    rows = Event.query.all()
-    return render_template('admin.html', rows=rows)
+    if session['role'] != 'admin':
+        abort(403)
+
+    # Get the required status of events
+    status = request.args.get('status')
+    if status not in ['active', 'inactive']:
+        status = 'active'
+
+    if status == 'active':
+        rows = Event.query.filter(Event.active)
+    else:
+        rows = Event.query.filter(Event.active.op('IS NOT')(True))
+
+    return render_template('admin.html', rows=rows, status=status)
 
 
 @app.route("/admin/event/new", methods=['POST'])
@@ -172,7 +184,8 @@ def admin_event_roles_update(event_id):
             return jsonify({'response': 'Error', 'message': str(v)})
 
 
-@app.route("/admin/event/<int:event_id>/roles/<int:role_id>/copy", methods=['POST'])
+@app.route(
+    "/admin/event/<int:event_id>/roles/<int:role_id>/copy", methods=['POST'])
 @login_required
 def admin_event_role_copy(event_id, role_id):
     if session['role'] != 'admin':
@@ -425,7 +438,8 @@ def api_event_admins_find(event_id):
         else:
             query = Person.query.filter(~Person.id.in_(person_ids))
 
-        people = query.filter(Person.active).order_by(Person.lastname).limit(20)
+        people = query.filter(
+            Person.active).order_by(Person.lastname).limit(20)
         not_admins = [p.to_dict() for p in people]
         return render_template('snippet_event_admins_find.html', event=event,
                                people=not_admins, error='')
@@ -460,8 +474,10 @@ def api_event_admins_add(event_id):
             # Add the person as an event admin
             event.event_admins.append(person)
             db.session.commit()
-            return jsonify({'response': 'Success',
-                            'message': '%s can now administrate this event' % person.name})
+            return jsonify(
+                {'response': 'Success',
+                 'message':
+                 '%s can now administrate this event' % person.name})
     except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
@@ -491,7 +507,8 @@ def api_event_admins_remove(event_id):
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
-@app.route("/api/events/<int:event_id>/roles/<int:role_id>", methods=['DELETE'])
+@app.route(
+    "/api/events/<int:event_id>/roles/<int:role_id>", methods=['DELETE'])
 @login_required
 def api_event_role_delete(event_id, role_id):
     if session['role'] != 'admin':
