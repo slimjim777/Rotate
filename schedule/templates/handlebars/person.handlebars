@@ -2,5 +2,7 @@
     <p class="sub-heading">{{ model.email }}</p>
 
     {{partial "rota"}}
-    {{partial "away_dates"}}
-    {{partial "confirm_dialog"}}
+    {{#if canAdministratePerson}}
+        {{partial "away_dates"}}
+        {{partial "confirm_dialog"}}
+    {{/if}}
