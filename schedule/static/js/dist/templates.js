@@ -1474,6 +1474,10 @@ Ember.TEMPLATES["_rota"] = Ember.HTMLBars.template((function() {
             var el2 = dom.createComment("");
             dom.appendChild(el1, el2);
             dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n                        ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment(" div><button {{action 'arrangeSwap' r}} class=\"btn btn-danger\">Help me swap</button></div");
+            dom.appendChild(el0, el1);
             var el1 = dom.createTextNode("\n");
             dom.appendChild(el0, el1);
             return el0;
@@ -6709,10 +6713,6 @@ Ember.TEMPLATES["person"] = Ember.HTMLBars.template((function() {
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n        ");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
         return el0;
@@ -6738,9 +6738,7 @@ Ember.TEMPLATES["person"] = Ember.HTMLBars.template((function() {
           fragment = this.build(dom);
         }
         var morph0 = dom.createMorphAt(fragment,1,1,contextualElement);
-        var morph1 = dom.createMorphAt(fragment,3,3,contextualElement);
         inline(env, morph0, context, "partial", ["away_dates"], {});
-        inline(env, morph1, context, "partial", ["confirm_dialog"], {});
         return fragment;
       }
     };
@@ -6775,6 +6773,12 @@ Ember.TEMPLATES["person"] = Ember.HTMLBars.template((function() {
       dom.appendChild(el0, el1);
       var el1 = dom.createComment("");
       dom.appendChild(el0, el1);
+      var el1 = dom.createTextNode("    ");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createComment("");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createTextNode("\n");
+      dom.appendChild(el0, el1);
       return el0;
     },
     render: function render(context, env, contextualElement) {
@@ -6801,11 +6805,12 @@ Ember.TEMPLATES["person"] = Ember.HTMLBars.template((function() {
       var morph1 = dom.createMorphAt(dom.childAt(fragment, [3]),0,0);
       var morph2 = dom.createMorphAt(fragment,5,5,contextualElement);
       var morph3 = dom.createMorphAt(fragment,7,7,contextualElement);
-      dom.insertBoundary(fragment, null);
+      var morph4 = dom.createMorphAt(fragment,9,9,contextualElement);
       content(env, morph0, context, "model.name");
       content(env, morph1, context, "model.email");
       inline(env, morph2, context, "partial", ["rota"], {});
       block(env, morph3, context, "if", [get(env, context, "canAdministratePerson")], {}, child0, null);
+      inline(env, morph4, context, "partial", ["confirm_dialog"], {});
       return fragment;
     }
   };

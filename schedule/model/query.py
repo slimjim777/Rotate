@@ -18,7 +18,7 @@ class FastQuery(object):
         event_list = []
         for e in rows.fetchall():
             ev = dict(e)
-            ev['created']= ev['created'].strftime('%Y-%m-%dT%H:%M:%S')
+            ev['created'] = ev['created'].strftime('%Y-%m-%dT%H:%M:%S')
             event_list.append(ev)
         app.logger.debug('Events: %s' % (time.time() - start))
         return event_list
@@ -78,9 +78,9 @@ class FastQuery(object):
         # Get the roles for the event date
         roles, role_people = FastQuery.roles(event_date_id=event_date_id)
 
-        sql = """select ev.name event_name, ev.id event_id, on_date, role.name role_name,
-                 firstname, lastname, role.id role_id, ed.id event_date_id,
-                 p.active person_active, p.id person_id,
+        sql = """select ev.name event_name, ev.id event_id, on_date,
+                 role.name role_name, firstname, lastname, role.id role_id,
+                 ed.id event_date_id, p.active person_active, p.id person_id,
                  exists(select 1 from away_date where person_id=p.id
                   and on_date between from_date and to_date) is_away,
                  ed.focus, ed.notes,
@@ -158,14 +158,14 @@ class FastQuery(object):
     @staticmethod
     def rota_for_person(person_id, from_date, to_date):
         """
-        Get the rota details for an individual for a set date range. Used on the
-        person's home screen.
+        Get the rota details for an individual for a set date range. Used on
+        the person's home screen.
         """
         start = time.time()
-        sql = """select ev.name event_name, ev.id event_id, on_date, role.name role_name,
-                 firstname, lastname, role.id role_id, ed.id event_date_id,
-                 p.active person_active, p.id person_id, r.id,
-                 exists(select 1 from away_date where person_id=p.id
+        sql = """select ev.name event_name, ev.id event_id, on_date,
+                 role.name role_name, firstname, lastname, role.id role_id,
+                 ed.id event_date_id, p.active person_active, p.id person_id,
+                 r.id, exists(select 1 from away_date where person_id=p.id
                   and on_date between from_date and to_date) is_away
               from rota r
               inner join event_date ed on r.event_date_id=ed.id
@@ -190,10 +190,11 @@ class FastQuery(object):
                 # See if we a rota for this event
                 if rota_for_date[on_date]['events'].get(event_name):
                     # Already have a role for this event date, add another
-                    rota_for_date[on_date]['events'][event_name]['roles'].append({
-                        'id': row['role_id'],
-                        'name': row['role_name'],
-                    })
+                    rota_for_date[on_date]['events'][event_name]['roles'].\
+                        append({
+                            'id': row['role_id'],
+                            'name': row['role_name'],
+                        })
                 else:
                     # New event and role to add to this date
                     rota_for_date[on_date]['events'][event_name] = {
@@ -210,7 +211,8 @@ class FastQuery(object):
                 rota_for_date[on_date] = {
                     'on_date': on_date,
                     'person_id': row['person_id'],
-                    'person_name': '%s %s' % (row['firstname'], row['lastname']),
+                    'person_name': '%s %s' % (
+                        row['firstname'], row['lastname']),
                     'active': row['person_active'],
                     'is_away': row['is_away'],
                     'events': {
@@ -247,9 +249,9 @@ class FastQuery(object):
         Get the rota dates for an event for a given date range.
         """
         start = time.time()
-        sql = """select ev.name event_name, ev.id event_id, on_date, role.name role_name,
-                 firstname, lastname, role.id role_id, ed.id event_date_id,
-                 p.active person_active, p.id person_id,
+        sql = """select ev.name event_name, ev.id event_id, on_date,
+                 role.name role_name, firstname, lastname, role.id role_id,
+                 ed.id event_date_id, p.active person_active, p.id person_id,
                  exists(select 1 from away_date where person_id=p.id
                   and on_date between from_date and to_date) is_away,
                  ed.focus, ed.notes,
@@ -329,16 +331,16 @@ class FastQuery(object):
                 date_list.append(on_date)
 
         # Add in the dates that have not been planned yet
-        unplanned = FastQuery._dates_without_rota(event_id,
-            got_event_date_ids, from_date, to_date, roles, role_people,
-            date_format='%Y-%m-%d')
+        unplanned = FastQuery._dates_without_rota(
+            event_id, got_event_date_ids, from_date, to_date, roles,
+            role_people, date_format='%Y-%m-%d')
 
         unplanned_rota = {}
         for row in unplanned:
             date_list.append(row['on_date'])
             unplanned_rota[row['on_date']] = row
 
-        # Bring the planned and unplanned rotas into a single list in date order
+        # Bring the planned and unplanned rotas into single list in date order
         r['event_dates'] = []
         for key in sorted(date_list):
             if r['dates'].get(key):
@@ -353,7 +355,9 @@ class FastQuery(object):
             # Re-organise the rota into the display sequence
             rota = []
             for role in roles:
-                people = [p for p in role_people[role['name']] if p.get('on_date')==key]
+                people = [
+                    p for p in role_people[role['name']] if p.get(
+                        'on_date') == key]
                 people.insert(0, {})
 
                 if on_date['rota'].get(role['name']):
@@ -400,7 +404,8 @@ class FastQuery(object):
             rota = []
             for role in roles:
                 key = row['on_date'].strftime('%Y-%m-%d')
-                people = [p for p in role_people[role['name']] if p.get('on_date')==key]
+                people = [p for p in role_people[role['name']]
+                          if p.get('on_date') == key]
                 people.insert(0, {})
                 rota.append({'people': people, 'role': role})
 

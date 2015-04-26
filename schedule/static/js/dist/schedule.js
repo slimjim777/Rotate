@@ -577,6 +577,10 @@ App.PersonController = Ember.ObjectController.extend({
 
         refreshAwayDates: function() {
             this.awayRangeChange();
+        },
+
+        arrangeSwap: function(rota) {
+            console.log('arrange swap');
         }
     }
 });

@@ -145,6 +145,16 @@ table.rota {
  	-webkit-box-shadow: none;
  	box-shadow: none;
  }
+
+ .btn-danger {
+ 	border-color: #d43f3a;
+    background-color: #c9302c;
+ }
+
+ .btn-danger:hover {
+ 	background-color: #d9534f;
+ }
+
  .glyphicon {
  	color: white;
  }
