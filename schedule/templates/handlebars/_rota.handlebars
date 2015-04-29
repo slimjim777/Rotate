@@ -24,7 +24,9 @@
                 <td>
                     {{#if r.is_away}}
                         <span class="alert-danger" title="You are away for this date. Please arrange a swap.">{{formatDate r.on_date}}</span>
-                        <!-- div><button {{action 'arrangeSwap' r}} class="btn btn-danger">Help me swap</button></div-->
+                        {{#if canAdministratePerson}}
+                        <div><button {{action 'arrangeSwap' r}} class="btn btn-danger">Help me swap</button></div>
+                        {{/if}}
                     {{else}}
                         {{formatDate r.on_date}}
                     {{/if}}

@@ -56,7 +56,6 @@ App.PersonController = Ember.ObjectController.extend({
 
     actions: {
         newAwayDates: function() {
-            console.log('newAwayDates');
             this.set('awayForm', {});
             this.set('awayError', null);
             Ember.$('#awayModal').modal('show');
@@ -127,7 +126,8 @@ App.PersonController = Ember.ObjectController.extend({
         },
 
         arrangeSwap: function(rota) {
-            console.log('arrange swap');
+            this.set('availablePeople', rota.available_people);
+            Ember.$('#peopleModal').modal('show');
         }
     }
 });

@@ -186,6 +186,8 @@ class FastQuery(object):
         for row in rows.fetchall():
             on_date = row['on_date'].strftime('%Y-%m-%dT%H:%M:%S')
             event_name = row['event_name']
+            available_people = FastQuery.available_people(
+                row['role_id'], row['on_date'])
             if rota_for_date.get(on_date):
                 # See if we a rota for this event
                 if rota_for_date[on_date]['events'].get(event_name):
@@ -201,6 +203,7 @@ class FastQuery(object):
                         'event_id': row['event_id'],
                         'event': event_name,
                         'event_date_id': row['event_date_id'],
+                        'available_people': available_people,
                         'roles': [{
                             'id': row['role_id'],
                             'name': row['role_name'],
@@ -215,6 +218,7 @@ class FastQuery(object):
                         row['firstname'], row['lastname']),
                     'active': row['person_active'],
                     'is_away': row['is_away'],
+                    'available_people': available_people,
                     'events': {
                         event_name: {
                             'event_id': row['event_id'],
@@ -620,3 +624,31 @@ class FastQuery(object):
 
         app.logger.debug('Notify People: %s' % (time.time() - start))
         return notify
+
+    @staticmethod
+    def available_people(role_id, on_date):
+        """
+        Find alternative people for a role on a specific date. Ignore people
+        who are away or are doing another role on that date.
+        """
+        sql = """select p.* from person p
+        inner join role_people rp on rp.person_id=p.id
+        where not exists(
+            select * from away_date
+            where :on_date between from_date and to_date
+            and person_id=p.id)
+        and person_id not in (
+            select person_id from rota where event_date_id in (
+                select id from event_date where on_date = :on_date))
+        and role_id=:role_id
+        """
+        rows = db.session.execute(
+            sql, {'on_date': on_date, 'role_id': role_id})
+
+        people = []
+        for row in rows.fetchall():
+            people.append({
+                'name': '%s %s' % (row['firstname'], row['lastname']),
+                'email': row['email'],
+            })
+        return people
