@@ -902,6 +902,236 @@ Ember.TEMPLATES["_confirm_dialog"] = Ember.HTMLBars.template((function() {
 }()));
 
 Ember.TEMPLATES["_create_dates"] = Ember.HTMLBars.template((function() {
+  var child0 = (function() {
+    return {
+      isHTMLBars: true,
+      revision: "Ember@1.11.1",
+      blockParams: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      build: function build(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("                    M");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("input");
+        dom.setAttribute(el1,"type","checkbox");
+        dom.setAttribute(el1,"name","model.day_mon");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n                    T");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("input");
+        dom.setAttribute(el1,"type","checkbox");
+        dom.setAttribute(el1,"name","model.day_tue");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n                    W");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("input");
+        dom.setAttribute(el1,"type","checkbox");
+        dom.setAttribute(el1,"name","model.day_wed");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n                    T");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("input");
+        dom.setAttribute(el1,"type","checkbox");
+        dom.setAttribute(el1,"name","model.day_thu");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n                    F");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("input");
+        dom.setAttribute(el1,"type","checkbox");
+        dom.setAttribute(el1,"name","model.day_fri");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n                    S");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("input");
+        dom.setAttribute(el1,"type","checkbox");
+        dom.setAttribute(el1,"name","model.day_sat");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n                    S");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("input");
+        dom.setAttribute(el1,"type","checkbox");
+        dom.setAttribute(el1,"name","model.day_sun");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n                    ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("br");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      render: function render(context, env, contextualElement) {
+        var dom = env.dom;
+        var hooks = env.hooks, element = hooks.element;
+        dom.detectNamespace(contextualElement);
+        var fragment;
+        if (env.useFragmentCache && dom.canClone) {
+          if (this.cachedFragment === null) {
+            fragment = this.build(dom);
+            if (this.hasRendered) {
+              this.cachedFragment = fragment;
+            } else {
+              this.hasRendered = true;
+            }
+          }
+          if (this.cachedFragment) {
+            fragment = dom.cloneNode(this.cachedFragment, true);
+          }
+        } else {
+          fragment = this.build(dom);
+        }
+        var element0 = dom.childAt(fragment, [1]);
+        var element1 = dom.childAt(fragment, [3]);
+        var element2 = dom.childAt(fragment, [5]);
+        var element3 = dom.childAt(fragment, [7]);
+        var element4 = dom.childAt(fragment, [9]);
+        var element5 = dom.childAt(fragment, [11]);
+        var element6 = dom.childAt(fragment, [13]);
+        element(env, element0, context, "bind-attr", [], {"checked": "model.day_mon"});
+        element(env, element1, context, "bind-attr", [], {"checked": "model.day_tue"});
+        element(env, element2, context, "bind-attr", [], {"checked": "model.day_wed"});
+        element(env, element3, context, "bind-attr", [], {"checked": "model.day_thu"});
+        element(env, element4, context, "bind-attr", [], {"checked": "model.day_fri"});
+        element(env, element5, context, "bind-attr", [], {"checked": "model.day_sat"});
+        element(env, element6, context, "bind-attr", [], {"checked": "model.day_sun"});
+        return fragment;
+      }
+    };
+  }());
+  var child1 = (function() {
+    return {
+      isHTMLBars: true,
+      revision: "Ember@1.11.1",
+      blockParams: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      build: function build(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("                    ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("label");
+        var el2 = dom.createTextNode("From Date");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      render: function render(context, env, contextualElement) {
+        var dom = env.dom;
+        dom.detectNamespace(contextualElement);
+        var fragment;
+        if (env.useFragmentCache && dom.canClone) {
+          if (this.cachedFragment === null) {
+            fragment = this.build(dom);
+            if (this.hasRendered) {
+              this.cachedFragment = fragment;
+            } else {
+              this.hasRendered = true;
+            }
+          }
+          if (this.cachedFragment) {
+            fragment = dom.cloneNode(this.cachedFragment, true);
+          }
+        } else {
+          fragment = this.build(dom);
+        }
+        return fragment;
+      }
+    };
+  }());
+  var child2 = (function() {
+    return {
+      isHTMLBars: true,
+      revision: "Ember@1.11.1",
+      blockParams: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      build: function build(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("                    ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("label");
+        var el2 = dom.createTextNode("On Date");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      render: function render(context, env, contextualElement) {
+        var dom = env.dom;
+        dom.detectNamespace(contextualElement);
+        var fragment;
+        if (env.useFragmentCache && dom.canClone) {
+          if (this.cachedFragment === null) {
+            fragment = this.build(dom);
+            if (this.hasRendered) {
+              this.cachedFragment = fragment;
+            } else {
+              this.hasRendered = true;
+            }
+          }
+          if (this.cachedFragment) {
+            fragment = dom.cloneNode(this.cachedFragment, true);
+          }
+        } else {
+          fragment = this.build(dom);
+        }
+        return fragment;
+      }
+    };
+  }());
+  var child3 = (function() {
+    return {
+      isHTMLBars: true,
+      revision: "Ember@1.11.1",
+      blockParams: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      build: function build(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("                    ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("label");
+        var el2 = dom.createTextNode("To Date");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n                    ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      render: function render(context, env, contextualElement) {
+        var dom = env.dom;
+        var hooks = env.hooks, get = hooks.get, inline = hooks.inline;
+        dom.detectNamespace(contextualElement);
+        var fragment;
+        if (env.useFragmentCache && dom.canClone) {
+          if (this.cachedFragment === null) {
+            fragment = this.build(dom);
+            if (this.hasRendered) {
+              this.cachedFragment = fragment;
+            } else {
+              this.hasRendered = true;
+            }
+          }
+          if (this.cachedFragment) {
+            fragment = dom.cloneNode(this.cachedFragment, true);
+          }
+        } else {
+          fragment = this.build(dom);
+        }
+        var morph0 = dom.createMorphAt(fragment,3,3,contextualElement);
+        inline(env, morph0, context, "view", [get(env, context, "App.CalendarDatePicker")], {"name": get(env, context, "model.to_date"), "value": get(env, context, "model.to_date"), "class": "form-control", "placeholder": "to date"});
+        return fragment;
+      }
+    };
+  }());
   return {
     isHTMLBars: true,
     revision: "Ember@1.11.1",
@@ -976,77 +1206,21 @@ Ember.TEMPLATES["_create_dates"] = Ember.HTMLBars.template((function() {
       dom.appendChild(el6, el7);
       var el7 = dom.createComment("");
       dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    ");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createComment("label>Repeats Every</label>\n                    {-input type=\"number\" name=\"model.repeat_every\" min=0 max=52 class=\"form-control\" -}\n                    <label>Repeats On</label");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    M");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createElement("input");
-      dom.setAttribute(el7,"type","checkbox");
-      dom.setAttribute(el7,"name","model.day_mon");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    T");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createElement("input");
-      dom.setAttribute(el7,"type","checkbox");
-      dom.setAttribute(el7,"name","model.day_tue");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    W");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createElement("input");
-      dom.setAttribute(el7,"type","checkbox");
-      dom.setAttribute(el7,"name","model.day_wed");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    T");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createElement("input");
-      dom.setAttribute(el7,"type","checkbox");
-      dom.setAttribute(el7,"name","model.day_thu");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    F");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createElement("input");
-      dom.setAttribute(el7,"type","checkbox");
-      dom.setAttribute(el7,"name","model.day_fri");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    S");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createElement("input");
-      dom.setAttribute(el7,"type","checkbox");
-      dom.setAttribute(el7,"name","model.day_sat");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    S");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createElement("input");
-      dom.setAttribute(el7,"type","checkbox");
-      dom.setAttribute(el7,"name","model.day_sun");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    ");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createElement("br");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    ");
-      dom.appendChild(el6, el7);
-      var el7 = dom.createElement("label");
-      var el8 = dom.createTextNode("From Date");
-      dom.appendChild(el7, el8);
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    ");
+      var el7 = dom.createTextNode("\n\n");
       dom.appendChild(el6, el7);
       var el7 = dom.createComment("");
       dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    ");
+      var el7 = dom.createComment("");
       dom.appendChild(el6, el7);
-      var el7 = dom.createElement("label");
-      var el8 = dom.createTextNode("To Date");
-      dom.appendChild(el7, el8);
-      dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                    ");
+      var el7 = dom.createTextNode("                    ");
       dom.appendChild(el6, el7);
       var el7 = dom.createComment("");
       dom.appendChild(el6, el7);
-      var el7 = dom.createTextNode("\n                  ");
+      var el7 = dom.createTextNode("\n");
+      dom.appendChild(el6, el7);
+      var el7 = dom.createComment("");
+      dom.appendChild(el6, el7);
+      var el7 = dom.createTextNode("                  ");
       dom.appendChild(el6, el7);
       dom.appendChild(el5, el6);
       var el6 = dom.createTextNode("\n              ");
@@ -1094,7 +1268,7 @@ Ember.TEMPLATES["_create_dates"] = Ember.HTMLBars.template((function() {
     },
     render: function render(context, env, contextualElement) {
       var dom = env.dom;
-      var hooks = env.hooks, content = hooks.content, get = hooks.get, inline = hooks.inline, element = hooks.element;
+      var hooks = env.hooks, content = hooks.content, get = hooks.get, inline = hooks.inline, block = hooks.block, element = hooks.element;
       dom.detectNamespace(contextualElement);
       var fragment;
       if (env.useFragmentCache && dom.canClone) {
@@ -1112,34 +1286,24 @@ Ember.TEMPLATES["_create_dates"] = Ember.HTMLBars.template((function() {
       } else {
         fragment = this.build(dom);
       }
-      var element0 = dom.childAt(fragment, [2, 1, 1]);
-      var element1 = dom.childAt(element0, [1]);
-      var element2 = dom.childAt(element0, [3, 1, 1]);
-      var element3 = dom.childAt(element2, [7]);
-      var element4 = dom.childAt(element2, [9]);
-      var element5 = dom.childAt(element2, [11]);
-      var element6 = dom.childAt(element2, [13]);
-      var element7 = dom.childAt(element2, [15]);
-      var element8 = dom.childAt(element2, [17]);
-      var element9 = dom.childAt(element2, [19]);
-      var element10 = dom.childAt(element0, [5, 1]);
-      var morph0 = dom.createMorphAt(dom.childAt(element1, [1]),1,1);
-      var morph1 = dom.createMorphAt(dom.childAt(element1, [5]),0,0);
-      var morph2 = dom.createMorphAt(element2,3,3);
-      var morph3 = dom.createMorphAt(element2,25,25);
-      var morph4 = dom.createMorphAt(element2,29,29);
+      var element7 = dom.childAt(fragment, [2, 1, 1]);
+      var element8 = dom.childAt(element7, [1]);
+      var element9 = dom.childAt(element7, [3, 1, 1]);
+      var element10 = dom.childAt(element7, [5, 1]);
+      var morph0 = dom.createMorphAt(dom.childAt(element8, [1]),1,1);
+      var morph1 = dom.createMorphAt(dom.childAt(element8, [5]),0,0);
+      var morph2 = dom.createMorphAt(element9,3,3);
+      var morph3 = dom.createMorphAt(element9,5,5);
+      var morph4 = dom.createMorphAt(element9,6,6);
+      var morph5 = dom.createMorphAt(element9,8,8);
+      var morph6 = dom.createMorphAt(element9,10,10);
       content(env, morph0, context, "model.name");
       content(env, morph1, context, "d_errors");
       inline(env, morph2, context, "view", [get(env, context, "Ember.Select")], {"value": get(env, context, "model.frequency"), "content": get(env, context, "frequencies"), "optionValuePath": "content.value", "optionLabelPath": "content.name", "class": "form-control"});
-      element(env, element3, context, "bind-attr", [], {"checked": "model.day_mon"});
-      element(env, element4, context, "bind-attr", [], {"checked": "model.day_tue"});
-      element(env, element5, context, "bind-attr", [], {"checked": "model.day_wed"});
-      element(env, element6, context, "bind-attr", [], {"checked": "model.day_thu"});
-      element(env, element7, context, "bind-attr", [], {"checked": "model.day_fri"});
-      element(env, element8, context, "bind-attr", [], {"checked": "model.day_sat"});
-      element(env, element9, context, "bind-attr", [], {"checked": "model.day_sun"});
-      inline(env, morph3, context, "view", [get(env, context, "App.CalendarDatePicker")], {"name": get(env, context, "model.from_date"), "value": get(env, context, "model.from_date"), "class": "form-control", "placeholder": "from date"});
-      inline(env, morph4, context, "view", [get(env, context, "App.CalendarDatePicker")], {"name": get(env, context, "model.to_date"), "value": get(env, context, "model.to_date"), "class": "form-control", "placeholder": "to date"});
+      block(env, morph3, context, "if", [get(env, context, "doesRepeat")], {}, child0, null);
+      block(env, morph4, context, "if", [get(env, context, "doesRepeat")], {}, child1, child2);
+      inline(env, morph5, context, "view", [get(env, context, "App.CalendarDatePicker")], {"name": get(env, context, "model.from_date"), "value": get(env, context, "model.from_date"), "class": "form-control", "placeholder": "from date"});
+      block(env, morph6, context, "if", [get(env, context, "doesRepeat")], {}, child3, null);
       element(env, element10, context, "action", ["createEventDates", get(env, context, "model")], {});
       return fragment;
     }
@@ -2407,8 +2571,12 @@ Ember.TEMPLATES["event"] = Ember.HTMLBars.template((function() {
         dom.setAttribute(el1,"data-toggle","modal");
         dom.setAttribute(el1,"data-target","#dialog-form");
         dom.setAttribute(el1,"title","New Event Dates");
+        var el2 = dom.createTextNode("\n                ");
+        dom.appendChild(el1, el2);
         var el2 = dom.createElement("span");
         dom.setAttribute(el2,"class","glyphicon glyphicon-plus");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n            ");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");

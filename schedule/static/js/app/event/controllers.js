@@ -31,6 +31,16 @@ App.EventController = Ember.ObjectController.extend({
         setMenu(this);
     },
 
+    doesRepeat: function() {
+        var frequency = this.get('model').frequency || this.get('model').get('frequency');
+        if (!frequency) return true;
+        if (frequency == 'irregular') {
+            return false;
+        } else {
+            return true;
+        }
+    }.property('frequency'),
+
     isEventAdmin: function(eventId) {
         this.set('canAdministrate', false);
         if (this.get('permissions').is_admin) {
@@ -64,7 +74,6 @@ App.EventController = Ember.ObjectController.extend({
 
     actions: {
         createEventDates: function(event) {
-            console.log(event);
             var postdata = {
                 frequency: event.frequency,
                 repeats_every: 1, //event.get('repeat_every'),
@@ -83,7 +92,7 @@ App.EventController = Ember.ObjectController.extend({
 
             App.Event.createDates(event.id, postdata).then(function(result) {
                 Ember.$('#dialog-form').modal('hide');
-                controller.transitionToRoute('event', controller.get('model').get('id'));
+                controller.transitionToRoute('event', controller.get('model').id);
             }).catch(function(error) {
                 controller.set('d_error', error);
             });

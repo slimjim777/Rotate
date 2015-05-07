@@ -88,8 +88,10 @@ class Event(db.Model):
         """
         records = []
         current_date = datetime.datetime.strptime(from_date, '%Y-%m-%d')
-        end_date = datetime.datetime.strptime(to_date, '%Y-%m-%d')
+
         if frequency in ['weekly', 'monthly']:
+            end_date = datetime.datetime.strptime(to_date, '%Y-%m-%d')
+
             # Create weekly schedule of dates
             while current_date < end_date:
                 for index, day in enumerate(repeats_on):
@@ -101,18 +103,23 @@ class Event(db.Model):
                         break
 
                     # Check if the date already exists for the Event
-                    ed = self.event_dates.filter_by(on_date=this_day).first()
-                    if ed:
+                    new_date = self._get_or_create_date(event_id, this_day)
+                    if not new_date:
                         # Record already exists so skip it
                         continue
                     else:
-                        new_date = EventDate(this_day, event_id)
                         records.append(new_date)
+
                 if frequency == 'weekly':
                     # Look a week ahead
                     current_date += datetime.timedelta(7)
                 else:
                     current_date += relativedelta(months=1)
+        elif frequency == 'irregular':
+            # Create a single date
+            new_date = self._get_or_create_date(event_id, current_date)
+            if new_date:
+                records.append(new_date)
 
         # Create the new date records
         if len(records) > 0:
@@ -120,6 +127,16 @@ class Event(db.Model):
             db.session.commit()
         app.logger.debug(records)
         return True, len(records)
+
+    def _get_or_create_date(self, event_id, this_day):
+        # Check if the date already exists for the Event
+        ed = self.event_dates.filter_by(on_date=this_day).first()
+        if ed:
+            # Record already exists so skip it
+            return
+        else:
+            new_date = EventDate(this_day, event_id)
+            return new_date
 
     @staticmethod
     def copy_roles(from_event_id, to_event_id, copy_type):
