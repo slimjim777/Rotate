@@ -14,7 +14,7 @@
         <table class="table table-striped rota">
           <thead>
             <tr>
-                <th class="freeze">Date</th><th class="first-column">Focus</th><th>Notes</th>
+                <th class="freeze">Date</th><th class="first-column">Focus</th><th>Notes</th><th>Run Sheet</th>
                 {{#each role in model.role_names}}<th>{{role}}</th>{{/each}}
                 <th></th>
             </tr>
@@ -30,6 +30,7 @@
                 </td>
                 <td>{{textarea value=ed.focus class="form-control"}}</td>
                 <td>{{textarea value=ed.notes class="form-control"}}</td>
+                <td>{{textarea value=ed.url class="form-control"}}</td>
                 {{#each r in ed.rota }}
                 <td>
                     {{view Ember.Select
@@ -51,6 +52,7 @@
                 </td>
                 <td>{{ed.focus}}</td>
                 <td>{{ed.notes}}</td>
+                <td><a href="{{ed.url}}">{{#if ed.url}}Run Sheet {{shortDate ed.on_date}}{{/if}}</a></td>
                 {{#each r in ed.rota }}
                 <td>
                     {{#if r.is_away}}

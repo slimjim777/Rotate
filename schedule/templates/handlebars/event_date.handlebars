@@ -43,6 +43,21 @@
                 <br />
             {{/if}}
         {{/if}}
+        {{#if isEditing}}
+            <div>
+                <label>Run Sheet</label>
+                <div>{{textarea value=model.url class="form-control"}}</div>
+            </div>
+        {{else}}
+            {{#if model.url}}
+                <div>
+                    <label>Run Sheet</label>
+                    <div><a href="{{model.url}}">{{model.url}}</a></div>
+                </div>
+                <br />
+            {{/if}}
+        {{/if}}
+
         <table class="table table-striped">
           <thead>
             <tr>

@@ -83,7 +83,7 @@ class FastQuery(object):
                  ed.id event_date_id, p.active person_active, p.id person_id,
                  exists(select 1 from away_date where person_id=p.id
                   and on_date between from_date and to_date) is_away,
-                 ed.focus, ed.notes,
+                 ed.focus, ed.notes, ed.url,
                  exists(select 1 from rota rr
                         inner join event_date eded on rr.event_date_id=eded.id
                         where rr.person_id=p.id
@@ -110,6 +110,7 @@ class FastQuery(object):
                     'id': row['event_date_id'],
                     'focus': row['focus'],
                     'notes': row['notes'],
+                    'url': row['url'],
                     'on_date': row['on_date'].strftime('%Y-%m-%d'),
                     'isEditing': False,
                     'rota': [],
@@ -258,7 +259,7 @@ class FastQuery(object):
                  ed.id event_date_id, p.active person_active, p.id person_id,
                  exists(select 1 from away_date where person_id=p.id
                   and on_date between from_date and to_date) is_away,
-                 ed.focus, ed.notes,
+                 ed.focus, ed.notes, ed.url,
                  exists(select 1 from rota rr
                         inner join event_date eded on rr.event_date_id=eded.id
                         where rr.event_date_id<>ed.id
@@ -295,6 +296,7 @@ class FastQuery(object):
                     'id': row['event_date_id'],
                     'focus': row['focus'],
                     'notes': row['notes'],
+                    'url': row['url'],
                     'on_date': row['on_date'].strftime(date_format),
                     'isEditing': False,
                     'rota': {},
@@ -393,7 +395,7 @@ class FastQuery(object):
             ignore_ids = [0]
 
         sql = """select e.id event_id, e.name event_name, on_date,
-                  ed.id event_date_id, focus, notes
+                  ed.id event_date_id, focus, notes, url
                   from event_date ed
                   inner join event e on e.id=ed.event_id
                   where ed.id not in :ids
@@ -418,6 +420,7 @@ class FastQuery(object):
                 'id': row['event_date_id'],
                 'focus': row['focus'],
                 'notes': row['notes'],
+                'url': row['url'],
                 'isEditing': False,
                 'rota': rota,
             }

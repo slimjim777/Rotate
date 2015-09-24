@@ -337,6 +337,7 @@ def api_event_date_edit(event_date_id):
         ed = EventDate.query.get(event_date_id)
         ed.focus = request.json.get('focus')
         ed.notes = request.json.get('notes')
+        ed.url = request.json.get('url')
 
         # Save the modified event date details
         records = request.json.get('rota')

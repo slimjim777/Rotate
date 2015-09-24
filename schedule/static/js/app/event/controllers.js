@@ -169,6 +169,7 @@ App.EventOverviewController = Ember.ObjectController.extend({
             var update = {
                 focus: ed.get('focus'),
                 notes: ed.get('notes'),
+                url: ed.get('url'),
                 rota: update_rota
             }
 
@@ -238,6 +239,7 @@ App.EventDateController = Ember.ObjectController.extend({
             var update = {
                 focus: event_date.get('focus'),
                 notes: event_date.get('notes'),
+                url: event_date.get('url'),
                 rota: update_rota
             }
 
