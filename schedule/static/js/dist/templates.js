@@ -4186,6 +4186,8 @@ Ember.TEMPLATES["event_date"] = Ember.HTMLBars.template((function() {
           dom.appendChild(el1, el2);
           var el2 = dom.createElement("div");
           var el3 = dom.createElement("a");
+          var el4 = dom.createTextNode("Run sheet ");
+          dom.appendChild(el3, el4);
           var el4 = dom.createComment("");
           dom.appendChild(el3, el4);
           dom.appendChild(el2, el3);
@@ -4203,7 +4205,7 @@ Ember.TEMPLATES["event_date"] = Ember.HTMLBars.template((function() {
         },
         render: function render(context, env, contextualElement) {
           var dom = env.dom;
-          var hooks = env.hooks, get = hooks.get, concat = hooks.concat, attribute = hooks.attribute, content = hooks.content;
+          var hooks = env.hooks, get = hooks.get, concat = hooks.concat, attribute = hooks.attribute, inline = hooks.inline;
           dom.detectNamespace(contextualElement);
           var fragment;
           if (env.useFragmentCache && dom.canClone) {
@@ -4222,10 +4224,10 @@ Ember.TEMPLATES["event_date"] = Ember.HTMLBars.template((function() {
             fragment = this.build(dom);
           }
           var element2 = dom.childAt(fragment, [1, 3, 0]);
-          var morph0 = dom.createMorphAt(element2,0,0);
+          var morph0 = dom.createMorphAt(element2,1,1);
           var attrMorph0 = dom.createAttrMorph(element2, 'href');
           attribute(env, attrMorph0, element2, "href", concat(env, [get(env, context, "model.url")]));
-          content(env, morph0, context, "model.url");
+          inline(env, morph0, context, "formatDate", [get(env, context, "model.on_date")], {});
           return fragment;
         }
       };
