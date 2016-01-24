@@ -73,6 +73,38 @@ class FastQuery(object):
         return FastQuery.event_date_to_dict(ev_date)
 
     @staticmethod
+    def rota_for_event_date_ondate(event_id, on_date):
+        start = time.time()
+        # Get the roles for the event date
+        roles, role_people = FastQuery.roles(event_id=event_id)
+
+        sql = """select ev.name event_name, ev.id event_id, on_date,
+                 role.name role_name, firstname, lastname, role.id role_id,
+                 ed.id event_date_id, p.active person_active, p.id person_id,
+                 exists(select 1 from away_date where person_id=p.id
+                  and on_date between from_date and to_date) is_away,
+                 ed.focus, ed.notes, ed.url,
+                 exists(select 1 from rota rr
+                        inner join event_date eded on rr.event_date_id=eded.id
+                        where rr.person_id=p.id
+                        and eded.id<>ed.id
+                        and eded.on_date=ed.on_date) on_rota
+              from rota r
+              inner join event_date ed on r.event_date_id=ed.id
+              inner join event ev on ed.event_id=ev.id
+              inner join person p on r.person_id=p.id
+              inner join role on role.id = r.role_id
+              where ed.event_id = :event_id
+              and ed.on_date = :on_date"""
+
+        params = {
+            'event_id': event_id, 'on_date': on_date
+        }
+        rows = db.session.execute(sql, params)
+        return FastQuery.rota_for_event_date_process(
+            rows, roles, role_people, start)
+
+    @staticmethod
     def rota_for_event_date(event_date_id):
         start = time.time()
         # Get the roles for the event date
@@ -100,11 +132,24 @@ class FastQuery(object):
             'event_date_id': event_date_id,
         }
         rows = db.session.execute(sql, params)
+        return FastQuery.rota_for_event_date_process(
+            rows, roles, role_people, start)
+
+    @staticmethod
+    def rota_for_event_date_process(rows, roles, role_people, start):
         r = {'rota': []}
         role_dict = {}
         for row in rows.fetchall():
             if not r.get('event_id'):
                 r = {
+                    'summary': {
+                        'on_date': row['on_date'].strftime('%Y-%m-%d'),
+                        'focus': row['focus'],
+                        'notes': row['notes'],
+                        'url': row['url'],
+                        'event_name': row['event_name'],
+                        'event_id': row['event_id'],
+                    },
                     'event_id': row['event_id'],
                     'event_name': row['event_name'],
                     'id': row['event_date_id'],

@@ -316,6 +316,15 @@ def api_event_overview(event_id):
     ev_dates = FastQuery.rota_for_event(event_id, from_date, to_date)
     return jsonify({'response': 'Success', 'event_dates': ev_dates})
 
+@app.route("/api/events/<int:event_id>/date/<on_date>", methods=['GET'])
+@login_required
+def api_event_date_ondate(event_id, on_date):
+    try:
+        e = FastQuery.rota_for_event_date_ondate(event_id, on_date)
+        return jsonify({'response': 'Success', 'event_date': e})
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
 
 @app.route("/api/event_date/<int:event_date_id>", methods=['GET'])
 @login_required
