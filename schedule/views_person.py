@@ -16,20 +16,20 @@ PAGE_SIZE = int(app.config['PAGE_SIZE'])
 # -- Ember ---
 @app.route('/my_rota')
 def view_person_my_rota():
-    return redirect(url_for('view_person_react'))
-
-
-@app.route('/Ember', methods=['GET'])
-@login_required
-def view_person():
-    return render_template('ember_person.html')
+    return redirect(url_for('view_person'))
 
 
 @app.route('/rota', methods=['GET'])
 @app.route('/rota/<path:path>', methods=['GET'])
 @login_required
-def view_person_react(path=None):
+def view_person(path=None):
     return render_template('react.html')
+
+
+@app.route('/Ember', methods=['GET'])
+@login_required
+def view_person_ember():
+    return render_template('ember_person.html')
 
 
 @app.route('/api/people/me', methods=['GET'])

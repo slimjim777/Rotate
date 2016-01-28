@@ -378,6 +378,39 @@ def api_event_date_delete(event_date_id):
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
+@app.route("/api/events/<int:event_id>/upsert", methods=['POST'])
+@login_required
+def api_event_upsert(event_id):
+    """
+    Upsert an event date for the event and create the rota.
+    """
+    on_date = request.json.get('on_date')
+    focus = request.json.get('focus')
+    notes = request.json.get('notes')
+    url = request.json.get('url')
+    rota = request.json.get('rota')
+
+    #try:
+    # Get the event
+    event = FastQuery.event(event_id)
+
+    # Upsert the event date
+    FastQuery.upsert_event_date(event_id, on_date, focus, notes, url)
+
+    # Get the updated event dates
+    ed = FastQuery.event_date_ondate(event_id, on_date)
+
+    # Update the rota for the event dates
+    for r in rota:
+        FastQuery.upsert_rota_for_role(ed['id'], r['role_id'], r['person_id'])
+
+
+    # except Exception as v:
+    #     return jsonify({'response': 'Error', 'message': str(v)})
+
+    return jsonify({'response': 'Success'})
+
+
 @app.route("/api/events/<int:event_id>/event_dates/create", methods=['POST'])
 @login_required
 def event_dates_create(event_id):

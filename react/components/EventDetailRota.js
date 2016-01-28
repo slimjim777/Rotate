@@ -69,7 +69,7 @@ var EventDetailRota = React.createClass({
                                 index += 1;
                                 return (
                                     <tr key={index}>
-                                        <td>{r.role.name}</td>
+                                        <td>{r.role_name}</td>
                                         <td>
                                             <a href="/rota/people/">{r.firstname} {r.lastname}</a>
                                         </td>

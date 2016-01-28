@@ -33,6 +33,29 @@ var EventModel = {
 
     rota: function(modelId, fromDate) {
         return Ajax.get(this.url() + '/' + modelId + '/rota/' + fromDate );
+    },
+
+    // Upserts the rota
+    upsertRota: function(eventId, onDate, rolePerson, focus, notes, url) {
+        // Expecting dictionary: {role_id: person_id}
+        // Iterate through the rolePerson object
+        var rota = [];
+        for (var key in rolePerson) {
+            if (rolePerson.hasOwnProperty(key)) {
+                var data = {
+                    role_id: key,
+                    person_id: rolePerson[key]
+                }
+                if ((key !== 'focus') && (key !== 'notes') && (key !== 'url')) {
+                    rota.push(data);
+                }
+            }
+        }
+
+        var eventDate = {
+            event_id: eventId, on_date: onDate, focus: focus, notes: notes, url: url, rota: rota
+        };
+        return Ajax.post(this.url() + '/' + eventId + '/upsert', eventDate);
     }
 };
 

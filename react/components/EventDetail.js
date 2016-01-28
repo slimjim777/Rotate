@@ -8,6 +8,7 @@ var EventDetailPanel = require('../components/EventDetailPanel');
 var EventDetailRota = require('../components/EventDetailRota');
 var EventDetailRotaEdit = require('../components/EventDetailRotaEdit');
 var EventDetailDates = require('../components/EventDetailDates');
+var Navigation = require('../components/Navigation');
 
 
 var EventDetail = React.createClass({
@@ -93,6 +94,7 @@ var EventDetail = React.createClass({
         self.setState({eventDateLoading: true, onDate: onDate});
         EventDate.findByDate(modelId, onDate).then(function(response) {
             var data = JSON.parse(response.body).event_date;
+            console.log(data);
             self.setState({
                 dateSummary: data.summary, rota: data.rota, roles: data.roles, onDate: onDate,
                 eventDateLoading: false });
@@ -134,6 +136,7 @@ var EventDetail = React.createClass({
     render: function () {
         return (
             <div id="main" className="container-fluid" role="main">
+                <Navigation active="events" />
                 <h2 className="heading center">{this.state.model.name}</h2>
                 <h4 className="center"><a href={'/rota/events/'.concat(this.state.model.id, '/overview')}>Overview</a></h4>
 

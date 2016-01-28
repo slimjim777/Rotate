@@ -4,6 +4,16 @@ from schedule import db, app
 import time
 
 
+ROLES_QUERY = """select r.id role_id, r.name role_name, firstname, lastname,
+          p.active person_active, p.id person_id, on_date, sequence,
+          exists(select 1 from away_date where person_id=p.id
+            and on_date between from_date and to_date) is_away
+          from role r
+          left outer join role_people rp on rp.role_id=r.id
+          left outer join person p on p.id=rp.person_id
+          inner join event_date ed on r.event_id=ed.event_id and """
+
+
 class FastQuery(object):
     """
     Faster database queries by bypassing SQLAlchemy and going direct to the
@@ -73,17 +83,85 @@ class FastQuery(object):
         return FastQuery.event_date_to_dict(ev_date)
 
     @staticmethod
+    def event_date_ondate(event_id, on_date):
+        start = time.time()
+        sql = "select * from event_date where event_id=:event_id and on_date=:on_date"
+        params = {
+            'event_id': event_id, 'on_date': on_date
+        }
+        row = db.session.execute(sql, params)
+        ev_date = row.fetchone()
+        # if not ev_date:
+        #     raise Exception("Cannot find the event date")
+
+        app.logger.debug('Event Date: %s' % (time.time() - start))
+        return FastQuery.event_date_to_dict(ev_date)
+
+    @staticmethod
     def rota_for_event_date_ondate(event_id, on_date):
         start = time.time()
-        # Get the roles for the event date
-        roles, role_people = FastQuery.roles(event_id=event_id)
+
+        # Get event date details
+        e = FastQuery.event_date_ondate(event_id, on_date)
+
+        # Get the roles for the date
+        roles = FastQuery.roles_for_event_ondate(event_id, on_date)
+
+        # Get the rota for the date
+        rota = FastQuery._rota_for_event_date_ondate(event_id, on_date)
+
+        # Reformat the details
+        #event_date = {summary:e, roles: roles, rota: rota}
+        event_date = {"summary":e, "roles": roles, "rota": rota}
+
+        # Pivot roles by sequence
+        rroles = {}
+        for r in roles:
+            seq = str(r['sequence']).zfill(4)
+            if seq in rroles:
+                rroles[seq].append(r)
+            else:
+                rroles[seq] = [r]
+
+        # Convert to an array
+        role_array = []
+        for key,value in sorted(rroles.items()):
+            role_list = value
+            role_name = ''
+            role_id = None
+            if len(role_list) > 0:
+                role_name = role_list[0]['role_name']
+                role_id = role_list[0]['role_id']
+
+            # Find the person in the rota for the role
+            rr = {"person_id": None, "is_away": False}
+            for r in rota:
+                if r['role_id'] == role_id:
+                    rr = r
+                    break
+
+            # Reformat the role info for display
+            role_rota = {
+                "role_id": role_id, "role_name": role_name, "roles": role_list,
+                "person_id": rr["person_id"], "is_away": rr["is_away"]
+            }
+            role_array.append(role_rota)
+
+        event_date["roles"] = role_array
+
+        app.logger.debug('Event Date Rota: %s' % (time.time() - start))
+        return event_date
+
+    @staticmethod
+    def _rota_for_event_date_ondate(event_id, on_date):
+        start = time.time()
 
         sql = """select ev.name event_name, ev.id event_id, on_date,
                  role.name role_name, firstname, lastname, role.id role_id,
                  ed.id event_date_id, p.active person_active, p.id person_id,
                  exists(select 1 from away_date where person_id=p.id
                   and on_date between from_date and to_date) is_away,
-                 ed.focus, ed.notes, ed.url,
+                 ed.focus, ed.notes, ed.url, role.sequence,
                  exists(select 1 from rota rr
                         inner join event_date eded on rr.event_date_id=eded.id
                         where rr.person_id=p.id
@@ -95,20 +173,26 @@ class FastQuery(object):
               inner join person p on r.person_id=p.id
               inner join role on role.id = r.role_id
               where ed.event_id = :event_id
-              and ed.on_date = :on_date"""
+              and ed.on_date = :on_date
+              order by role.sequence"""
 
         params = {
             'event_id': event_id, 'on_date': on_date
         }
         rows = db.session.execute(sql, params)
-        return FastQuery.rota_for_event_date_process(
-            rows, roles, role_people, start)
+
+        rota = []
+        for row in rows:
+            r = dict(row)
+            r["on_date"] = str(r["on_date"])
+            rota.append(r)
+        return rota
 
     @staticmethod
     def rota_for_event_date(event_date_id):
         start = time.time()
         # Get the roles for the event date
-        roles, role_people = FastQuery.roles(event_date_id=event_date_id)
+        roles, role_people = FastQuery.roles_for_eventdate(event_date_id)
 
         sql = """select ev.name event_name, ev.id event_id, on_date,
                  role.name role_name, firstname, lastname, role.id role_id,
@@ -158,6 +242,7 @@ class FastQuery(object):
                     'url': row['url'],
                     'on_date': row['on_date'].strftime('%Y-%m-%d'),
                     'isEditing': False,
+                    'roles': roles,
                     'rota': [],
                 }
 
@@ -371,7 +456,7 @@ class FastQuery(object):
             }
 
         # Get the roles for the event
-        roles, role_people = FastQuery.roles(event_id=event_id)
+        roles, role_people = FastQuery.roles_for_event(event_id)
         r['role_names'] = [x['name'] for x in roles]
 
         # Get a list of the dates that we have planned
@@ -473,26 +558,32 @@ class FastQuery(object):
         return on_dates
 
     @staticmethod
-    def roles(event_date_id=None, event_id=None):
-        sql = """select r.id role_id, r.name role_name, firstname, lastname,
-                  p.active person_active, p.id person_id, on_date,
-                  exists(select 1 from away_date where person_id=p.id
-                    and on_date between from_date and to_date) is_away
-                  from role r
-                  left outer join role_people rp on rp.role_id=r.id
-                  left outer join person p on p.id=rp.person_id
-                  inner join event_date ed on r.event_id=ed.event_id and """
+    def roles_for_eventdate(event_date_id):
+        sql = ROLES_QUERY + "ed.id = :param_id order by sequence, r.id"
+        rows = db.session.execute(sql, {'param_id': event_date_id})
+        return FastQuery.roles_process(rows)
 
-        if event_date_id:
-            sql += """ed.id = :param_id
-                    order by sequence, r.id"""
-            param_id = event_date_id
-        else:
-            sql += """ed.event_id = :param_id
-                    order by sequence, r.id"""
-            param_id = event_id
+    @staticmethod
+    def roles_for_event(event_id):
+        sql = ROLES_QUERY + "ed.event_id = :param_id order by sequence, r.id"
+        rows = db.session.execute(sql, {'param_id': event_id})
+        return FastQuery.roles_process(rows)
 
-        rows = db.session.execute(sql, {'param_id': param_id})
+    @staticmethod
+    def roles_for_event_ondate(event_id, on_date):
+        sql = ROLES_QUERY + "ed.event_id=:param_id and ed.on_date=:on_date " \
+              + "order by sequence, r.id"
+        rows = db.session.execute(
+            sql, {'param_id': event_id, 'on_date': on_date})
+        roles = []
+        for row in rows:
+            r = dict(row)
+            r['on_date'] = str(r['on_date'])
+            roles.append(r)
+        return roles
+
+    @staticmethod
+    def roles_process(rows):
         role_list = []
         role_people = {}
         for row in rows:
@@ -700,3 +791,70 @@ class FastQuery(object):
                 'email': row['email'],
             })
         return people
+
+    @staticmethod
+    def upsert_event_date(event_id, on_date, focus, notes, url):
+        sql = """WITH upsert AS (
+            update event_date set focus=:focus,notes=:notes,url=:url
+            where event_id=:event_id and on_date=:on_date RETURNING *)
+            insert into event_date (event_id,on_date,focus,notes,url)
+            select :event_id,:on_date,:focus,:notes,:url
+            WHERE NOT EXISTS (SELECT * from upsert)"""
+        data = {
+            'event_id': event_id, 'on_date': on_date, 'focus': focus,
+            'notes': notes, 'url': url,
+        }
+
+        rows = db.session.execute(sql, data)
+        db.session.commit()
+
+    @staticmethod
+    def _rota_for_event_date(event_date_id, role_id):
+        sql = "select * from rota where event_date_id=:ed and role_id=:r"
+        rows = db.session.execute(
+            sql, {'ed': event_date_id, 'r': role_id})
+        rota = []
+        for row in rows.fetchall():
+            rota.append(dict(row))
+        return rota
+
+    @staticmethod
+    def _add_rota_for_event_date(event_date_id, role_id, person_id):
+        sql = """insert into rota (
+            event_date_id, role_id, person_id) values (:ed, :r, :p)"""
+        result = db.session.execute(
+            sql, {'ed': event_date_id, 'r': role_id, 'p': person_id})
+        db.session.commit()
+
+    @staticmethod
+    def _update_rota_for_event_date(rota_id, person_id):
+        sql = "update rota set person_id=:p where id=:r"
+        db.session.execute(sql, {'r': rota_id, 'p': person_id})
+        db.session.commit()
+
+    @staticmethod
+    def _delete_rota_for_event_date(rota_id):
+        sql = "delete from rota where id=:rota_id"
+        db.session.execute(sql, {'rota_id': rota_id})
+        db.session.commit()
+
+    @staticmethod
+    def upsert_rota_for_role(event_date_id, role_id, person_id):
+        person_id = int(person_id)
+
+        # Look for an existing record
+        rows = FastQuery._rota_for_event_date(event_date_id, role_id)
+
+        if len(rows) == 0:
+            # Not found, add a new records
+            if person_id > 0:
+                FastQuery._add_rota_for_event_date(
+                    event_date_id, role_id, person_id)
+        else:
+            rota_id = rows[0]['id']
+            if person_id > 0:
+                # Update the person
+                FastQuery._update_rota_for_event_date(rota_id, person_id)
+            else:
+                # Delete the record
+                FastQuery._delete_rota_for_event_date(rota_id)

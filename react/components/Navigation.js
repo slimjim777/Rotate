@@ -9,6 +9,19 @@ var NavItem = require('react-bootstrap').NavItem;
 
 var Navigation = React.createClass({
     render: function() {
+        var activeRota = false;
+        var activePeople = false;
+        var activeEvents = false;
+        if (this.props.active === 'rota') {
+          activeRota = true;
+        }
+        if (this.props.active === 'people') {
+          activePeople = true;
+        }
+        if (this.props.active === 'events') {
+          activeEvents = true;
+        }
+
         return (
           <Navbar inverse>
             <NavbarHeader>
@@ -16,9 +29,9 @@ var Navigation = React.createClass({
             </NavbarHeader>
               <NavbarCollapse eventKey={0}>
                   <Nav navbar>
-                      <NavItem eventKey={1} href="/rota/me">My Rota</NavItem>
-                      <NavItem eventKey={2} href="/rota/people">People</NavItem>
-                      <NavItem eventKey={3} href="/rota/events">Events</NavItem>
+                      <NavItem eventKey={1} active={activeRota} href="/rota/me">My Rota</NavItem>
+                      <NavItem eventKey={2} active={activePeople} href="/rota/people">People</NavItem>
+                      <NavItem eventKey={3} active={activeEvents} href="/rota/events">Events</NavItem>
                   </Nav>
               </NavbarCollapse>
           </Navbar>

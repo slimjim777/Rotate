@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var moment = require('moment');
-var EventDate = require('../models/eventdate');
+var EventModel = require('../models/event');
 
 
 var EventDetailRotaEdit = React.createClass({
@@ -26,9 +26,9 @@ var EventDetailRotaEdit = React.createClass({
     handleChangeRota: function(e) {
         e.preventDefault();
         // Get the role id and value
-        var roleId = event.target.name.replace('role-','');
+        var roleId = e.target.name.replace('role-','');
         var rota = this.state.rota;
-        rota[roleId] = event.target.value;
+        rota[roleId] = e.target.value;
         this.setState({rota: rota});
     },
 
@@ -36,19 +36,18 @@ var EventDetailRotaEdit = React.createClass({
         e.preventDefault();
         var self = this;
 
-        //EventDate.updateRota(
-        EventDate.createRota(this.props.model.id, this.props.onDate, this.state.rota, this.state.focus,
+        EventModel.upsertRota(this.props.model.id, this.props.onDate, this.state.rota, this.state.focus,
             this.state.notes, this.state.url).then(function(data) {
             self.props.refreshData();
         });
     },
 
-    renderRoleSelect: function(rota) {
+    renderRoleSelect: function(rota, roleIndex) {
         return (
-            <tr key={rota.roleName}>
-                <td>{rota.roleName}</td>
+            <tr key={roleIndex}>
+                <td>{rota.role_name}</td>
                 <td>
-                    <select name={"role-".concat(rota.roleId)} defaultValue={rota.personId} className="form-control"
+                    <select name={"role-".concat(rota.role_id)} defaultValue={rota.person_id} className="form-control"
                             onChange={this.handleChangeRota}>
                         <option value="0">&nbsp;</option>
                         {rota.roles.map(function(r) {
@@ -68,6 +67,7 @@ var EventDetailRotaEdit = React.createClass({
         var summary = this.props.summary;
         var roles = this.props.roles;
         var self = this;
+        var roleIndex = 0;
 
         if (!this.props.onDate) {
             return (
@@ -108,7 +108,8 @@ var EventDetailRotaEdit = React.createClass({
                             </thead>
                             <tbody>
                             {roles.map(function(r) {
-                                return self.renderRoleSelect(r);
+                                roleIndex += 1;
+                                return self.renderRoleSelect(r, roleIndex);
                             })}
                             </tbody>
                         </table>

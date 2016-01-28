@@ -384,6 +384,7 @@ var EventDetailPanel = require('../components/EventDetailPanel');
 var EventDetailRota = require('../components/EventDetailRota');
 var EventDetailRotaEdit = require('../components/EventDetailRotaEdit');
 var EventDetailDates = require('../components/EventDetailDates');
+var Navigation = require('../components/Navigation');
 
 var EventDetail = React.createClass({
     displayName: 'EventDetail',
@@ -469,6 +470,7 @@ var EventDetail = React.createClass({
         self.setState({ eventDateLoading: true, onDate: onDate });
         EventDate.findByDate(modelId, onDate).then(function (response) {
             var data = JSON.parse(response.body).event_date;
+            console.log(data);
             self.setState({
                 dateSummary: data.summary, rota: data.rota, roles: data.roles, onDate: onDate,
                 eventDateLoading: false });
@@ -507,6 +509,7 @@ var EventDetail = React.createClass({
         return React.createElement(
             'div',
             { id: 'main', className: 'container-fluid', role: 'main' },
+            React.createElement(Navigation, { active: 'events' }),
             React.createElement(
                 'h2',
                 { className: 'heading center' },
@@ -536,7 +539,7 @@ var EventDetail = React.createClass({
 });
 
 module.exports = EventDetail;
-},{"../components/EventDetailDates":5,"../components/EventDetailPanel":6,"../components/EventDetailRota":7,"../components/EventDetailRotaEdit":8,"../models/event":22,"../models/eventdate":23,"../models/person":24,"jquery":26,"react":"CwoHg3"}],5:[function(require,module,exports){
+},{"../components/EventDetailDates":5,"../components/EventDetailPanel":6,"../components/EventDetailRota":7,"../components/EventDetailRotaEdit":8,"../components/Navigation":13,"../models/event":22,"../models/eventdate":23,"../models/person":24,"jquery":26,"react":"CwoHg3"}],5:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -900,7 +903,7 @@ var EventDetailRota = React.createClass({
                                     React.createElement(
                                         'td',
                                         null,
-                                        r.role.name
+                                        r.role_name
                                     ),
                                     React.createElement(
                                         'td',
@@ -929,7 +932,7 @@ module.exports = EventDetailRota;
 
 var React = require('react');
 var moment = require('moment');
-var EventDate = require('../models/eventdate');
+var EventModel = require('../models/event');
 
 var EventDetailRotaEdit = React.createClass({
     displayName: 'EventDetailRotaEdit',
@@ -954,9 +957,9 @@ var EventDetailRotaEdit = React.createClass({
     handleChangeRota: function handleChangeRota(e) {
         e.preventDefault();
         // Get the role id and value
-        var roleId = event.target.name.replace('role-', '');
+        var roleId = e.target.name.replace('role-', '');
         var rota = this.state.rota;
-        rota[roleId] = event.target.value;
+        rota[roleId] = e.target.value;
         this.setState({ rota: rota });
     },
 
@@ -964,27 +967,26 @@ var EventDetailRotaEdit = React.createClass({
         e.preventDefault();
         var self = this;
 
-        //EventDate.updateRota(
-        EventDate.createRota(this.props.model.id, this.props.onDate, this.state.rota, this.state.focus, this.state.notes, this.state.url).then(function (data) {
+        EventModel.upsertRota(this.props.model.id, this.props.onDate, this.state.rota, this.state.focus, this.state.notes, this.state.url).then(function (data) {
             self.props.refreshData();
         });
     },
 
-    renderRoleSelect: function renderRoleSelect(rota) {
+    renderRoleSelect: function renderRoleSelect(rota, roleIndex) {
         return React.createElement(
             'tr',
-            { key: rota.roleName },
+            { key: roleIndex },
             React.createElement(
                 'td',
                 null,
-                rota.roleName
+                rota.role_name
             ),
             React.createElement(
                 'td',
                 null,
                 React.createElement(
                     'select',
-                    { name: "role-".concat(rota.roleId), defaultValue: rota.personId, className: 'form-control',
+                    { name: "role-".concat(rota.role_id), defaultValue: rota.person_id, className: 'form-control',
                         onChange: this.handleChangeRota },
                     React.createElement(
                         'option',
@@ -1011,6 +1013,7 @@ var EventDetailRotaEdit = React.createClass({
         var summary = this.props.summary;
         var roles = this.props.roles;
         var self = this;
+        var roleIndex = 0;
 
         if (!this.props.onDate) {
             return React.createElement(
@@ -1120,7 +1123,8 @@ var EventDetailRotaEdit = React.createClass({
                             'tbody',
                             null,
                             roles.map(function (r) {
-                                return self.renderRoleSelect(r);
+                                roleIndex += 1;
+                                return self.renderRoleSelect(r, roleIndex);
                             })
                         )
                     )
@@ -1131,7 +1135,7 @@ var EventDetailRotaEdit = React.createClass({
 });
 
 module.exports = EventDetailRotaEdit;
-},{"../models/eventdate":23,"moment":27,"react":"CwoHg3"}],9:[function(require,module,exports){
+},{"../models/event":22,"moment":27,"react":"CwoHg3"}],9:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -1811,50 +1815,63 @@ var NavbarCollapse = require("react-bootstrap/lib/NavbarCollapse");
 var NavItem = require('react-bootstrap').NavItem;
 
 var Navigation = React.createClass({
-    displayName: 'Navigation',
+  displayName: 'Navigation',
 
-    render: function render() {
-        return React.createElement(
-            Navbar,
-            { inverse: true },
-            React.createElement(
-                NavbarHeader,
-                null,
-                React.createElement(
-                    NavbarBrand,
-                    null,
-                    React.createElement(
-                        'a',
-                        { href: '/rota/me' },
-                        'Team Rota'
-                    )
-                )
-            ),
-            React.createElement(
-                NavbarCollapse,
-                { eventKey: 0 },
-                React.createElement(
-                    Nav,
-                    { navbar: true },
-                    React.createElement(
-                        NavItem,
-                        { eventKey: 1, href: '/rota/me' },
-                        'My Rota'
-                    ),
-                    React.createElement(
-                        NavItem,
-                        { eventKey: 2, href: '/rota/people' },
-                        'People'
-                    ),
-                    React.createElement(
-                        NavItem,
-                        { eventKey: 3, href: '/rota/events' },
-                        'Events'
-                    )
-                )
-            )
-        );
+  render: function render() {
+    var activeRota = false;
+    var activePeople = false;
+    var activeEvents = false;
+    if (this.props.active === 'rota') {
+      activeRota = true;
     }
+    if (this.props.active === 'people') {
+      activePeople = true;
+    }
+    if (this.props.active === 'events') {
+      activeEvents = true;
+    }
+
+    return React.createElement(
+      Navbar,
+      { inverse: true },
+      React.createElement(
+        NavbarHeader,
+        null,
+        React.createElement(
+          NavbarBrand,
+          null,
+          React.createElement(
+            'a',
+            { href: '/rota/me' },
+            'Team Rota'
+          )
+        )
+      ),
+      React.createElement(
+        NavbarCollapse,
+        { eventKey: 0 },
+        React.createElement(
+          Nav,
+          { navbar: true },
+          React.createElement(
+            NavItem,
+            { eventKey: 1, active: activeRota, href: '/rota/me' },
+            'My Rota'
+          ),
+          React.createElement(
+            NavItem,
+            { eventKey: 2, active: activePeople, href: '/rota/people' },
+            'People'
+          ),
+          React.createElement(
+            NavItem,
+            { eventKey: 3, active: activeEvents, href: '/rota/events' },
+            'Events'
+          )
+        )
+      )
+    );
+  }
 });
 
 module.exports = Navigation;
@@ -2735,6 +2752,29 @@ var EventModel = {
 
     rota: function(modelId, fromDate) {
         return Ajax.get(this.url() + '/' + modelId + '/rota/' + fromDate );
+    },
+
+    // Upserts the rota
+    upsertRota: function(eventId, onDate, rolePerson, focus, notes, url) {
+        // Expecting dictionary: {role_id: person_id}
+        // Iterate through the rolePerson object
+        var rota = [];
+        for (var key in rolePerson) {
+            if (rolePerson.hasOwnProperty(key)) {
+                var data = {
+                    role_id: key,
+                    person_id: rolePerson[key]
+                }
+                if ((key !== 'focus') && (key !== 'notes') && (key !== 'url')) {
+                    rota.push(data);
+                }
+            }
+        }
+
+        var eventDate = {
+            event_id: eventId, on_date: onDate, focus: focus, notes: notes, url: url, rota: rota
+        };
+        return Ajax.post(this.url() + '/' + eventId + '/upsert', eventDate);
     }
 };
 
@@ -2751,7 +2791,7 @@ var EventDate = {
         if (sessionStorage.getItem('apiUrl')) {
             return sessionStorage.getItem('apiUrl') + '/api/eventdates';
         } else {
-            return '/api/eventdates';
+            return '/api/event_date';
         }
     },
 
@@ -2783,34 +2823,13 @@ var EventDate = {
         return Ajax.put(this.url() + '/' + modelId + '/eventdate', eventDate);
     },
 
-    createRota: function(eventId, onDate, rolePerson, focus, notes, url) {
-        // Expecting dictionary: {role_id: person_id}
-        // Iterate through the rolePerson object
-        var rota = [];
-        for (var key in rolePerson) {
-            if (rolePerson.hasOwnProperty(key)) {
-                var data = {
-                    roleId: key,
-                    personId: rolePerson[key]
-                }
-                if ((key !== 'focus') && (key !== 'notes') && (key !== 'url')) {
-                    rota.push(data);
-                }
-            }
-        }
-
-        var eventDate = {
-            eventId: eventId, onDate: onDate, focus: focus, notes: notes, url: url, rota: rota
-        };
-        return Ajax.post(this.url(), eventDate);
-    },
-
     roles: function(modelId) {
         return Ajax.post(this.url() + '/' + modelId + '/roles', {});
     }
 };
 
 module.exports = EventDate;
+
 },{"./Ajax":20,"./event":22}],24:[function(require,module,exports){
 'use strict';
 var Ajax = require('./Ajax');
