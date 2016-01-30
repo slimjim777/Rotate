@@ -2,6 +2,7 @@
 var React = require('react');
 var Person = require('../models/person');
 var PeopleList = require('../components/PeopleList');
+var Navigation = require('../components/Navigation');
 
 
 var People = React.createClass({
@@ -58,6 +59,7 @@ var People = React.createClass({
     render: function () {
         return (
             <div id="main" className="container-fluid" role="main">
+                <Navigation active="people" />
                 <h2>People</h2>
 
                 <PeopleList people={this.state.peopleFiltered} />

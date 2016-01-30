@@ -2,6 +2,7 @@
 var React = require('react');
 var EventModel = require('../models/event');
 var EventList = require('../components/EventList');
+var Navigation = require('../components/Navigation');
 
 
 var Events = React.createClass({
@@ -29,6 +30,7 @@ var Events = React.createClass({
     render: function () {
         return (
             <div id="main" className="container-fluid" role="main">
+                <Navigation active="events" />
                 <h2>Events</h2>
 
                 <EventList events={this.state.events} />

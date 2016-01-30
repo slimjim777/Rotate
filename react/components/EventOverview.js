@@ -55,13 +55,12 @@ var EventOverview = React.createClass({
         var self = this;
         Person.permissions().then(function(response) {
             var user = JSON.parse(response.body);
-            user.role_rota = sessionStorage.getItem('role_rota');
             self.setState({user: user, canAdministrate: self.canAdministrate(modelId, user)});
         });
     },
 
     canAdministrate: function(eventId, user) {
-        if (user.role_rota == 'admin') {
+        if (user.role == 'admin') {
             return true;
         } else {
             var events = this.state.rota_permissions.filter(function(permission) {

@@ -43,7 +43,7 @@ var EventDetail = React.createClass({
         var self = this;
         Person.permissions().then(function(response) {
             var user = JSON.parse(response.body).permissions;
-            user.role_rota = sessionStorage.getItem('role_rota');
+            //console.log(sessionStorage.getItem('role_rota'));
             self.setState({user: user});
         });
     },
@@ -52,7 +52,7 @@ var EventDetail = React.createClass({
         if (!this.state.user) {
             return false;
         }
-        if (this.state.user.role_rota === 'admin') {
+        if (this.state.user.role === 'admin') {
             return true;
         }
         if (!this.props.params.id) {

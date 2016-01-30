@@ -419,7 +419,7 @@ var EventDetail = React.createClass({
         var self = this;
         Person.permissions().then(function (response) {
             var user = JSON.parse(response.body).permissions;
-            user.role_rota = sessionStorage.getItem('role_rota');
+            //console.log(sessionStorage.getItem('role_rota'));
             self.setState({ user: user });
         });
     },
@@ -428,7 +428,7 @@ var EventDetail = React.createClass({
         if (!this.state.user) {
             return false;
         }
-        if (this.state.user.role_rota === 'admin') {
+        if (this.state.user.role === 'admin') {
             return true;
         }
         if (!this.props.params.id) {
@@ -1188,7 +1188,7 @@ var EventList = React.createClass({
                                     null,
                                     React.createElement(
                                         'a',
-                                        { href: '#/events/' + ev.id },
+                                        { href: '/rota/events/' + ev.id },
                                         ev.name
                                     )
                                 ),
@@ -1197,7 +1197,7 @@ var EventList = React.createClass({
                                     null,
                                     React.createElement(
                                         'a',
-                                        { href: '#/events/'.concat(ev.id, '/overview') },
+                                        { href: '/rota/events/'.concat(ev.id, '/overview') },
                                         'Overview'
                                     )
                                 )
@@ -1272,13 +1272,12 @@ var EventOverview = React.createClass({
         var self = this;
         Person.permissions().then(function (response) {
             var user = JSON.parse(response.body);
-            user.role_rota = sessionStorage.getItem('role_rota');
             self.setState({ user: user, canAdministrate: self.canAdministrate(modelId, user) });
         });
     },
 
     canAdministrate: function canAdministrate(eventId, user) {
-        if (user.role_rota == 'admin') {
+        if (user.role == 'admin') {
             return true;
         } else {
             var events = this.state.rota_permissions.filter(function (permission) {
@@ -1581,6 +1580,7 @@ module.exports = EventOverview;
 var React = require('react');
 var EventModel = require('../models/event');
 var EventList = require('../components/EventList');
+var Navigation = require('../components/Navigation');
 
 var Events = React.createClass({
     displayName: 'Events',
@@ -1609,6 +1609,7 @@ var Events = React.createClass({
         return React.createElement(
             'div',
             { id: 'main', className: 'container-fluid', role: 'main' },
+            React.createElement(Navigation, { active: 'events' }),
             React.createElement(
                 'h2',
                 null,
@@ -1620,7 +1621,7 @@ var Events = React.createClass({
 });
 
 module.exports = Events;
-},{"../components/EventList":9,"../models/event":22,"react":"CwoHg3"}],12:[function(require,module,exports){
+},{"../components/EventList":9,"../components/Navigation":13,"../models/event":22,"react":"CwoHg3"}],12:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -1663,7 +1664,6 @@ var MyRota = React.createClass({
         var self = this;
         Person.permissions().then(function (response) {
             var user = JSON.parse(response.body).permissions;
-            user.role_rota = sessionStorage.getItem('role');
             self.setState({ user: user, canAdministrate: self.canAdministrate(user) });
         });
     },
@@ -1813,14 +1813,53 @@ var NavbarHeader = require("react-bootstrap/lib/NavbarHeader");
 var NavbarBrand = require("react-bootstrap/lib/NavbarBrand");
 var NavbarCollapse = require("react-bootstrap/lib/NavbarCollapse");
 var NavItem = require('react-bootstrap').NavItem;
+var Person = require('../models/person');
 
 var Navigation = React.createClass({
   displayName: 'Navigation',
+
+  getInitialState: function getInitialState() {
+    return { canAdministrate: false };
+  },
+
+  componentDidMount: function componentDidMount() {
+    this.getPermissions();
+  },
+
+  getPermissions: function getPermissions() {
+    var self = this;
+    Person.permissions().then(function (response) {
+      var user = JSON.parse(response.body).permissions;
+      self.setState({ user: user, canAdministrate: self.setCanAdministrate(user) });
+    });
+  },
+
+  setCanAdministrate: function setCanAdministrate(user) {
+    if (user.role === 'admin') {
+      return true;
+    } else {
+      if (user.events_admin.length > 0) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  renderAdmin: function renderAdmin(activeAdmin) {
+    if (this.state.canAdministrate) {
+      return React.createElement(
+        NavItem,
+        { eventKey: 4, active: activeAdmin, href: '/admin' },
+        'Admin'
+      );
+    }
+  },
 
   render: function render() {
     var activeRota = false;
     var activePeople = false;
     var activeEvents = false;
+    var activeAdmin = false;
     if (this.props.active === 'rota') {
       activeRota = true;
     }
@@ -1829,6 +1868,9 @@ var Navigation = React.createClass({
     }
     if (this.props.active === 'events') {
       activeEvents = true;
+    }
+    if (this.props.active === 'admin') {
+      activeAdmin = true;
     }
 
     return React.createElement(
@@ -1867,7 +1909,8 @@ var Navigation = React.createClass({
             NavItem,
             { eventKey: 3, active: activeEvents, href: '/rota/events' },
             'Events'
-          )
+          ),
+          this.renderAdmin(activeAdmin)
         )
       )
     );
@@ -1875,12 +1918,13 @@ var Navigation = React.createClass({
 });
 
 module.exports = Navigation;
-},{"react":"CwoHg3","react-bootstrap":99,"react-bootstrap/lib/NavbarBrand":72,"react-bootstrap/lib/NavbarCollapse":73,"react-bootstrap/lib/NavbarHeader":74}],14:[function(require,module,exports){
+},{"../models/person":24,"react":"CwoHg3","react-bootstrap":99,"react-bootstrap/lib/NavbarBrand":72,"react-bootstrap/lib/NavbarCollapse":73,"react-bootstrap/lib/NavbarHeader":74}],14:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
 var Person = require('../models/person');
 var PeopleList = require('../components/PeopleList');
+var Navigation = require('../components/Navigation');
 
 var People = React.createClass({
     displayName: 'People',
@@ -1942,6 +1986,7 @@ var People = React.createClass({
         return React.createElement(
             'div',
             { id: 'main', className: 'container-fluid', role: 'main' },
+            React.createElement(Navigation, { active: 'people' }),
             React.createElement(
                 'h2',
                 null,
@@ -1953,7 +1998,7 @@ var People = React.createClass({
 });
 
 module.exports = People;
-},{"../components/PeopleList":17,"../models/person":24,"react":"CwoHg3"}],15:[function(require,module,exports){
+},{"../components/Navigation":13,"../components/PeopleList":17,"../models/person":24,"react":"CwoHg3"}],15:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -2389,7 +2434,7 @@ var PeopleList = React.createClass({
                                         { className: 'left-align' },
                                         React.createElement(
                                             'a',
-                                            { href: '#/person/' + p.id },
+                                            { href: '/rota/person/' + p.id },
                                             p.firstname,
                                             ' ',
                                             p.lastname

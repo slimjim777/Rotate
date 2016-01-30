@@ -68,6 +68,29 @@ class FastQuery(object):
         return ev_dates
 
     @staticmethod
+    def event_dates_in_range(event_id, from_date, to_date):
+        # Get the event to find the frequency
+        e = FastQuery.event(event_id)
+
+        # If it is irregular, just return the dates in the range
+        if e['frequency'] == 'irregular':
+            return FastQuery.event_dates(event_id, from_date, to_date)
+
+        if e['frequency'] == 'weekly':
+            # Get the sunday of the week
+            from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
+            if from_d.weekday() == 6:
+                current_date = from_d
+            else:
+                current_date = from_d - from_d.weekday() - 1
+        elif e['frequency'] == 'monthly':
+            pass
+
+        rota_dates = []
+        while len(rota_dates) < 12:
+            pass
+
+    @staticmethod
     def event_date(event_date_id):
         start = time.time()
         sql = "select * from event_date where id = :event_date_id"

@@ -83,7 +83,7 @@ var PeopleList = React.createClass({
                                 return (
                                     <tr key={p.id}>
                                         {self.renderEditAction(p)}
-                                        <td className="left-align"><a href={'#/person/' + p.id}>{p.firstname} {p.lastname}</a></td>
+                                        <td className="left-align"><a href={'/rota/person/' + p.id}>{p.firstname} {p.lastname}</a></td>
                                         <td>{self.renderActive(p.active)}</td>
                                         <td>{self.renderActive(p.guest)}</td>
                                         <td>{p.last_login ? moment(p.last_login).format('DD/MM/YYYY HH:mm') : ''}</td>

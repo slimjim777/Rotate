@@ -37,7 +37,6 @@ var MyRota = React.createClass({
         var self = this;
         Person.permissions().then(function(response) {
             var user = JSON.parse(response.body).permissions;
-            user.role_rota = sessionStorage.getItem('role');
             self.setState({user: user, canAdministrate: self.canAdministrate(user)});
         });
     },
