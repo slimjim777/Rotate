@@ -707,17 +707,16 @@ class FastQuery(object):
         """
         if not ui_range:
             ui_range = 12
-        weeks = int(ui_range)
-        delta = datetime.date.today() + datetime.timedelta(weeks=weeks)
-        if weeks > 0:
-            # Next n weeks
-            from_date = datetime.date.today().strftime('%Y-%m-%d')
-            to_date = delta.strftime('%Y-%m-%d')
+        range = int(ui_range)
+        today = datetime.datetime.now()
+        if range > 0:
+            from_date = today + datetime.timedelta(weeks=range - 12,)
+            to_date = today + datetime.timedelta(weeks=range)
         else:
-            # Last n weeks
-            from_date = delta.strftime('%Y-%m-%d')
-            to_date = datetime.date.today().strftime('%Y-%m-%d')
-        return from_date, to_date
+            to_date = today + datetime.timedelta(weeks=range + 12)
+            from_date = today + datetime.timedelta(weeks=range)
+                    
+        return from_date.strftime('%Y-%m-%d'), to_date.strftime('%Y-%m-%d')
 
     @staticmethod
     def date_range_from(from_str, weeks=12):
