@@ -33,7 +33,7 @@ def view_person_ember():
 
 
 @app.route('/api/people/me', methods=['GET'])
-@app.route('/api/people/<int:person_id>', methods=['GET', 'POST'])
+@app.route('/api/people/<int:person_id>', methods=['GET', 'PUT'])
 @login_required
 def api_person(person_id=None):
     """
@@ -54,7 +54,7 @@ def api_person(person_id=None):
         except Exception as v:
             return jsonify({'response': 'Error', 'message': str(v)})
 
-    elif request.method == "POST":
+    elif request.method == "PUT":
         try:
             if session['role'] != 'admin':
                 raise Exception('You do not have permissions to amend users')
@@ -175,9 +175,8 @@ def person_away_date_update(person_id):
 @app.route('/api/people', methods=['GET'])
 @login_required
 def api_people():
-    # Returning page 1
-    response = get_people(1)
-    return jsonify(response)
+    people = FastQuery.people()
+    return jsonify({'response': 'Success', 'people': people})
 
 
 @app.route('/api/people/page/<int:page_no>', methods=['GET'])
@@ -191,7 +190,7 @@ def api_people_page(page_no):
 def get_people(page):
     paginate = Person.query.filter(Person.active).\
         order_by(Person.lastname).order_by(Person.firstname).\
-        paginate(page, PAGE_SIZE, False)
+        paginate(page, 1000, False)
     return paginated_people(paginate)
 
 

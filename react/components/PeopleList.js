@@ -2,20 +2,25 @@
 var React = require('react');
 var moment = require('moment');
 var PeopleFilter = require('../components/PeopleFilter');
+var Person = require('../models/person');
 
 
 var PeopleList = React.createClass({
 
     getInitialState: function() {
-        return ({isEditing: false, personId: null});
+        return ({isEditing: false, personId: null, isAdmin: false});
     },
 
-    isAdmin: function() {
-        if (sessionStorage.getItem('role_rota') === 'admin') {
-            return true;
-        } else {
-            return false;
-        }
+    componentDidMount: function () {
+      this.getPermissions();
+    },
+
+    getPermissions: function () {
+        var self = this;
+        Person.permissions().then(function(response) {
+            var user = JSON.parse(response.body).permissions;
+            self.setState({user: user, isAdmin: user.is_admin});
+        });
     },
 
     handleEditClick: function(e) {
@@ -32,7 +37,7 @@ var PeopleList = React.createClass({
     },
 
     renderHeader: function () {
-        if (this.isAdmin()) {
+        if (this.state.isAdmin) {
             return (
                 <thead>
                     <tr>
@@ -52,10 +57,10 @@ var PeopleList = React.createClass({
     },
 
     renderEditAction: function(person) {
-        if (this.isAdmin()) {
+        if (this.state.isAdmin) {
             return (
                 <td>
-                    <a href={'#/people/' + person.id + '/edit'} className="btn btn-default">Edit</a>
+                    <a href={'/rota/people/' + person.id + '/edit'} className="btn btn-default">Edit</a>
                 </td>
             );
         }
@@ -71,7 +76,7 @@ var PeopleList = React.createClass({
                 </div>
                 <div className="panel-body table-responsive">
                     <div>
-                        <PeopleFilter />
+                        <PeopleFilter onFilterChange={this.props.onFilterChange} />
                     </div>
 
                     <div className="table-responsive">

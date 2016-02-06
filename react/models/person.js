@@ -19,8 +19,12 @@ var Person = {
         return Ajax.get(this.url());
     },
 
+    create: function(person) {
+        return Ajax.post('/api/people/new', person);
+    },
+
     update: function(person) {
-        return Ajax.put('/rota/person/' + person.user_id, person);
+        return Ajax.put('/api/people/' + person.id, person);
     },
 
     findById: function(personId) {

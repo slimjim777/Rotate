@@ -12,23 +12,27 @@ var PeopleFilter = React.createClass({
     handleSubmit: function(e) {
         e.preventDefault();
         // Raise an event to trigger the filter change
-        $(document).trigger('filterChange', [this.state.findFirstname, this.state.findLastname, this.state.findStatus]);
+        //$(document).trigger('filterChange', [this.state.findFirstname, this.state.findLastname, this.state.findStatus]);
+        this.props.onFilterChange(this.state.findFirstname, this.state.findLastname, this.state.findStatus);
     },
 
     handleChangeStatus: function(e) {
         e.preventDefault();
         this.setState({findStatus: event.target.value});
-        $(document).trigger('filterChange', [this.state.findFirstname, this.state.findLastname, event.target.value]);
+        //$(document).trigger('filterChange', [this.state.findFirstname, this.state.findLastname, event.target.value]);
+        this.props.onFilterChange(this.state.findFirstname, this.state.findLastname, e.target.value);
     },
     handleChangeFirstname: function(e) {
         e.preventDefault();
         this.setState({findFirstname: event.target.value});
-        $(document).trigger('filterChange', [event.target.value, this.state.findLastname, this.state.findStatus]);
+        //$(document).trigger('filterChange', [event.target.value, this.state.findLastname, this.state.findStatus]);
+        this.props.onFilterChange(e.target.value, this.state.findLastname, this.state.findStatus);
     },
     handleChangeLastname: function(e) {
         e.preventDefault();
         this.setState({findLastname: event.target.value});
-        $(document).trigger('filterChange', [this.state.findFirstname, event.target.value, this.state.findStatus]);
+        //$(document).trigger('filterChange', [this.state.findFirstname, event.target.value, this.state.findStatus]);
+        this.props.onFilterChange(this.state.findFirstname, e.target.value, this.state.findStatus);
     },
 
     render: function() {

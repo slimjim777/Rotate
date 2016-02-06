@@ -3,23 +3,10 @@ var React = require('react');
 var Person = require('../models/person');
 
 
-var PeopleEdit = React.createClass({
+var PeopleNew = React.createClass({
 
     getInitialState: function() {
-        return {person: {}}
-    },
-
-    componentDidMount: function () {
-        var self = this;
-        // Get the person ID
-        var personId = this.props.params.id;
-
-        // Get the person details
-        Person.findById(personId).then(function(response) {
-            var data = JSON.parse(response.body);
-            console.log(data);
-            self.setState({person: data.person});
-        });
+        return {person: {active: true}, message: null};
     },
 
     updateState: function(attribute, value) {
@@ -49,21 +36,35 @@ var PeopleEdit = React.createClass({
     },
 
     handleSubmit: function(e) {
+        var self = this;
         e.preventDefault();
-        Person.update(this.state.person).then(function(response) {
-            window.location = '/rota/people';
+        Person.create(this.state.person).then(function(response) {
+            var data = JSON.parse(response.body);
+            if (data.response === 'Success') {
+              window.location = '/rota/people';
+            }
+            self.setState({message: data.message});
         });
+    },
+
+    renderMessages: function() {
+        if (this.state.message) {
+            return (
+                <div className="alert alert-danger">{this.state.message}</div>
+            );
+        }
     },
 
     render: function() {
         return (
             <div className="container-fluid" role="main">
                 <h2 className="sub-heading">
-                    Edit Person: {this.state.person.firstname} {this.state.person.lastname}
+                    New Person: {this.state.person.firstname} {this.state.person.lastname}
                 </h2>
 
                 <div className="panel panel-default">
                     <div className="panel-body">
+                        {this.renderMessages()}
                         <form role="form">
                             <div className="form-group">
                                 <label>Active</label>
@@ -109,4 +110,4 @@ var PeopleEdit = React.createClass({
     }
 });
 
-module.exports = PeopleEdit;
+module.exports = PeopleNew;

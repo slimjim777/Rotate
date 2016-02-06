@@ -715,7 +715,7 @@ class FastQuery(object):
         else:
             to_date = today + datetime.timedelta(weeks=range + 12)
             from_date = today + datetime.timedelta(weeks=range)
-                    
+
         return from_date.strftime('%Y-%m-%d'), to_date.strftime('%Y-%m-%d')
 
     @staticmethod
@@ -880,3 +880,22 @@ class FastQuery(object):
             else:
                 # Delete the record
                 FastQuery._delete_rota_for_event_date(rota_id)
+
+    @staticmethod
+    def people():
+        start = time.time()
+        sql = "select * from person order by firstname, lastname"
+        rows = db.session.execute(sql)
+
+        people = []
+        for row in rows.fetchall():
+            r = dict(row)
+            # print r['last_login']
+            if r['last_login']:
+                r['last_login'] = str(r['last_login'])
+            else:
+                r['last_login'] = ''
+            people.append(r)
+
+        app.logger.debug('People: %s' % (time.time() - start))
+        return people

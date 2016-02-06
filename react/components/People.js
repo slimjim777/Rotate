@@ -12,15 +12,10 @@ var People = React.createClass({
     },
 
     componentDidMount: function () {
-        $(document).on('filterChange', this.handleFilterChange);
         var self = this;
 
-        // Get the events
+        // Get the people
         self.getPeople();
-    },
-
-    componentWillUnmount: function () {
-        $(document).off('filterChange', this.handleFilterChange);
     },
 
     contains: function(value, snippet) {
@@ -29,7 +24,7 @@ var People = React.createClass({
         return value.toLowerCase().indexOf(snippet.toLowerCase()) >= 0;
     },
 
-    handleFilterChange: function (e, firstName, lastName, status) {
+    handleFilterChange: function (firstName, lastName, status) {
         var self = this;
         var people = this.state.people.filter(function(p) {
             if (!self.contains(p.firstname, firstName)) {
@@ -52,17 +47,29 @@ var People = React.createClass({
         Person.all().then(function(response) {
             var data = JSON.parse(response.body);
             self.setState({ people: data.people, peopleLoading: false });
-            self.handleFilterChange(null, null, null, 'active');
+            self.handleFilterChange(null, null, 'active');
         });
+    },
+
+    handleNew: function() {
+        window.location = '/rota/people/new';
+    },
+
+    renderNew: function() {
+        return (
+          <button onClick={this.handleNew} className="btn btn-primary">
+            <span className="glyphicon glyphicon-plus"></span>
+          </button>
+        );
     },
 
     render: function () {
         return (
             <div id="main" className="container-fluid" role="main">
                 <Navigation active="people" />
-                <h2>People</h2>
+                <h2>People {this.renderNew()}</h2>
 
-                <PeopleList people={this.state.peopleFiltered} />
+                <PeopleList people={this.state.peopleFiltered} onFilterChange={this.handleFilterChange} />
             </div>
         );
     }
