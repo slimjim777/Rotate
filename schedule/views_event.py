@@ -299,7 +299,7 @@ def api_event_get(event_id):
 @login_required
 def api_event_dates(event_id):
     from_date, to_date = FastQuery.date_range(request.json.get('range'))
-    ev_dates = FastQuery.event_dates(event_id, from_date, to_date)
+    ev_dates = FastQuery.event_dates_in_range(event_id, from_date, to_date)
     return jsonify({'response': 'Success', 'event_dates': ev_dates})
 
 

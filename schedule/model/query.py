@@ -14,6 +14,16 @@ ROLES_QUERY = """select r.id role_id, r.name role_name, firstname, lastname,
           inner join event_date ed on r.event_id=ed.event_id and """
 
 
+DAY_OF_WEEK = {
+    'day_mon': 0,
+    'day_tue': 1,
+    'day_wed': 2,
+    'day_thu': 3,
+    'day_fri': 4,
+    'day_sat': 5,
+    'day_sun': 6,
+}
+
 class FastQuery(object):
     """
     Faster database queries by bypassing SQLAlchemy and going direct to the
@@ -69,6 +79,9 @@ class FastQuery(object):
 
     @staticmethod
     def event_dates_in_range(event_id, from_date, to_date):
+        """
+        Generate the next 12 event dates for the event.
+        """
         # Get the event to find the frequency
         e = FastQuery.event(event_id)
 
@@ -77,18 +90,30 @@ class FastQuery(object):
             return FastQuery.event_dates(event_id, from_date, to_date)
 
         if e['frequency'] == 'weekly':
-            # Get the sunday of the week
+            # Get the monday of the week
             from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
-            if from_d.weekday() == 6:
+            if from_d.weekday() == 0:
                 current_date = from_d
             else:
-                current_date = from_d - from_d.weekday() - 1
+                current_date = from_d - datetime.timedelta(days=from_d.weekday())
         elif e['frequency'] == 'monthly':
             pass
 
         rota_dates = []
         while len(rota_dates) < 12:
-            pass
+            for day, value in DAY_OF_WEEK.items():
+                if e[day]:
+                    on_date = current_date + datetime.timedelta(days=value)
+                    rota_dates.append({
+                        'id': len(rota_dates), # fake event date ID
+                        'event_id': e['id'],
+                        'on_date': datetime.datetime.strftime(on_date, '%Y-%m-%d'),
+                    })
+            if e['frequency'] == 'monthly':
+                current_date += datetime.timedelta(months=1)
+            else:
+                current_date += datetime.timedelta(weeks=1)
+        return rota_dates
 
     @staticmethod
     def event_date(event_date_id):
