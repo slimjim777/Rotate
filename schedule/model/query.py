@@ -139,8 +139,11 @@ class FastQuery(object):
         }
         row = db.session.execute(sql, params)
         ev_date = row.fetchone()
-        # if not ev_date:
-        #     raise Exception("Cannot find the event date")
+        if not ev_date:
+            return {
+                'event_id': event_id,
+                'on_date': on_date
+            }
 
         app.logger.debug('Event Date: %s' % (time.time() - start))
         return FastQuery.event_date_to_dict(ev_date)
@@ -619,14 +622,21 @@ class FastQuery(object):
 
     @staticmethod
     def roles_for_event_ondate(event_id, on_date):
-        sql = ROLES_QUERY + "ed.event_id=:param_id and ed.on_date=:on_date " \
-              + "order by sequence, r.id"
+        sql = """select r.id role_id, r.name role_name, firstname, lastname,
+                  p.active person_active, p.id person_id, sequence,
+                  exists(select 1 from away_date where person_id=p.id
+                    and :on_date between from_date and to_date) is_away
+                  from role r
+                  left outer join role_people rp on rp.role_id=r.id
+                  left outer join person p on p.id=rp.person_id
+                  where r.event_id = :event_id
+                  order by sequence, r.id"""
+
         rows = db.session.execute(
-            sql, {'param_id': event_id, 'on_date': on_date})
+            sql, {'event_id': event_id, 'on_date': on_date})
         roles = []
         for row in rows:
             r = dict(row)
-            r['on_date'] = str(r['on_date'])
             roles.append(r)
         return roles
 
@@ -915,7 +925,6 @@ class FastQuery(object):
         people = []
         for row in rows.fetchall():
             r = dict(row)
-            # print r['last_login']
             if r['last_login']:
                 r['last_login'] = str(r['last_login'])
             else:
@@ -924,3 +933,116 @@ class FastQuery(object):
 
         app.logger.debug('People: %s' % (time.time() - start))
         return people
+
+    @staticmethod
+    def event_roles(event_id):
+        start = time.time()
+        sql = "select * from role where event_id=:event_id order by sequence"
+        rows = db.session.execute(sql, {'event_id': event_id})
+
+        roles = []
+        for row in rows.fetchall():
+            roles.append(dict(row))
+
+        app.logger.debug('Roles: %s' % (time.time() - start))
+        return roles
+
+    @staticmethod
+    def event_rota(event_id, from_date, to_date):
+        """
+        Get the full event rota for a date range.
+        """
+        event = FastQuery.event(event_id)
+        roles = FastQuery.event_roles(event_id)
+        records = FastQuery._event_rota(event_id, from_date, to_date)
+
+        # Get the frequency
+        frequency = 'weeks'
+        if event['frequency'] == 'irregular':
+            frequency = 'irregular'
+        if event['frequency'] == 'monthly':
+            frequency = 'months'
+
+        # Get the nearest Monday from the 'from date'
+        to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
+        from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
+        if from_d.weekday() == 0:
+            current_date = from_d
+        else:
+            current_date = from_d - datetime.timedelta(days=from_d.weekday())
+
+        rota_dates = []
+        while current_date.strftime('%Y-%m-%d') < to_date:
+            rota_for_date = {}
+            if frequency == 'weeks':
+                for key, value in DAY_OF_WEEK.items():
+                    if event[key]:
+                        day = current_date + datetime.timedelta(days=value)
+                        rota_for_date = FastQuery._check_rota_for_date(
+                            day.strftime('%Y-%m-%d'), records, roles)
+                        rota_dates.append(rota_for_date)
+
+            # Increment the current date
+            current_date = current_date + datetime.timedelta(weeks=1)
+        return rota_dates
+
+    @staticmethod
+    def _check_rota_for_date(current_date, records, roles):
+        event_detail = {'on_date': current_date, 'roles': {}}
+        for rec in records:
+            # Check if we have a rota for the date
+            if rec['on_date'] > current_date:
+                break
+
+            if current_date == rec['on_date']:
+                if rec['role_id']:
+                    event_detail['roles'][rec['role_id']] = rec
+                if not event_detail.get('focus', None):
+                    event_detail['event_date_id'] = rec['event_date_id']
+                    event_detail['focus'] = rec['focus']
+                    event_detail['notes'] = rec['notes']
+                    event_detail['url'] = rec['url']
+
+        # Fill in the blanks for the unassigned roles
+        for role in roles:
+            if not event_detail['roles'].get(role['id'], None):
+                event_detail['roles'][role['id']] = {}
+
+        return event_detail
+
+
+    @staticmethod
+    def _event_rota(event_id, from_date, to_date):
+        sql = """
+            select ev.name event_name, ev.id event_id, on_date,
+            role.name role_name, firstname, lastname, role.id role_id,
+            ed.id event_date_id, p.active person_active, p.id person_id,
+            exists(select 1 from away_date where person_id=p.id
+            and on_date between from_date and to_date) is_away,
+            ed.focus, ed.notes, ed.url,
+            exists(select 1 from rota rr
+            inner join event_date eded on rr.event_date_id=eded.id
+            where rr.event_date_id<>ed.id
+            and rr.person_id=p.id
+            and eded.on_date=ed.on_date) on_rota
+            from event_date ed
+            inner join event ev on ed.event_id=ev.id
+            left outer join rota r on r.event_date_id=ed.id
+            left outer join role on r.role_id = role.id
+            left outer join person p on r.person_id=p.id
+            where ev.id = :event_id
+            and ed.on_date >= :from_date
+            and ed.on_date <= :to_date
+            order by on_date, sequence
+        """
+        rotas = []
+        rows = db.session.execute(
+            sql, {'event_id': event_id, 'from_date': from_date,
+                'to_date': to_date})
+
+        for row in rows.fetchall():
+            r = dict(row)
+            r['on_date'] = str(r['on_date'])
+            rotas.append(r)
+
+        return rotas

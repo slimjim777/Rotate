@@ -39,3 +39,6 @@ Thumbs.db
 *.*~
 venv
 *.conf
+.idea/
+build/
+node_modules/

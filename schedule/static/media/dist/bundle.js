@@ -910,7 +910,7 @@ var EventDetailRota = React.createClass({
                                         null,
                                         React.createElement(
                                             'a',
-                                            { href: '/rota/people/' },
+                                            { href: '/rota/person/' + r.person_id },
                                             r.firstname,
                                             ' ',
                                             r.lastname
@@ -1218,6 +1218,7 @@ module.exports = EventList;
 var React = require('react');
 var EventModel = require('../models/event');
 var EventDate = require('../models/eventdate');
+var Navigation = require('../components/Navigation');
 var Person = require('../models/person');
 var moment = require('moment');
 
@@ -1248,7 +1249,7 @@ var EventOverview = React.createClass({
         self.setState({ eventLoading: true });
         EventModel.findById(modelId).then(function (response) {
             var data = JSON.parse(response.body);
-            self.setState({ model: data.model, eventLoading: false });
+            self.setState({ model: data.event, eventLoading: false });
         });
     },
 
@@ -1272,16 +1273,16 @@ var EventOverview = React.createClass({
         var self = this;
         Person.permissions().then(function (response) {
             var user = JSON.parse(response.body);
-            self.setState({ user: user, canAdministrate: self.canAdministrate(modelId, user) });
+            self.setState({ user: user.permissions, canAdministrate: self.setCanAdministrate(self.props.params.id, user.permissions) });
         });
     },
 
-    canAdministrate: function canAdministrate(eventId, user) {
+    setCanAdministrate: function setCanAdministrate(eventId, user) {
         if (user.role == 'admin') {
             return true;
         } else {
-            var events = this.state.rota_permissions.filter(function (permission) {
-                return permission.event_id === eventId;
+            var events = user.events_admins.filter(function (permission) {
+                return permission.id === eventId;
             });
             if (events.length > 0) {
                 return true;
@@ -1313,8 +1314,7 @@ var EventOverview = React.createClass({
 
         // Get the roles and away status for this date
         EventModel.date(this.state.model.id, onDate).then(function (response) {
-            var data = JSON.parse(response.body);
-            console.log(data);
+            var data = JSON.parse(response.body).event_date;
             self.setState({ editing: onDate, editRoles: data.roles,
                 editValues: { focus: data.summary.focus, notes: data.summary.notes, url: data.summary.url } });
         });
@@ -1345,8 +1345,8 @@ var EventOverview = React.createClass({
         var personId = parseInt(e.target.value);
 
         var roles = this.state.editRoles.map(function (r) {
-            if (r.roleId === roleId) {
-                r.personId = personId;
+            if (r.role_id === roleId) {
+                r.person_id = personId;
             }
             return r;
         });
@@ -1354,18 +1354,13 @@ var EventOverview = React.createClass({
         var editValues = this.state.editValues;
         editValues[roleId] = personId;
 
-        console.log(editValues);
-        console.log(roles);
-        console.log(personId);
-        //console.log(this.state.editRoles);
         this.setState({ editRoles: roles, editValues: editValues });
     },
 
     handleClickSave: function handleClickSave() {
         var self = this;
-        console.log('Save');
-        console.log(this.state.editValues);
-        var result = EventDate.createRota(this.state.model.id, this.state.editing, this.state.editValues, this.state.editValues.focus, this.state.editValues.notes, this.state.editValues.url).then(function (response) {
+
+        var result = EventModel.upsertRota(this.state.model.id, this.state.editing, this.state.editValues, this.state.editValues.focus, this.state.editValues.notes, this.state.editValues.url).then(function (response) {
             self.setState({ editing: null, editValues: {} }, self.getEventRota(self.state.model.id));
         });
     },
@@ -1377,6 +1372,7 @@ var EventOverview = React.createClass({
         return React.createElement(
             'div',
             { id: 'main', className: 'container-fluid', role: 'main' },
+            React.createElement(Navigation, { active: 'events' }),
             React.createElement(
                 'h2',
                 { className: 'sub-heading' },
@@ -1491,11 +1487,11 @@ var EventOverview = React.createClass({
                                     self.state.editRoles.map(function (role) {
                                         return React.createElement(
                                             'td',
-                                            { key: role.roleId },
+                                            { key: role.role_id },
                                             React.createElement(
                                                 'select',
-                                                { value: role.personId, onChange: self.handleRoleSelection,
-                                                    'data-role': role.roleId },
+                                                { value: role.person_id, onChange: self.handleRoleSelection,
+                                                    'data-role': role.role_id },
                                                 React.createElement('option', { value: '0' }),
                                                 role.roles.map(function (r) {
                                                     return React.createElement(
@@ -1537,7 +1533,12 @@ var EventOverview = React.createClass({
                                     React.createElement(
                                         'td',
                                         null,
-                                        r.url
+                                        r.url ? React.createElement(
+                                            'a',
+                                            { href: r.url },
+                                            'Run Sheet ',
+                                            moment(r.on_date).format('DD MMM')
+                                        ) : ''
                                     ),
                                     self.state.roles.map(function (rl) {
                                         var role = r.roles[rl.id];
@@ -1546,7 +1547,7 @@ var EventOverview = React.createClass({
                                             { key: rl.id },
                                             React.createElement(
                                                 'a',
-                                                { href: '#/person/' + role.person_id },
+                                                { href: '/rota/person/' + role.person_id },
                                                 role.firstname,
                                                 ' ',
                                                 role.lastname
@@ -1574,7 +1575,7 @@ var EventOverview = React.createClass({
 });
 
 module.exports = EventOverview;
-},{"../models/event":23,"../models/eventdate":24,"../models/person":25,"moment":28,"react":"CwoHg3"}],11:[function(require,module,exports){
+},{"../components/Navigation":13,"../models/event":23,"../models/eventdate":24,"../models/person":25,"moment":28,"react":"CwoHg3"}],11:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -1819,7 +1820,7 @@ var Navigation = React.createClass({
   displayName: 'Navigation',
 
   getInitialState: function getInitialState() {
-    return { canAdministrate: false };
+    return { canAdministrate: false, user: {} };
   },
 
   componentDidMount: function componentDidMount() {
@@ -1910,7 +1911,12 @@ var Navigation = React.createClass({
             { eventKey: 3, active: activeEvents, href: '/rota/events' },
             'Events'
           ),
-          this.renderAdmin(activeAdmin)
+          this.renderAdmin(activeAdmin),
+          React.createElement(
+            NavItem,
+            { eventKey: 5, href: 'https://accounts.google.com' },
+            this.state.user.name
+          )
         )
       )
     );

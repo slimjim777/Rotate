@@ -1,3 +1,4 @@
+import datetime
 import time
 
 from flask import render_template
@@ -326,6 +327,21 @@ def api_event_date_ondate(event_id, on_date):
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
+@app.route("/api/events/<int:event_id>/rota/<from_date>", methods=['GET'])
+@login_required
+def api_event_date_from_date(event_id, from_date):
+    #try:
+    to_date = datetime.datetime.strptime(from_date, '%Y-%m-%d') + \
+              datetime.timedelta(weeks=12)
+
+    e = FastQuery.event_rota(
+        event_id, from_date, to_date.strftime('%Y-%m-%d'))
+    return jsonify({'response': 'Success', 'rota': e})
+    #except Exception as v:
+    #    return jsonify({'response': 'Error', 'message': str(v)})
+
+
+
 @app.route("/api/event_date/<int:event_date_id>", methods=['GET'])
 @login_required
 def api_event_date(event_date_id):
@@ -390,23 +406,22 @@ def api_event_upsert(event_id):
     url = request.json.get('url')
     rota = request.json.get('rota')
 
-    #try:
-    # Get the event
-    event = FastQuery.event(event_id)
+    try:
+        # Get the event
+        event = FastQuery.event(event_id)
 
-    # Upsert the event date
-    FastQuery.upsert_event_date(event_id, on_date, focus, notes, url)
+        # Upsert the event date
+        FastQuery.upsert_event_date(event_id, on_date, focus, notes, url)
 
-    # Get the updated event dates
-    ed = FastQuery.event_date_ondate(event_id, on_date)
+        # Get the updated event dates
+        ed = FastQuery.event_date_ondate(event_id, on_date)
 
-    # Update the rota for the event dates
-    for r in rota:
-        FastQuery.upsert_rota_for_role(ed['id'], r['role_id'], r['person_id'])
+        # Update the rota for the event dates
+        for r in rota:
+            FastQuery.upsert_rota_for_role(ed['id'], r['role_id'], r['person_id'])
 
-
-    # except Exception as v:
-    #     return jsonify({'response': 'Error', 'message': str(v)})
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})
 
     return jsonify({'response': 'Success'})
 
@@ -546,6 +561,16 @@ def api_event_admins_remove(event_id):
         event.event_admins.remove(person)
         db.session.commit()
         return jsonify({'response': 'Success'})
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/events/<int:event_id>/roles", methods=['GET'])
+@login_required
+def api_event_roles(event_id):
+    try:
+        roles = FastQuery.event_roles(event_id)
+        return jsonify({'response': 'Success', 'roles': roles})
     except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 

@@ -11,7 +11,7 @@ var Person = require('../models/person');
 
 var Navigation = React.createClass({
     getInitialState: function() {
-      return {canAdministrate: false};
+      return {canAdministrate: false, user: {}};
     },
 
     componentDidMount: function () {
@@ -74,6 +74,7 @@ var Navigation = React.createClass({
                       <NavItem eventKey={2} active={activePeople} href="/rota/people">People</NavItem>
                       <NavItem eventKey={3} active={activeEvents} href="/rota/events">Events</NavItem>
                       {this.renderAdmin(activeAdmin)}
+                      <NavItem eventKey={5} href="https://accounts.google.com">{this.state.user.name}</NavItem>
                   </Nav>
               </NavbarCollapse>
           </Navbar>
