@@ -15,7 +15,7 @@ app.config['PAGE_SIZE'] = os.environ.get('PAGE_SIZE', '20')
 app.config['URL_ROOT'] = os.environ['URL_ROOT']
 
 # Mail setup
-app.config['EMAIL_FROM'] = os.environ["EMAIL_FROM"]
+app.config['EMAIL_FROM'] = os.environ.get("EMAIL_FROM", "portal@example.com")
 app.config['MAIL_SERVER'] = os.environ.get("MAIL_SERVER", "localhost")
 app.config['MAIL_PORT'] = os.environ.get("MAIL_PORT", 25)
 app.config['MAIL_USERNAME'] = os.environ.get("MAIL_USERNAME")
