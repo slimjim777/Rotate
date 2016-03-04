@@ -13,6 +13,7 @@ var shell = require('gulp-shell');
 //var jest = require('gulp-jest-iojs')
 var runSequence = require('run-sequence');
 var minifyCss = require('gulp-minify-css');
+var uglify = require('gulp-uglify');
 
 var path = {
     NODE: 'node_modules/',
@@ -65,7 +66,7 @@ gulp.task('build_components', ['compile_jsx', 'compile_jsx_components', 'compile
             bundler.require('react');
         })
         .pipe(rename('bundle.js'))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest(path.DIST));
 });
 

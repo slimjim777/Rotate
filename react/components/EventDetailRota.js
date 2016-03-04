@@ -26,6 +26,26 @@ var EventDetailRota = React.createClass({
         }
     },
 
+    renderName: function(r) {
+      if (r.is_away) {
+        return (
+          <span className="alert-danger" title="Away, swap needed">
+            {r.firstname} {r.lastname}
+          </span>
+        );
+      } else if (r.on_rota) {
+        return (
+          <span className="alert-warning" title="On rota for another team">
+            {r.firstname} {r.lastname}
+          </span>
+        );
+      } else {
+        return (
+          <span>{r.firstname} {r.lastname}</span>
+        );
+      }
+    },
+
     render: function () {
         var summary = this.props.summary;
         var rota = this.props.rota;
@@ -37,6 +57,7 @@ var EventDetailRota = React.createClass({
         }
 
         var index = 0;
+        var self = this;
         return (
             <div className="col-md-8 col-sm-8 col-xs-12">
                 <div className="panel panel-default">
@@ -71,7 +92,7 @@ var EventDetailRota = React.createClass({
                                     <tr key={index}>
                                         <td>{r.role_name}</td>
                                         <td>
-                                            <a href={'/rota/person/' + r.person_id}>{r.firstname} {r.lastname}</a>
+                                            <a href={'/rota/person/' + r.person_id}>{self.renderName(r)}</a>
                                         </td>
                                     </tr>
                                 );

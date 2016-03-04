@@ -151,6 +151,26 @@ var EventOverview = React.createClass({
             });
     },
 
+    renderName: function(r) {
+      if (r.is_away) {
+        return (
+          <span className="alert-danger" title="Away, swap needed">
+            {r.firstname} {r.lastname}
+          </span>
+        );
+      } else if (r.on_rota) {
+        return (
+          <span className="alert-warning" title="On rota for another team">
+            {r.firstname} {r.lastname}
+          </span>
+        );
+      } else {
+        return (
+          <span>{r.firstname} {r.lastname}</span>
+        );
+      }
+    },
+
     render: function() {
         var self = this;
         var model = this.state.model;
@@ -225,10 +245,10 @@ var EventOverview = React.createClass({
                                     <tr key={r.on_date}>
                                         <td>
                                             {self.state.canAdministrate ?
-                                            <a href="" onClick={self.handleClickEdit} data-key={r.on_date}
-                                               data-date_id={r.event_date_id}>
+                                            <button className="btn btn-primary btn-sm" onClick={self.handleClickEdit} data-key={r.on_date}
+                                               data-date_id={r.event_date_id} title="Edit rota">
                                                 {moment(r.on_date).format('DD MMM')}
-                                            </a>
+                                            </button>
                                             : moment(r.on_date).format('DD MMM')}
                                         </td>
                                         <td>{r.focus}</td>
@@ -241,7 +261,7 @@ var EventOverview = React.createClass({
                                             return (
                                                 <td key={rl.id}>
                                                     <a href={'/rota/person/' + role.person_id}>
-                                                        {role.firstname} {role.lastname}
+                                                        {self.renderName(role)}
                                                     </a>
                                                 </td>
                                             );

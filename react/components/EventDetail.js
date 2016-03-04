@@ -94,7 +94,6 @@ var EventDetail = React.createClass({
         self.setState({eventDateLoading: true, onDate: onDate});
         EventDate.findByDate(modelId, onDate).then(function(response) {
             var data = JSON.parse(response.body).event_date;
-            console.log(data);
             self.setState({
                 dateSummary: data.summary, rota: data.rota, roles: data.roles, onDate: onDate,
                 eventDateLoading: false });
