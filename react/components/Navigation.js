@@ -5,6 +5,7 @@ var Nav = require('react-bootstrap').Nav;
 var NavbarHeader = require("react-bootstrap/lib/NavbarHeader")
 var NavbarBrand = require("react-bootstrap/lib/NavbarBrand")
 var NavbarCollapse = require("react-bootstrap/lib/NavbarCollapse")
+var NavbarToggle = require("react-bootstrap/lib/NavbarToggle")
 var NavItem = require('react-bootstrap').NavItem;
 var Person = require('../models/person');
 
@@ -67,6 +68,7 @@ var Navigation = React.createClass({
           <Navbar inverse>
             <NavbarHeader>
               <NavbarBrand><a href="/rota/me">Team Rota</a></NavbarBrand>
+              <NavbarToggle />
             </NavbarHeader>
               <NavbarCollapse eventKey={0}>
                   <Nav navbar>
