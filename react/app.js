@@ -10,6 +10,9 @@ var PeopleNew = require('./components/PeopleNew');
 var Events = require('./components/Events');
 var EventDetail = require('./components/EventDetail');
 var EventOverview = require('./components/EventOverview');
+var SetLists = require('./components/SetLists');
+var Songs = require('./components/Songs');
+var Song = require('./components/Song');
 
 var Token = require('./models/Token');
 
@@ -26,5 +29,8 @@ render((
     <Route path="/rota/events/:id" component={EventDetail} />
     <Route path="/rota/events/:id/overview" component={EventOverview} />
     <Route path="/rota/events/:id/:onDate" component={EventDetail} />
+    <Route path="/rota/setlists" component={SetLists}/>
+    <Route path="/rota/songs" component={Songs}/>
+    <Route path="/rota/songs/:id" component={Song}/>
   </Router>
 ), document.getElementById('app'));

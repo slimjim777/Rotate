@@ -33,4 +33,5 @@ db = SQLAlchemy(app)
 import schedule.authorize
 import schedule.views_event
 import schedule.views_person
+import schedule.views_song
 import schedule.views_rest

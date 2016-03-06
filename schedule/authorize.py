@@ -92,5 +92,6 @@ def check_user(email):
         # Save the user details in the session
         session['user_id'] = user.id
         session['role'] = user.user_role
+        session['music_role'] = user.music_role
         session['name'] = user.name
         return True

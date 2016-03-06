@@ -701,6 +701,7 @@ class FastQuery(object):
         permissions = {
             'name': session['name'],
             'role': session['role'],
+            'music_role': session.get('music_role', ''),
             'is_admin': session['role'] == 'admin',
             'user_id': session['user_id'],
             'events_admin': events_admin,
@@ -1084,3 +1085,32 @@ class FastQuery(object):
             rotas.append(r)
 
         return rotas
+
+    @staticmethod
+    def songs(active):
+        if active == 'all':
+            sql = "select * from song order by name"
+        elif active == 'inactive':
+            sql = "select * from song where inactive order by name"
+        else:
+            sql = "select * from song where active order by name"
+
+        rows = db.session.execute(sql)
+
+        song_list = []
+        for row in rows.fetchall():
+            song_list.append(dict(row))
+        return song_list
+
+    @staticmethod
+    def song(song_id):
+        start = time.time()
+        sql = "select * from song where id=:song_id"
+        rows = db.session.execute(sql, {'song_id': song_id})
+
+        s = rows.fetchone()
+        if not s:
+            raise Exception("Cannot find the song")
+
+        app.logger.debug('Song: %s' % (time.time() - start))
+        return dict(s)
