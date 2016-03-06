@@ -4,6 +4,7 @@ from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import validates
 import datetime
 from schedule import app
+from schedule.model.query import FastQuery
 
 
 def next_weekday(d, weekday):
@@ -330,6 +331,7 @@ class Person(db.Model):
         'Event', secondary=event_admins,
         backref=db.backref('person_ref', lazy='joined'))
     guest = db.Column(db.Boolean, default=False)
+    music_role = db.Column(db.String(30))
 
     def __init__(self, email, firstname, lastname):
         self.firstname = firstname
@@ -379,6 +381,7 @@ class Person(db.Model):
             'lastname': self.lastname,
             'email': self.email,
             'user_role': self.user_role,
+            'music_role': self.music_role if self.music_role else '',
             'last_login': self.last_login.strftime(
                 '%Y-%m-%dT%H:%M:%S') if self.last_login else None,
             'active': self.active,
@@ -392,9 +395,7 @@ class Person(db.Model):
 
     @staticmethod
     def update_last_login(user_id):
-        user = Person.query.get(user_id)
-        user.last_login = datetime.datetime.utcnow()
-        db.session.commit()
+        FastQuery.person_update_last_login(user_id)
 
     @staticmethod
     def user_by_email(email):

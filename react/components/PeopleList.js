@@ -41,7 +41,7 @@ var PeopleList = React.createClass({
             return (
                 <thead>
                     <tr>
-                        <th></th><th className="left-align">Name</th><th>Active</th><th>Guest</th><th>Last Login</th>
+                        <th></th><th className="left-align">Name</th><th>Active</th><th>Guest</th><th>Permissions</th><th>Last Login</th>
                     </tr>
                 </thead>
             );
@@ -62,6 +62,14 @@ var PeopleList = React.createClass({
                 <td>
                     <a href={'/rota/people/' + person.id + '/edit'} className="btn btn-default">Edit</a>
                 </td>
+            );
+        }
+    },
+
+    renderPermissions: function(person) {
+        if (this.state.isAdmin) {
+            return (
+                <td>{person.user_role}{person.music_role ? ' | ' + person.music_role : ''}</td>
             );
         }
     },
@@ -91,6 +99,7 @@ var PeopleList = React.createClass({
                                         <td className="left-align"><a href={'/rota/person/' + p.id}>{p.firstname} {p.lastname}</a></td>
                                         <td>{self.renderActive(p.active)}</td>
                                         <td>{self.renderActive(p.guest)}</td>
+                                        {self.renderPermissions(p)}
                                         <td>{p.last_login ? moment(p.last_login).format('DD/MM/YYYY HH:mm') : ''}</td>
                                     </tr>
                                 );

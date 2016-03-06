@@ -34,6 +34,9 @@ var PeopleNew = React.createClass({
         this.updateState('user_role', e.target.value);
         this.updateState('role_rota', e.target.value);
     },
+    handleMusicRole: function(e) {
+        this.updateState('music_role', e.target.value);
+    },
 
     handleSubmit: function(e) {
         var self = this;
@@ -92,12 +95,21 @@ var PeopleNew = React.createClass({
                                     onChange={this.handleEmail} />
                             </div>
                             <div className="form-group">
-                                <label>Permissions</label>
+                                <label>Rota Permissions</label>
                                 <select name="role" value={this.state.person.user_role} onChange={this.handleRole}>
                                     <option value="standard">Standard</option>
                                     <option value="admin">Admin</option>
                                 </select>
                             </div>
+                            <div className="form-group">
+                                <label>Song Permissions</label>
+                                <select name="music_role" value={this.state.person.music_role} onChange={this.handleMusicRole}>
+                                    <option value="">None</option>
+                                    <option value="set-list">View Set List</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>                            
                         </form>
                     </div>
                     <div className="panel-footer">

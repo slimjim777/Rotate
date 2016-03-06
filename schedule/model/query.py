@@ -917,6 +917,16 @@ class FastQuery(object):
                 FastQuery._delete_rota_for_event_date(rota_id)
 
     @staticmethod
+    def person_update_last_login(person_id):
+        """
+        Update the last time a person logged in.
+        """
+        sql = "update person set last_login=:last_login where id=:person_id"
+        db.session.execute(
+            sql, {'last_login': datetime.datetime.utcnow(), 'person_id': person_id})
+        db.session.commit()
+
+    @staticmethod
     def people():
         start = time.time()
         sql = "select * from person order by firstname, lastname"
@@ -933,6 +943,34 @@ class FastQuery(object):
 
         app.logger.debug('People: %s' % (time.time() - start))
         return people
+
+    @staticmethod
+    def person(person_id):
+        start = time.time()
+        sql = "select * from person where id=:person_id"
+        rows = db.session.execute(sql, {'person_id': person_id})
+
+        p = rows.fetchone()
+        if not p:
+            raise Exception("Cannot find the person")
+
+        p = dict(p)
+        if p['last_login']:
+            p['last_login'] = str(p['last_login'])
+        else:
+            p['last_login'] = ''
+
+        app.logger.debug('Person: %s' % (time.time() - start))
+        return p
+
+    @staticmethod
+    def person_update(person):
+        sql = """update person set firstname=:firstname, lastname=:lastname,
+            active=:active, email=:email, user_role=:user_role,
+            music_role=:music_role, guest=:guest
+            where id=:person_id"""
+        db.session.execute(sql, person)
+        db.session.commit()
 
     @staticmethod
     def event_roles(event_id):

@@ -26,12 +26,6 @@ def view_person(path=None):
     return render_template('react.html')
 
 
-@app.route('/Ember', methods=['GET'])
-@login_required
-def view_person_ember():
-    return render_template('ember_person.html')
-
-
 @app.route('/api/people/me', methods=['GET'])
 @app.route('/api/people/<int:person_id>', methods=['GET', 'PUT'])
 @login_required
@@ -43,12 +37,12 @@ def api_person(person_id=None):
         try:
             if not person_id:
                 person_id = session['user_id']
-            p = Person.query.get(person_id)
+            p = FastQuery.person(person_id)
             if not p:
                 raise Exception('Cannot find the person')
             result = {
                 'response': 'Success',
-                'person': p.to_dict(),
+                'person': p,
             }
             return jsonify(result)
         except Exception as v:
@@ -61,27 +55,33 @@ def api_person(person_id=None):
             if not person_id:
                 raise Exception('The person_id must be supplied')
 
-            p = Person.query.get(person_id)
+            p = FastQuery.person(person_id)
             if not p:
                 raise Exception('Cannot find the person')
-            p.firstname = request.json.get('firstname')
-            p.lastname = request.json.get('lastname')
-            p.active = request.json.get('active')
-            p.email = request.json.get('email')
-            p.user_role = request.json.get('user_role')
-            p.guest = request.json.get('guest')
+            p =  {
+                'person_id': person_id,
+                'firstname': request.json.get('firstname'),
+                'lastname': request.json.get('lastname'),
+                'active': request.json.get('active'),
+                'email': request.json.get('email'),
+                'user_role': request.json.get('user_role'),
+                'music_role': request.json.get('music_role'),
+                'guest': request.json.get('guest'),
+            }
 
-            if not p.guest:
-                if not p.email or len(p.email.strip()) == 0:
+            if not p['guest']:
+                if not p['email'] or len(p['email'].strip()) == 0:
                     raise Exception("Email must be entered for non-guest users")
 
-            db.session.commit()
+            FastQuery.person_update(p)
             result = {
                 'response': 'Success',
-                'person': p.to_dict(),
+                'person': p,
             }
+            print(result)
             return jsonify(result)
         except Exception as v:
+            print(str(v))
             return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -224,6 +224,8 @@ def api_people_new():
         if not p.guest:
             if not p.email or len(p.email.strip()) == 0:
                 raise Exception("Email must be entered for non-guest users")
+        p.user_role = request.json.get('user_role')
+        p.music_role = request.json.get('music_role')
 
         db.session.add(p)
         db.session.commit()

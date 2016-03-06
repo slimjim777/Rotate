@@ -17,7 +17,6 @@ var PeopleEdit = React.createClass({
         // Get the person details
         Person.findById(personId).then(function(response) {
             var data = JSON.parse(response.body);
-            console.log(data);
             self.setState({person: data.person});
         });
     },
@@ -47,7 +46,9 @@ var PeopleEdit = React.createClass({
         this.updateState('user_role', e.target.value);
         this.updateState('role_rota', e.target.value);
     },
-
+    handleMusicRole: function(e) {
+        this.updateState('music_role', e.target.value);
+    },
     handleSubmit: function(e) {
         e.preventDefault();
         Person.update(this.state.person).then(function(response) {
@@ -91,8 +92,17 @@ var PeopleEdit = React.createClass({
                                     onChange={this.handleEmail} />
                             </div>
                             <div className="form-group">
-                                <label>Permissions</label>
+                                <label>Rota Permissions</label>
                                 <select name="role" value={this.state.person.user_role} onChange={this.handleRole}>
+                                    <option value="standard">Standard</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Song Permissions</label>
+                                <select name="music_role" value={this.state.person.music_role} onChange={this.handleMusicRole}>
+                                    <option value="">None</option>
+                                    <option value="set-list">View Set List</option>
                                     <option value="standard">Standard</option>
                                     <option value="admin">Admin</option>
                                 </select>
