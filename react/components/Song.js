@@ -4,6 +4,7 @@ var Person = require('../models/person');
 var SongModel = require('../models/song');
 var Navigation = require('../components/Navigation');
 var SongDetail = require('../components/SongDetail');
+var SongEdit = require('../components/SongEdit');
 
 
 var Song = React.createClass({
@@ -53,7 +54,8 @@ var Song = React.createClass({
     renderSong: function() {
       if (this.state.isEditing) {
         return (
-          <h1>Song Edit: mode not done</h1>
+          <SongEdit song={this.state.song} toggleEdit={this.handleToggleEdit}
+              canAdministrate={this.canAdministrate()} />
         );
       } else {
         return (
@@ -69,7 +71,7 @@ var Song = React.createClass({
         return (
           <div id="main" className="container-fluid" role="main">
               <Navigation active="songs" />
-              <h2 className="sub-heading">Song Details</h2>
+              <h2 className="sub-heading">Song Detail</h2>
 
               {this.renderSong()}
           </div>

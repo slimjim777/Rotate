@@ -20,7 +20,12 @@ var Song = {
 
   findById: function(songId) {
     return Ajax.get(this.url() + '/' + songId);
-  }
-}
+  },
+
+  update: function(song) {
+      console.log(song);
+      return Ajax.put('/api/songs/' + song.id, {song: song});
+  },
+};
 
 module.exports = Song;

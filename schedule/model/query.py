@@ -1114,3 +1114,15 @@ class FastQuery(object):
 
         app.logger.debug('Song: %s' % (time.time() - start))
         return dict(s)
+
+    @staticmethod
+    def song_update(song):
+        start = time.time()
+        sql = """
+            update song
+            set name=:name, active=:active, url=:url, tempo=:tempo,
+                time_signature=:time_signature
+            where id=:id"""
+        rows = db.session.execute(sql, song)
+        print(rows)
+        db.session.commit()

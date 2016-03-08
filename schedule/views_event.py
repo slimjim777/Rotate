@@ -330,16 +330,15 @@ def api_event_date_ondate(event_id, on_date):
 @app.route("/api/events/<int:event_id>/rota/<from_date>", methods=['GET'])
 @login_required
 def api_event_date_from_date(event_id, from_date):
-    #try:
-    to_date = datetime.datetime.strptime(from_date, '%Y-%m-%d') + \
-              datetime.timedelta(weeks=12)
+    try:
+        to_date = datetime.datetime.strptime(from_date, '%Y-%m-%d') + \
+                  datetime.timedelta(weeks=12)
 
-    e = FastQuery.event_rota(
-        event_id, from_date, to_date.strftime('%Y-%m-%d'))
-    return jsonify({'response': 'Success', 'rota': e})
-    #except Exception as v:
-    #    return jsonify({'response': 'Error', 'message': str(v)})
-
+        e = FastQuery.event_rota(
+            event_id, from_date, to_date.strftime('%Y-%m-%d'))
+        return jsonify({'response': 'Success', 'rota': e})
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})
 
 
 @app.route("/api/event_date/<int:event_date_id>", methods=['GET'])
