@@ -10,13 +10,16 @@ var SongEdit = require('../components/SongEdit');
 var Song = React.createClass({
 
     getInitialState: function() {
-        return ({isEditing: false, songId: null, isAdmin: false, song: {}});
+        return ({isEditing: false, songId: null, isAdmin: false, song: {},
+          attachments: []
+        });
     },
 
     componentDidMount: function () {
       this.getPermissions();
 
       this.getSong(this.props.params.id);
+      this.getAttachments(this.props.params.id);
     },
 
     getPermissions: function () {
@@ -46,6 +49,15 @@ var Song = React.createClass({
       });
     },
 
+    getAttachments: function(songId) {
+      var self = this;
+
+      SongModel.attachments(songId).then(function(response) {
+          var data = JSON.parse(response.body);
+          self.setState({attachments: data.attachments});
+      });
+    },
+
     handleToggleEdit: function(e) {
         e.preventDefault();
         this.setState({isEditing: !this.state.isEditing});
@@ -60,6 +72,7 @@ var Song = React.createClass({
       } else {
         return (
           <SongDetail song={this.state.song} toggleEdit={this.handleToggleEdit}
+              attachments={this.state.attachments}
               canAdministrate={this.canAdministrate()} />
         );
       }

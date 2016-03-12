@@ -23,9 +23,12 @@ var Song = {
   },
 
   update: function(song) {
-      console.log(song);
       return Ajax.put('/api/songs/' + song.id, {song: song});
   },
+
+  attachments: function(song_id) {
+    return Ajax.get('/api/songs/' + song_id + '/attachments');
+  }
 };
 
 module.exports = Song;
