@@ -58,6 +58,10 @@ var Song = React.createClass({
       });
     },
 
+    handleRefreshAttachments: function() {
+      this.getAttachments(this.props.params.id);
+    },
+
     handleToggleEdit: function(e) {
         e.preventDefault();
         this.setState({isEditing: !this.state.isEditing});
@@ -73,6 +77,7 @@ var Song = React.createClass({
         return (
           <SongDetail song={this.state.song} toggleEdit={this.handleToggleEdit}
               attachments={this.state.attachments}
+              refreshAttachments={this.handleRefreshAttachments}
               canAdministrate={this.canAdministrate()} />
         );
       }

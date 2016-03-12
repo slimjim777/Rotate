@@ -245,6 +245,11 @@ table.rota {
  	font-size: 16px;
  	line-height: 1em;
  }
- .table-striped, .table-striped th {
+
+.table-striped, .table-striped th {
  	text-align: center;
- }
+}
+
+table.left, table.left th {
+ 	text-align: start;
+}

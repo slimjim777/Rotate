@@ -1,11 +1,33 @@
 'use strict'
 var React = require('react');
 var relativeDate = require('../models/utils').relativeDate;
+var SongAttachment = require('../components/SongAttachment');
+var SongModel = require('../models/song');
 
 
 var SongDetail = React.createClass({
+  getInitialState: function() {
+    return {showAttachmentAdd: false};
+  },
+
   handleAttachmentAdd: function(e) {
     e.preventDefault();
+    this.setState({showAttachmentAdd: !this.state.showAttachmentAdd});
+  },
+
+  handleAttachmentAddSave: function(file) {
+    var self = this;
+    var reader = new FileReader();
+
+    reader.onload = function(upload) {
+      SongModel.attachmentAdd(self.props.song.id, file.name, upload.target.result).then(function(response) {
+        var data = JSON.parse(response.body);
+        self.setState({showAttachmentAdd: false});
+        self.props.refreshAttachments();
+      });
+    }
+
+    reader.readAsDataURL(file);
   },
 
   renderActions: function() {
@@ -29,6 +51,18 @@ var SongDetail = React.createClass({
     }
   },
 
+  renderAttachmentAdd: function() {
+    if (this.state.showAttachmentAdd) {
+      return (
+        <SongAttachment onSave={this.handleAttachmentAddSave} onCancel={this.handleAttachmentAdd} />
+      )
+    }
+  },
+
+  attachmentURL: function(path) {
+    return FILESTORE_URL + path;
+  },
+
   renderAttachments: function() {
     var self = this;
 
@@ -44,7 +78,7 @@ var SongDetail = React.createClass({
           {this.props.attachments.map(function(att) {
             return (
               <tr key={att.id}>
-                <td>{att.name}</td><td>{relativeDate(att.created_date)}</td>
+                <td><a href={self.attachmentURL(att.path)}>{att.name}</a></td><td>{relativeDate(att.created_date)}</td>
               </tr>
             );
           })}
@@ -92,6 +126,7 @@ var SongDetail = React.createClass({
                 </h4>
               </div>
               <div className="panel-body">
+                {this.renderAttachmentAdd()}
                 {this.renderAttachments()}
               </div>
             </div>

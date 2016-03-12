@@ -28,6 +28,10 @@ var Song = {
 
   attachments: function(song_id) {
     return Ajax.get('/api/songs/' + song_id + '/attachments');
+  },
+
+  attachmentAdd: function(song_id, filename, fileData) {
+    return Ajax.post('/api/songs/' + song_id + '/attachments', {filename: filename, data: fileData});
   }
 };
 

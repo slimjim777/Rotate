@@ -41,3 +41,15 @@ def api_song_update(song_id):
 def api_song_attachments(song_id):
     attachments = SongQuery.song_attachments(song_id)
     return jsonify({'response': 'Success', 'attachments': attachments})
+
+@app.route('/api/songs/<int:song_id>/attachments', methods=['POST'])
+@login_required
+def api_song_attachments_add(song_id):
+    try:
+        filename = request.json['filename']
+        file_data = request.json['data']
+
+        resp = SongQuery.song_attachments_add(song_id, filename, file_data)
+        return resp
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})

@@ -25,7 +25,11 @@ if os.environ.get("MAIL_USE_TLS") == "True":
 if os.environ.get("MAIL_USE_SSL") == "True":
     app.config['MAIL_USE_SSL'] = True
 
-app.debug = True
+app.config['FILESTORE_CODE'] = os.environ.get("FILESTORE_CODE")
+app.config['FILESTORE_UPLOAD'] = os.environ.get("FILESTORE_UPLOAD")
+app.config['FILESTORE_URL'] = os.environ.get("FILESTORE_URL")
+
+app.debug = True if os.environ.get("DEBUG", False) else False
 
 
 db = SQLAlchemy(app)

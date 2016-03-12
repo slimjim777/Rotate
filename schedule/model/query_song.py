@@ -1,6 +1,8 @@
 import time
 from flask import session
 from schedule import db, app
+from schedule.model.filestore import FileStore
+import json
 
 
 class SongQuery(object):
@@ -58,3 +60,32 @@ class SongQuery(object):
             r['created_date'] = r['created_date'].strftime('%Y-%m-%dT%H:%M:%S')
             attachments.append(r)
         return attachments
+
+    @staticmethod
+    def song_attachments_add(song_id, filename, file_data):
+        """
+        Upload the file to the storage site. Check first that the attachment
+        does not exist for the song.
+        """
+        sql = "select * from attachment where song_id=:song_id and name=:name"
+        rows = db.session.execute(sql, {'song_id': song_id, 'name': filename})
+
+        if rows.rowcount > 0:
+            raise Exception("A file with the same name exists for the song")
+
+        resp = FileStore().put(song_id, filename, file_data)
+
+        r = json.loads(resp)
+        if r['response'] == 'Success':
+            # Add the attachment record
+            sql = """insert into attachment (song_id, name, path, mime_type)
+                values (:song_id, :filename, :path, :mime_type)
+            """
+            db.session.execute(
+                sql, {'song_id': song_id, 'filename': filename,
+                      'path': r['path'], 'mime_type': ''})
+
+            db.session.commit()
+            return resp
+        else:
+            return resp
