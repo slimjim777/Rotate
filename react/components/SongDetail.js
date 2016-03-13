@@ -37,7 +37,7 @@ var SongDetail = React.createClass({
 
   handleAttachmentDelete: function(e) {
     var self = this;
-    
+
     var attId = parseInt(e.target.getAttribute('data-key'));
     SongModel.attachmentDelete(this.props.song.id, attId).then(function(response) {
       var data = JSON.parse(response.body);
@@ -48,6 +48,10 @@ var SongDetail = React.createClass({
         self.setState({message: data.message, messageType: "danger"});
       }
     });
+  },
+
+  handleAlertDismiss: function() {
+    this.setState({message: null, messageType: null});
   },
 
   renderActions: function() {
@@ -134,7 +138,8 @@ var SongDetail = React.createClass({
   renderAlert: function() {
     if (this.state.message) {
       return (
-        <Alert bsStyle={this.state.messageType}>{this.state.message}</Alert>
+        <Alert bsStyle={this.state.messageType} onDismiss={this.handleAlertDismiss}
+          dismissAfter={5000}>{this.state.message}</Alert>
       );
     }
   },
