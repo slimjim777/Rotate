@@ -39,17 +39,35 @@ def api_song_update(song_id):
 @app.route('/api/songs/<int:song_id>/attachments', methods=['GET'])
 @login_required
 def api_song_attachments(song_id):
+    if session['music_role'] != 'admin':
+        abort(403)
+
     attachments = SongQuery.song_attachments(song_id)
     return jsonify({'response': 'Success', 'attachments': attachments})
 
 @app.route('/api/songs/<int:song_id>/attachments', methods=['POST'])
 @login_required
 def api_song_attachments_add(song_id):
+    if session['music_role'] != 'admin':
+        abort(403)
+
     try:
         filename = request.json['filename']
         file_data = request.json['data']
 
         resp = SongQuery.song_attachments_add(song_id, filename, file_data)
         return jsonify({'response': 'Success', 'path': resp})
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+@app.route('/api/songs/<int:song_id>/attachments/<int:att_id>', methods=['DELETE'])
+@login_required
+def api_song_attachments_delete(song_id, att_id):
+    if session['music_role'] != 'admin':
+        abort(403)
+
+    try:
+        resp = SongQuery.song_attachments_delete(song_id, att_id)
+        return jsonify({'response': 'Success'})
     except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})

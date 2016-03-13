@@ -44,8 +44,7 @@ class SongQuery(object):
             set name=:name, active=:active, url=:url, tempo=:tempo,
                 time_signature=:time_signature
             where id=:id"""
-        rows = db.session.execute(sql, song)
-        print(rows)
+        db.session.execute(sql, song)
         db.session.commit()
 
     @staticmethod
@@ -85,5 +84,20 @@ class SongQuery(object):
                       'path': file_path, 'mime_type': ''})
 
             db.session.commit()
-    
+
         return file_path
+
+    @staticmethod
+    def song_attachments_delete(song_id, att_id):
+        # Get the attachment name
+        sql = "select * from attachment where song_id=:song_id and id=:id"
+        rows = db.session.execute(sql, {'song_id': song_id, 'id': att_id})
+        row = rows.fetchone()
+
+        # Remove the file from the filestore
+        FileStore().delete(song_id, row['name'])
+
+        # Remove the attachment record
+        sql = "DELETE from attachment where song_id=:song_id and id=:id"
+        rows = db.session.execute(sql, {'song_id': song_id, 'id': att_id})
+        db.session.commit()

@@ -1,5 +1,6 @@
 'use strict'
 var React = require('react');
+var Alert = require('react-bootstrap').Alert;
 var relativeDate = require('../models/utils').relativeDate;
 var SongAttachment = require('../components/SongAttachment');
 var SongModel = require('../models/song');
@@ -7,12 +8,12 @@ var SongModel = require('../models/song');
 
 var SongDetail = React.createClass({
   getInitialState: function() {
-    return {showAttachmentAdd: false};
+    return {showAttachmentAdd: false, message: null, messageType: null};
   },
 
   handleAttachmentAdd: function(e) {
     e.preventDefault();
-    this.setState({showAttachmentAdd: !this.state.showAttachmentAdd});
+    this.setState({showAttachmentAdd: !this.state.showAttachmentAdd, message: null, messageType: null});
   },
 
   handleAttachmentAddSave: function(file) {
@@ -22,12 +23,31 @@ var SongDetail = React.createClass({
     reader.onload = function(upload) {
       SongModel.attachmentAdd(self.props.song.id, file.name, upload.target.result).then(function(response) {
         var data = JSON.parse(response.body);
-        self.setState({showAttachmentAdd: false});
-        self.props.refreshAttachments();
+        if (data.response === 'Success') {
+          self.setState({showAttachmentAdd: false, message: "Attachment added successfully", messageType: "success"});
+          self.props.refreshAttachments();
+        } else {
+          self.setState({message: data.message, messageType: "danger"});
+        }
       });
     }
 
     reader.readAsDataURL(file);
+  },
+
+  handleAttachmentDelete: function(e) {
+    var self = this;
+    
+    var attId = parseInt(e.target.getAttribute('data-key'));
+    SongModel.attachmentDelete(this.props.song.id, attId).then(function(response) {
+      var data = JSON.parse(response.body);
+      if (data.response === 'Success') {
+        self.setState({message: "Attachment removed successfully", messageType: "success"});
+        self.props.refreshAttachments();
+      } else {
+        self.setState({message: data.message, messageType: "danger"});
+      }
+    });
   },
 
   renderActions: function() {
@@ -71,7 +91,7 @@ var SongDetail = React.createClass({
         <table className="table table-striped">
           <thead>
             <tr>
-              <th>Name</th><th>Created</th>
+              <th>Name</th><th>Created</th><th></th>
             </tr>
           </thead>
           <tbody>
@@ -79,11 +99,42 @@ var SongDetail = React.createClass({
             return (
               <tr key={att.id}>
                 <td><a href={self.attachmentURL(att.path)}>{att.name}</a></td><td>{relativeDate(att.created_date)}</td>
+                {self.renderAttachmentDeleteButton(att)}
               </tr>
             );
           })}
           </tbody>
         </table>
+      );
+    }
+  },
+
+  renderAttachmentAddButton: function() {
+    if (this.props.canAdministrate) {
+      return (
+        <button className="btn btn-secondary" onClick={this.handleAttachmentAdd}>
+          <span className="glyphicon glyphicon-plus"></span>
+        </button>
+      );
+    }
+  },
+
+  renderAttachmentDeleteButton: function(att) {
+    if (this.props.canAdministrate) {
+      return (
+        <td>
+          <button className="btn btn-default" data-key={att.id} onClick={this.handleAttachmentDelete}>
+            <span className="glyphicon glyphicon-remove" data-key={att.id}></span>
+          </button>
+        </td>
+      );
+    }
+  },
+
+  renderAlert: function() {
+    if (this.state.message) {
+      return (
+        <Alert bsStyle={this.state.messageType}>{this.state.message}</Alert>
       );
     }
   },
@@ -119,13 +170,12 @@ var SongDetail = React.createClass({
             <div className="panel panel-default">
               <div className="panel-heading">
                 <h4 className="sub-heading">
-                  <button className="btn btn-secondary" onClick={this.handleAttachmentAdd}>
-                    <span className="glyphicon glyphicon-plus"></span>
-                  </button>
+                  {this.renderAttachmentAddButton()}
                   Attachments
                 </h4>
               </div>
               <div className="panel-body">
+                {this.renderAlert()}
                 {this.renderAttachmentAdd()}
                 {this.renderAttachments()}
               </div>

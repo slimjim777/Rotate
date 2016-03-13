@@ -32,6 +32,10 @@ var Song = {
 
   attachmentAdd: function(song_id, filename, fileData) {
     return Ajax.post('/api/songs/' + song_id + '/attachments', {filename: filename, data: fileData});
+  },
+
+  attachmentDelete: function(song_id, att_id) {
+    return Ajax.delete('/api/songs/' + song_id + '/attachments/' + att_id);
   }
 };
 

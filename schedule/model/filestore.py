@@ -7,13 +7,16 @@ import requests
 
 class FileStore(object):
 
+    def _login(self):
+        return FTP(
+            app.config['FILESTORE_SITE'], app.config['FILESTORE_USER'],
+            app.config['FILESTORE_PASSWORD'])
+
     def put(self, song_id, filename, file_data):
         """
         Upload a file to the store.
         """
-        ftp = FTP(
-            app.config['FILESTORE_SITE'], app.config['FILESTORE_USER'],
-            app.config['FILESTORE_PASSWORD'])
+        ftp = self._login()
 
         try:
             ftp.cwd('songs/%d' % song_id)
@@ -31,3 +34,14 @@ class FileStore(object):
         f.close()
         ftp.close()
         return "songs/%d/%s" % (song_id, filename)
+
+    def delete(self, song_id, filename):
+        ftp = self._login()
+
+        try:
+            ftp.cwd('songs/%d' % song_id)
+            ftp.delete(filename)
+        except Exception:
+            return
+
+        return True
