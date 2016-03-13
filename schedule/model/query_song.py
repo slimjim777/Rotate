@@ -73,19 +73,17 @@ class SongQuery(object):
         if rows.rowcount > 0:
             raise Exception("A file with the same name exists for the song")
 
-        resp = FileStore().put(song_id, filename, file_data)
+        file_path = FileStore().put(song_id, filename, file_data)
 
-        r = json.loads(resp)
-        if r['response'] == 'Success':
+        if file_path:
             # Add the attachment record
             sql = """insert into attachment (song_id, name, path, mime_type)
                 values (:song_id, :filename, :path, :mime_type)
             """
             db.session.execute(
                 sql, {'song_id': song_id, 'filename': filename,
-                      'path': r['path'], 'mime_type': ''})
+                      'path': file_path, 'mime_type': ''})
 
             db.session.commit()
-            return resp
-        else:
-            return resp
+    
+        return file_path

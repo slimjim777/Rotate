@@ -50,6 +50,6 @@ def api_song_attachments_add(song_id):
         file_data = request.json['data']
 
         resp = SongQuery.song_attachments_add(song_id, filename, file_data)
-        return resp
+        return jsonify({'response': 'Success', 'path': resp})
     except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
