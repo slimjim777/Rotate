@@ -317,6 +317,7 @@ def api_event_overview(event_id):
     ev_dates = FastQuery.rota_for_event(event_id, from_date, to_date)
     return jsonify({'response': 'Success', 'event_dates': ev_dates})
 
+
 @app.route("/api/events/<int:event_id>/date/<on_date>", methods=['GET'])
 @login_required
 def api_event_date_ondate(event_id, on_date):
@@ -332,14 +333,13 @@ def api_event_date_ondate(event_id, on_date):
 def api_event_date_from_date(event_id, from_date):
     #try:
     to_date = datetime.datetime.strptime(from_date, '%Y-%m-%d') + \
-              datetime.timedelta(weeks=12)
+        datetime.timedelta(weeks=12)
 
     e = FastQuery.event_rota(
         event_id, from_date, to_date.strftime('%Y-%m-%d'))
     return jsonify({'response': 'Success', 'rota': e})
     #except Exception as v:
     #    return jsonify({'response': 'Error', 'message': str(v)})
-
 
 
 @app.route("/api/event_date/<int:event_date_id>", methods=['GET'])
@@ -418,12 +418,37 @@ def api_event_upsert(event_id):
 
         # Update the rota for the event dates
         for r in rota:
-            FastQuery.upsert_rota_for_role(ed['id'], r['role_id'], r['person_id'])
+            FastQuery.upsert_rota_for_role(
+                ed['id'], r['role_id'], r['person_id'])
 
     except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
     return jsonify({'response': 'Success'})
+
+
+@app.route("/api/events/<int:event_id>/add_date", methods=['POST'])
+@login_required
+def event_add_date(event_id):
+    """
+    Create an additional event date.
+    """
+    on_date = request.json.get('on_date')
+    FastQuery.upsert_event_date_add(event_id, on_date)
+    return jsonify({'response': 'Success'})
+
+
+@app.route("/api/events/<int:event_id>/<on_date>", methods=['DELETE'])
+@login_required
+def event_delete_date(event_id, on_date):
+    """
+    Delete an event date.
+    """
+    try:
+        FastQuery.event_date_delete(event_id, on_date)
+        return jsonify({'response': 'Success'})
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})
 
 
 @app.route("/api/events/<int:event_id>/event_dates/create", methods=['POST'])
@@ -458,7 +483,6 @@ def event_dates_create(event_id):
     # Create the dates for the event
     result, qty = event.create_dates(event_id, frequency, repeats_every,
                                      repeats_on, from_date, to_date)
-    app.logger.debug(result)
 
     return jsonify({'response': 'Success'})
 

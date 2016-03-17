@@ -18,7 +18,8 @@ var EventDetailDates = React.createClass({
         if (this.props.canAdministrate) {
             return (
                 <button id="create-event-dates" className="btn btn-primary"
-                        data-toggle="modal" data-target="#dialog-form" title="New Event Dates">
+                        onClick={this.props.addEventDate}
+                        data-toggle="modal" data-target="#dialog-form" title="New Event Date">
                     <span className="glyphicon glyphicon-plus"></span>
                 </button>
             );
@@ -36,7 +37,8 @@ var EventDetailDates = React.createClass({
                 <div className="panel-heading">
                     <h3 className="panel-title">
                         {this.renderSpinner()}
-                        Dates
+                        Dates&nbsp;
+                        {this.renderActions()}
                     </h3>
                 </div>
                 <div className="panel-body">

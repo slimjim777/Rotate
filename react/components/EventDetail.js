@@ -8,14 +8,18 @@ var EventDetailPanel = require('../components/EventDetailPanel');
 var EventDetailRota = require('../components/EventDetailRota');
 var EventDetailRotaEdit = require('../components/EventDetailRotaEdit');
 var EventDetailDates = require('../components/EventDetailDates');
+var EventDateAdd = require('../components/EventDateAdd');
 var Navigation = require('../components/Navigation');
+var DialogConfirm = require('../components/DialogConfirm');
 
 
 var EventDetail = React.createClass({
 
     getInitialState: function() {
-        return ({eventLoading: false, model: {}, onDate: null, eventDate: {}, dateSummary: {}, rota: [], roles: [],
-            eventDatesLoading: false, dates: [], user: null, isEditing: false});
+        return ({eventLoading: false, model: {}, onDate: null, eventDate: {},
+          dateSummary: {}, rota: [], roles: [], showEventAdd: false,
+          eventDatesLoading: false, dates: [], user: null, isEditing: false,
+          showEventDelete: false});
     },
 
     componentDidMount: function () {
@@ -43,7 +47,6 @@ var EventDetail = React.createClass({
         var self = this;
         Person.permissions().then(function(response) {
             var user = JSON.parse(response.body).permissions;
-            //console.log(sessionStorage.getItem('role_rota'));
             self.setState({user: user});
         });
     },
@@ -100,8 +103,32 @@ var EventDetail = React.createClass({
         });
     },
 
+    handleAddEventDate: function(e) {
+      e.preventDefault();
+
+      this.setState({showEventAdd: !this.state.showEventAdd});
+    },
+
+    handleAddEventDateSave: function(eventDate) {
+      this.setState({showEventAdd: false});
+      window.location.href = '/rota/events/' + this.props.params.id + '/' + eventDate;
+    },
+
     handleDateChange: function(e, eventId, onDate) {
         this.getEventDate(eventId, onDate);
+    },
+
+    handleDelete: function(e) {
+      this.setState({showEventDelete: !this.state.showEventDelete});
+    },
+
+    handleDeleteConfirm: function(e) {
+      var self = this;
+
+      EventModel.deleteDate(this.props.params.id, this.state.onDate).then(function(response) {
+        self.setState({showEventDelete: false});
+        window.location.href = '/rota/events/' + self.props.params.id;
+      });
     },
 
     handleToggleEdit: function(e) {
@@ -116,18 +143,38 @@ var EventDetail = React.createClass({
         this.getEventDate(this.state.model.id, this.state.onDate);
     },
 
+    renderConfirmDelete: function() {
+      if (this.state.showEventDelete) {
+        return (
+          <DialogConfirm title={'Confirm Event Date Deletion'} messages={['Are you sure want to remove this event date?']}
+            onClickSave={this.handleDeleteConfirm} onClickCancel={this.handleDelete} />
+        );
+      }
+    },
+
+    renderEventDate: function() {
+      if (this.state.showEventAdd) {
+        return (
+          <EventDateAdd eventId={this.props.params.id}
+            onClickSave={this.handleAddEventDateSave} onClickCancel={this.handleAddEventDate} />
+        );
+      }
+    },
+
     renderRota: function() {
         if (this.state.isEditing) {
             return (
                 <EventDetailRotaEdit model={this.state.model} onDate={this.state.onDate}
                                      summary={this.state.dateSummary} rota={this.state.rota}
                                      canAdministrate={this.canAdministrate()} refreshData={this.refreshData}
-                                     toggleEdit={this.handleToggleEdit} roles={this.state.roles} />
+                                     toggleEdit={this.handleToggleEdit} roles={this.state.roles}
+                                     handleDelete={this.handleDelete} />
             );
         } else {
             return (
                 <EventDetailRota onDate={this.state.onDate} summary={this.state.dateSummary} rota={this.state.rota}
-                                 canAdministrate={this.canAdministrate()} toggleEdit={this.handleToggleEdit}/>
+                                 canAdministrate={this.canAdministrate()} toggleEdit={this.handleToggleEdit}
+                                 handleDelete={this.handleDelete} />
             );
         }
     },
@@ -138,10 +185,13 @@ var EventDetail = React.createClass({
                 <Navigation active="events" />
                 <h2 className="heading center">{this.state.model.name}</h2>
                 <h4 className="center"><a href={'/rota/events/'.concat(this.state.model.id, '/overview')}>Overview</a></h4>
+                {this.renderEventDate()}
+                {this.renderConfirmDelete()}
 
                 <div className="col-md-4 col-sm-4 col-xs-12">
                     <EventDetailDates eventDates={this.state.dates} canAdministrate={this.canAdministrate()}
                                       model={this.state.model} onDate={this.state.onDate}
+                                      addEventDate={this.handleAddEventDate}
                                       datesLoading={this.state.eventDatesLoading} />
                     <EventDetailPanel model={this.state.model} />
                 </div>

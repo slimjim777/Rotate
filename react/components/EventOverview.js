@@ -3,6 +3,7 @@ var React = require('react');
 var EventModel = require('../models/event');
 var EventDate = require('../models/eventdate');
 var Navigation = require('../components/Navigation');
+var EventDateAdd = require('../components/EventDateAdd');
 var Person = require('../models/person');
 var moment = require('moment');
 
@@ -13,7 +14,7 @@ var EventOverview = React.createClass({
 
     getInitialState: function() {
         return ({model: {}, roles: [], rota: [], fromDate: moment().format(STANDARD_FORMAT), eventLoading: false,
-            editing: null, editRoles: [], editValues: {}});
+            editing: null, editRoles: [], editValues: {}, showEventAdd: false});
     },
 
     componentDidMount: function() {
@@ -88,7 +89,6 @@ var EventOverview = React.createClass({
 
         var self = this;
         var onDate = e.target.getAttribute('data-key');
-        //var eventDateId = parseInt(e.target.getAttribute('data-date_id') | 0);
 
         if (!onDate) {
             self.setState({editing: null, editValues: {}});
@@ -151,6 +151,16 @@ var EventOverview = React.createClass({
             });
     },
 
+    handleAddEventDate: function(e) {
+      e.preventDefault();
+      this.setState({showEventAdd: !this.state.showEventAdd});
+    },
+
+    handleAddEventDateSave: function(eventDate) {
+      this.setState({showEventAdd: false, fromDate: eventDate});
+      this.getEventRota(this.props.params.id);
+    },
+
     renderName: function(r) {
       if (r.is_away) {
         return (
@@ -171,6 +181,27 @@ var EventOverview = React.createClass({
       }
     },
 
+    renderNewEventDateButton: function() {
+        if (this.state.canAdministrate) {
+            return (
+                <button id="create-event-dates" className="btn btn-primary"
+                        onClick={this.handleAddEventDate}
+                        data-toggle="modal" data-target="#dialog-form" title="New Event Date">
+                    <span className="glyphicon glyphicon-plus"></span>
+                </button>
+            );
+        }
+    },
+
+    renderEventDate: function() {
+      if (this.state.showEventAdd) {
+        return (
+          <EventDateAdd eventId={this.props.params.id}
+            onClickSave={this.handleAddEventDateSave} onClickCancel={this.handleAddEventDate} />
+        );
+      }
+    },
+
     render: function() {
         var self = this;
         var model = this.state.model;
@@ -178,7 +209,8 @@ var EventOverview = React.createClass({
         return (
             <div id="main" className="container-fluid" role="main">
                 <Navigation active="events" />
-                <h2 className="sub-heading">{model.name}</h2>
+                <h2 className="sub-heading">{model.name} {this.renderNewEventDateButton()}</h2>
+                {this.renderEventDate()}
 
                 <div className="col-lg-3">
                     <div className="form-group form-horizontal">
@@ -249,7 +281,9 @@ var EventOverview = React.createClass({
                                                data-date_id={r.event_date_id} title="Edit rota">
                                                 {moment(r.on_date).format('DD MMM')}
                                             </button>
-                                            : moment(r.on_date).format('DD MMM')}
+                                            : moment(r.on_date).format('DD MMM')}&nbsp;
+                                            <a href={'/rota/events/'.concat(model.id, '/', moment(r.on_date).format('YYYY-MM-DD'))}
+                                                   data-key={r.on_date} title="View">View</a>
                                         </td>
                                         <td>{r.focus}</td>
                                         <td>{r.notes}</td>
@@ -266,7 +300,7 @@ var EventOverview = React.createClass({
                                                 </td>
                                             );
                                         })}
-                                        <td><a href="" onClick={self.handleClickEdit}
+                                        <td><a href={'/rota/events/'.concat(model.id, '/', moment(r.on_date).format('YYYY-MM-DD'))}
                                                data-key={r.on_date}>{moment(r.on_date).format('DD MMM')}</a></td>
                                     </tr>
                                 );

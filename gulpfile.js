@@ -5,12 +5,10 @@ var react = require('gulp-react');
 var browserify = require('gulp-browserify');
 var babel = require("gulp-babel");
 var open = require('gulp-open');
-//var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');
 var shell = require('gulp-shell');
-//var jest = require('gulp-jest-iojs')
 var runSequence = require('run-sequence');
 var minifyCss = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
@@ -28,7 +26,6 @@ var path = {
 gulp.task('compile_jsx', function(){
     return gulp.src(path.SRC + '*.js')
         .pipe(babel())
-        //.transform('babelify', {presets: ['es2015', 'react']})
         .pipe(gulp.dest(path.BUILD));
 });
 

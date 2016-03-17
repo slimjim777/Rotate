@@ -56,6 +56,14 @@ var EventModel = {
             event_id: eventId, on_date: onDate, focus: focus, notes: notes, url: url, rota: rota
         };
         return Ajax.post(this.url() + '/' + eventId + '/upsert', eventDate);
+    },
+
+    addDate: function(eventId, eventDate) {
+      return Ajax.post(this.url() + '/' + eventId + '/add_date', {on_date: eventDate});
+    },
+
+    deleteDate: function(eventId, eventDate) {
+      return Ajax.delete(this.url() + '/' + eventId + '/' + eventDate);
     }
 };
 

@@ -10,7 +10,9 @@ var EventDetailRota = React.createClass({
             return (
                 <span>
                     <button className="btn btn-primary" onClick={this.props.toggleEdit}>Edit</button>&nbsp;
-                    <button className="btn btn-default" title = "Delete" ><span className="glyphicon glyphicon-remove"></span></button>
+                    <button className="btn btn-default" onClick={this.props.handleDelete} title = "Delete event date" >
+                      <span className="glyphicon glyphicon-remove" onClick={this.props.handleDelete}></span>
+                    </button>
                 </span>
             );
         }
