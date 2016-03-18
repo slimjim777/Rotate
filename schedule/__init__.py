@@ -32,7 +32,8 @@ if os.environ.get("MAIL_USE_TLS") == "True":
 if os.environ.get("MAIL_USE_SSL") == "True":
     app.config['MAIL_USE_SSL'] = True
 
-app.debug = True
+if os.environ.get("DEBUG"):
+    app.debug = True
 
 
 db = SQLAlchemy(app)
