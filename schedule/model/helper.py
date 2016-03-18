@@ -6,7 +6,7 @@ from schedule import app
 from jinja2 import Environment, PackageLoader
 
 
-def notify_days_ahead(days, week):
+def notify_days_ahead(days, reminder_type, week):
     """
     Send Email notification to the people that are on rota in n days time.
     """
@@ -21,7 +21,7 @@ def notify_days_ahead(days, week):
         message_txt = template_txt.render(name=name, rotas=rotas, week=week,
                                           url_root=app.config['URL_ROOT'])
 
-        subject = "Life Church Rota Reminder for %s Week" % week
+        subject = "%sRota Reminder for %s Week" % (reminder_type, week)
         mime_text = email_message(
             rotas['person_email'], subject, message_txt, message_html)
 
