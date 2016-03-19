@@ -3,7 +3,7 @@ var React = require('react');
 var Panel = require("react-bootstrap").Panel;
 var Modal = require("react-bootstrap").Modal;
 var Button = require("react-bootstrap").Button;
-var Pikaday = require('react-pikaday');
+import Pikaday from 'react-pikaday';
 var moment = require('moment');
 
 
