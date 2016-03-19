@@ -161,7 +161,8 @@ class FastQuery(object):
     @staticmethod
     def event_date_ondate(event_id, on_date):
         start = time.time()
-        sql = """select * from event_date
+        sql = """select ed.*, e.name event_name from event_date ed
+            inner join event e on e.id=ed.event_id
             where event_id=:event_id and on_date=:on_date"""
         params = {
             'event_id': event_id, 'on_date': on_date
@@ -169,10 +170,18 @@ class FastQuery(object):
         row = db.session.execute(sql, params)
         ev_date = row.fetchone()
         if not ev_date:
-            return {
-                'event_id': event_id,
-                'on_date': on_date
-            }
+            try:
+                event = FastQuery.event(event_id)
+                return {
+                    'event_name': event['name'],
+                    'event_id': event_id,
+                    'on_date': on_date
+                }
+            except:
+                return {
+                    'event_id': event_id,
+                    'on_date': on_date
+                }
 
         app.logger.debug('Event Date: %s' % (time.time() - start))
         return FastQuery.event_date_to_dict(ev_date)

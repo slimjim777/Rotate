@@ -172,7 +172,8 @@ var EventDetail = React.createClass({
             );
         } else {
             return (
-                <EventDetailRota onDate={this.state.onDate} summary={this.state.dateSummary} rota={this.state.rota}
+                <EventDetailRota model={this.state.model} onDate={this.state.onDate}
+                                 summary={this.state.dateSummary} rota={this.state.rota}
                                  canAdministrate={this.canAdministrate()} toggleEdit={this.handleToggleEdit}
                                  handleDelete={this.handleDelete} />
             );

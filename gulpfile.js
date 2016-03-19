@@ -47,6 +47,12 @@ gulp.task('minify-css', function() {
         .pipe(gulp.dest(path.MEDIA + 'css/dist/'));
 });
 
+gulp.task('minify-css-print', function() {
+    return gulp.src(path.MEDIA + 'css/print.css')
+        .pipe(minifyCss())
+        .pipe(gulp.dest(path.MEDIA + 'css/dist/'));
+});
+
 gulp.task('minify-pikaday', function() {
     return gulp.src(path.NODE + 'react-pikaday/node_modules/pikaday/css/pikaday.css')
         .pipe(minifyCss())
@@ -73,4 +79,4 @@ gulp.task('watch', function () {
 });
 
 // Default: remember that these tasks get run asynchronously
-gulp.task('default', ['build_components', 'minify-css', 'minify-pikaday']);
+gulp.task('default', ['build_components', 'minify-css', 'minify-css-print', 'minify-pikaday']);

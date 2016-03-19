@@ -41,7 +41,7 @@ var Navigation = React.createClass({
     renderAdmin: function(activeAdmin) {
       if (this.state.canAdministrate) {
         return (
-          <NavItem eventKey={4} active={activeAdmin} href="/admin">Admin</NavItem>
+          <NavItem eventKey={8} active={activeAdmin} href="/admin">Admin</NavItem>
         );
       }
     },
@@ -51,6 +51,7 @@ var Navigation = React.createClass({
         var activePeople = false;
         var activeEvents = false;
         var activeAdmin = false;
+        var activeRunsheets = false;
         if (this.props.active === 'rota') {
           activeRota = true;
         }
@@ -59,6 +60,9 @@ var Navigation = React.createClass({
         }
         if (this.props.active === 'events') {
           activeEvents = true;
+        }
+        if (this.props.active === 'runsheets') {
+          activeRunsheets = true;
         }
         if (this.props.active === 'admin') {
           activeAdmin = true;
@@ -75,8 +79,9 @@ var Navigation = React.createClass({
                       <NavItem eventKey={1} active={activeRota} href="/rota/me">My Rota</NavItem>
                       <NavItem eventKey={2} active={activePeople} href="/rota/people">People</NavItem>
                       <NavItem eventKey={3} active={activeEvents} href="/rota/events">Events</NavItem>
+                      <NavItem eventKey={4} active={activeRunsheets} href="/rota/runsheets">Run Sheets</NavItem>
                       {this.renderAdmin(activeAdmin)}
-                      <NavItem eventKey={5} href="https://accounts.google.com">{this.state.user.name}</NavItem>
+                      <NavItem eventKey={9} href="https://accounts.google.com">{this.state.user.name}</NavItem>
                   </Nav>
               </NavbarCollapse>
           </Navbar>

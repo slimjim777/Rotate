@@ -7,8 +7,10 @@ from flask import request
 from flask import abort
 from flask import session
 from sqlalchemy import or_
+import json
 
 from schedule.model.query import FastQuery
+from schedule.model.query_runsheet import QueryRunsheet
 from schedule import app
 from schedule import db
 from schedule.model.event import Event
@@ -64,7 +66,11 @@ def admin():
     else:
         rows = Event.query.filter(Event.active.op('IS NOT')(True))
 
-    return render_template('admin.html', rows=rows, status=status)
+    parent_events = Event.query.filter_by(
+        active=True, parent_event=None).order_by(Event.name)
+
+    return render_template(
+        'admin.html', rows=rows, status=status, parent_events=parent_events)
 
 
 @app.route("/admin/event/new", methods=['POST'])
@@ -88,6 +94,8 @@ def admin_event_new():
         event.day_fri = request.form.get('day_fri')
         event.day_sat = request.form.get('day_sat')
         event.day_sun = request.form.get('day_sun')
+        if len(request.form.get('parent_event')) > 0:
+            event.parent_event = int(request.form.get('parent_event'))
         db.session.add(event)
         db.session.commit()
         return jsonify({'response': 'Success'})
@@ -119,6 +127,8 @@ def admin_event_update(event_id):
         event.day_fri = request.form.get('day_fri')
         event.day_sat = request.form.get('day_sat')
         event.day_sun = request.form.get('day_sun')
+        if len(request.form.get('parent_event')) > 0:
+            event.parent_event = int(request.form.get('parent_event'))
         db.session.add(event)
         db.session.commit()
         return jsonify({'response': 'Success'})
@@ -616,3 +626,137 @@ def api_event_role_delete(event_id, role_id):
         return jsonify({'response': 'Success'})
     except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/events/runsheets", methods=['GET'])
+@login_required
+def api_runsheets():
+    try:
+        from_date, to_date = FastQuery.date_range(
+            request.args.get('range', 12))
+        sheets = QueryRunsheet.runsheets(from_date, to_date)
+        return jsonify({'response': 'Success', 'sheets': sheets})
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/events/<int:event_id>/runsheets", methods=['GET'])
+@login_required
+def api_runsheet_events(event_id):
+    """
+    Get the rotas linked to a runsheet.
+    """
+    try:
+        events = QueryRunsheet.runsheet_events(event_id)
+        return jsonify({'response': 'Success', 'events': events})
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/events/<int:event_id>/<on_date>/runsheet", methods=['GET'])
+@login_required
+def api_runsheet(event_id, on_date):
+    try:
+        sheet = QueryRunsheet.runsheet(event_id, on_date)
+        return jsonify({'response': 'Success', 'runsheet': sheet})
+    except Exception as v:
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/events/<int:event_id>/<on_date>/runsheet", methods=['POST'])
+@login_required
+def api_event_runsheet(event_id, on_date):
+    """
+    Update the runsheet as a JSON string.
+    """
+    runsheet = request.json.get('runsheet')
+
+    QueryRunsheet.update_event_date_runsheet(
+        event_id, on_date, json.dumps(runsheet))
+    return jsonify({'response': 'Success'})
+
+
+@app.route(
+    "/api/events/<int:event_id>/<on_date>/runsheet_notes", methods=['POST'])
+@login_required
+def api_event_runsheet_notes(event_id, on_date):
+    """
+    Update the runsheet notes as a JSON string.
+    """
+    runsheet_notes = request.json.get('runsheet_notes')
+
+    QueryRunsheet.update_event_date_runsheet_notes(
+        event_id, on_date, json.dumps(runsheet_notes))
+    return jsonify({'response': 'Success'})
+
+
+@app.route("/api/events/runsheet_templates", methods=['GET'])
+@login_required
+def api_event_runsheet_templates():
+    """
+    Get the runsheet templates for all events.
+    """
+    templates = QueryRunsheet.runsheet_templates()
+    return jsonify({'response': 'Success', 'templates': templates})
+
+
+@app.route("/api/events/runsheet_templates", methods=['POST'])
+@login_required
+def api_event_runsheet_templates_new():
+    """
+    Create a new runsheet template
+    """
+    try:
+
+        template_id = QueryRunsheet.create_template(
+            request.json.get('name'), request.json.get('event_id'))
+        return jsonify({'response': 'Success', 'template_id': template_id})
+    except Exception as v:
+        print(str(v))
+        return jsonify({'response': 'Error', 'message': str(v)})
+
+
+@app.route("/api/events/parent_events", methods=['GET'])
+@login_required
+def api_event_parent_events():
+    """
+    Get all the parent_events.
+    """
+    events = QueryRunsheet.parent_events()
+    return jsonify({'response': 'Success', 'events': events})
+
+
+@app.route("/api/events/runsheet_templates/<int:template_id>", methods=['GET'])
+@login_required
+def api_event_runsheet_template_get(template_id):
+    template = QueryRunsheet.get_template_by_id(template_id)
+    return jsonify(
+        {'response': 'Success', 'template': template})
+
+
+@app.route("/api/events/runsheet_templates/<int:template_id>", methods=['PUT'])
+@login_required
+def api_event_runsheet_template_update(template_id):
+    template = request.json.get('template')
+    if template.get('runsheet'):
+        runsheet = json.dumps(template.get('runsheet'))
+    else:
+        runsheet = None
+    if template.get('notes'):
+        notes = json.dumps(template.get('notes'))
+    else:
+        notes = None
+
+    template = QueryRunsheet.update_template(
+        template_id, template['name'], template['event_id'], runsheet, notes)
+    return jsonify(
+        {'response': 'Success', 'template': template})
+
+
+@app.route("/api/events/<int:event_id>/runsheet_templates", methods=['GET'])
+@login_required
+def api_event_templates(event_id):
+    templates = QueryRunsheet.templates_for_event(event_id)
+    print(templates)
+    return jsonify(
+        {'response': 'Success', 'templates': templates})

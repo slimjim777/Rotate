@@ -122,6 +122,13 @@ select.role-select {
  	background-color: #2f9966;
  	color: white;
  }
+ .btn-default{
+  background-color: #fff;
+  color: #2f9966;
+ }
+ .btn-default .glyphicon{
+  color: #2f9966;
+ }
  .btn:hover {
  	background-color: #a5bfb2;
  	color: white;

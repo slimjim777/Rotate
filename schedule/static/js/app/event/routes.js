@@ -76,7 +76,6 @@ App.EventOverviewRoute = Ember.Route.extend({
         controller.getPermissions();
 
         if (!model.event_dates) {
-            console.log('No Dates');
             this.refresh();
         }
     }

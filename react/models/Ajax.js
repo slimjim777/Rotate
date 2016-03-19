@@ -4,9 +4,10 @@ var request =require('then-request');
 
 // Wrapper for API calls to add the authorization header
 var Ajax = {
-    get: function(url) {
+    get: function(url, data) {
         return request('GET', url, {
-            headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('token')}
+            headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('token')},
+            qs: data
         });
     },
 
