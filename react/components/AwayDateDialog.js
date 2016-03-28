@@ -3,7 +3,7 @@ var React = require('react');
 var Panel = require("react-bootstrap").Panel;
 var Modal = require("react-bootstrap").Modal;
 var Button = require("react-bootstrap").Button;
-var Pikaday = require('react-pikaday');
+import Pikaday from 'react-pikaday';
 var moment = require('moment');
 
 
@@ -60,8 +60,8 @@ var AwayDateDialog = React.createClass({
             </div>
 
             <Modal.Footer>
-              <Button onClick={this.props.onClickCancel}>Cancel</Button>
               <Button onClick={this.handleSave} bsStyle="primary">Save</Button>
+              <Button onClick={this.props.onClickCancel}>Cancel</Button>
             </Modal.Footer>
           </Modal.Body>
         </Modal.Dialog>
