@@ -244,6 +244,7 @@ var Runsheet = React.createClass({
                     <label>Date</label>
                     <div>
                       <a href={'/rota/events/' + sheet.event_id + '/' + sheet.on_date} title="View Event Date">{moment(sheet.on_date).format('DD/MM/YYYY')}</a>
+                      &nbsp;(<a href={'/rota/events/' + sheet.event_id + '/overview'} title="View Event Overview">Overview</a>)
                     </div>
                 </div>
                 <div>

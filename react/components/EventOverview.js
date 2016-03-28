@@ -289,6 +289,8 @@ var EventOverview = React.createClass({
                                         <td>{r.notes}</td>
                                         <td>
                                           {r.url ? <a href={r.url} >Run Sheet {moment(r.on_date).format('DD MMM')}</a> : ''}
+                                          <a href={'/rota/events/'.concat(model.id, '/', moment(r.on_date).format('YYYY-MM-DD'), '/runsheet')}
+                                            className="btn btn-default">View</a>
                                         </td>
                                         {self.state.roles.map(function (rl) {
                                             var role = r.roles[rl.id];

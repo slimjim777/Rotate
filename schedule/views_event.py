@@ -712,7 +712,6 @@ def api_event_runsheet_templates_new():
             request.json.get('name'), request.json.get('event_id'))
         return jsonify({'response': 'Success', 'template_id': template_id})
     except Exception as v:
-        print(str(v))
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -757,6 +756,5 @@ def api_event_runsheet_template_update(template_id):
 @login_required
 def api_event_templates(event_id):
     templates = QueryRunsheet.templates_for_event(event_id)
-    print(templates)
     return jsonify(
         {'response': 'Success', 'templates': templates})
