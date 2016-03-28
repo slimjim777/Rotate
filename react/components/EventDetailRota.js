@@ -1,16 +1,24 @@
 'use strict';
 var React = require('react');
 var moment = require('moment');
+var EventDateRunsheet = require('../components/EventDateRunsheet');
 
 
 var EventDetailRota = React.createClass({
+    getInitialState: function() {
+      return {showRunsheet: false};
+    },
+
+    toggleRunsheet: function() {
+      this.setState({showRunsheet: !this.state.showRunsheet});
+    },
 
     renderActions: function() {
         if (this.props.canAdministrate) {
             return (
                 <span>
                     <button className="btn btn-primary" onClick={this.props.toggleEdit}>Edit</button>&nbsp;
-                    <button className="btn btn-default" onClick={this.props.handleDelete} title = "Delete event date" >
+                    <button className="btn btn-default" onClick={this.props.handleDelete} title="Delete event date" >
                       <span className="glyphicon glyphicon-remove" onClick={this.props.handleDelete}></span>
                     </button>
                 </span>
@@ -18,14 +26,29 @@ var EventDetailRota = React.createClass({
         }
     },
 
-    renderRunSheet: function(summary) {
+    renderRunSheetLink: function(summary) {
         if (summary.url) {
             return (
                 <a href={summary.url}>
-                    Run Sheet on {moment(summary.on_date).format('DD/MM/YYYY')}
+                    external link for {moment(summary.on_date).format('DD/MM/YYYY')}
                 </a>
             );
         }
+    },
+
+    renderViewRunsheetButton: function() {
+      var summary = this.props.summary;
+      var model = this.props.model;
+      var eventId;
+      // Link to the parent event, if there is one
+      if (this.props.model.parent_event) {
+        eventId = this.props.model.parent_event;
+      } else {
+        eventId = this.props.model.id;
+      }
+      return (
+        <a className="btn btn-primary" href={'/rota/events/'.concat(eventId, '/', summary.on_date, '/runsheet')}>View</a>
+      )
     },
 
     renderName: function(r) {
@@ -48,8 +71,17 @@ var EventDetailRota = React.createClass({
       }
     },
 
+    renderRunSheet: function(model, summary) {
+      if (this.state.showRunsheet) {
+        return (
+          <EventDateRunsheet model={model} summary={summary} canAdministrate={this.props.canAdministrate} />
+        );
+      }
+    },
+
     render: function () {
         var summary = this.props.summary;
+        var model = this.props.model;
         var rota = this.props.rota;
 
         if (!this.props.onDate) {
@@ -78,8 +110,9 @@ var EventDetailRota = React.createClass({
                             <div>{summary.notes}</div>
                         </div>
                         <div>
-                            <label>Run Sheet</label>
-                            <div>{this.renderRunSheet(summary)}</div>
+                            <label>Run Sheet</label>&nbsp;
+                            <span>{this.renderRunSheetLink(summary)}&nbsp;{this.renderViewRunsheetButton()}</span>
+                            {this.renderRunSheet(model, summary)}
                         </div>
                         <table className="table table-striped">
                             <thead>

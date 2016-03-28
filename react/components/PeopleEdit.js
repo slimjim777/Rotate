@@ -17,7 +17,6 @@ var PeopleEdit = React.createClass({
         // Get the person details
         Person.findById(personId).then(function(response) {
             var data = JSON.parse(response.body);
-            console.log(data);
             self.setState({person: data.person});
         });
     },

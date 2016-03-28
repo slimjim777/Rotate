@@ -73,7 +73,7 @@ function event_date_edit_cancel(ev, eventdate_id) {
 // Save the updated event date
 function event_date_edit_save(ev, event_id, eventdate_id) {
     ev.preventDefault();
-    
+
     // Get the details of the updated fields from the form
     var data = {};
     $('#ededit' + eventdate_id + ' select.roles option:selected').each(function (index) {
@@ -635,6 +635,7 @@ function showEventDialogEdit(ev, eventId) {
             $('#d-day_sat').prop("checked", data.event.day_sat);
             $('#d-day_sun').prop("checked", data.event.day_sun);
             $('#dialog-form').modal('show');
+            $('#d-parent_event').val(data.event.parent_event);
         } else {
             showMessage(data.message);
         }

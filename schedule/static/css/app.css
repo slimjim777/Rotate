@@ -137,6 +137,10 @@ table.rota {
  	background-color: #2f9966;
  	color: white;
  }
+ .btn-default{
+  background-color: #fff;
+  color: #2f9966;
+ }
  .btn:hover {
  	background-color: #a5bfb2;
  	color: white;
@@ -248,3 +252,9 @@ table.rota {
  .table-striped, .table-striped th {
  	text-align: center;
  }
+
+@media print {
+  button {
+    display: None;
+  }
+}

@@ -58,6 +58,50 @@ var EventModel = {
         return Ajax.post(this.url() + '/' + eventId + '/upsert', eventDate);
     },
 
+    runsheet: function(eventId, onDate) {
+        return Ajax.get(this.url() + '/' + eventId + '/' + onDate + '/runsheet');
+    },
+
+    runsheets: function(range) {
+        return Ajax.get(this.url() + '/runsheets', {range: range});
+    },
+
+    runsheetEvents: function(event_id) {
+        return Ajax.get(this.url() + '/' + event_id + '/runsheets');
+    },
+
+    runsheetParentEvents: function() {
+        return Ajax.get(this.url() + '/parent_events');
+    },
+
+    runsheetTemplates: function(range) {
+        return Ajax.get(this.url() + '/runsheet_templates');
+    },
+
+    runsheetTemplateCreate: function(name, event_id) {
+        return Ajax.post(this.url() + '/runsheet_templates', {name: name, event_id: event_id});
+    },
+
+    runsheetTemplate: function(templateId) {
+        return Ajax.get(this.url() + '/runsheet_templates/' + templateId);
+    },
+
+    runsheetTemplateUpdate: function(templateId, template) {
+        return Ajax.put(this.url() + '/runsheet_templates/' + templateId, {template: template});
+    },
+
+    runsheetTemplatesForEvent: function(eventId) {
+        return Ajax.get(this.url() + '/' + eventId + '/runsheet_templates');
+    },
+
+    updateRunsheet: function(eventId, on_date, runsheet) {
+      return Ajax.post(this.url() + '/' + eventId + '/' + on_date + '/runsheet', {runsheet: runsheet});
+    },
+
+    updateRunsheetNotes: function(eventId, on_date, notes) {
+      return Ajax.post(this.url() + '/' + eventId + '/' + on_date + '/runsheet_notes', {runsheet_notes: notes});
+    },
+
     addDate: function(eventId, eventDate) {
       return Ajax.post(this.url() + '/' + eventId + '/add_date', {on_date: eventDate});
     },
@@ -65,6 +109,8 @@ var EventModel = {
     deleteDate: function(eventId, eventDate) {
       return Ajax.delete(this.url() + '/' + eventId + '/' + eventDate);
     }
+
+
 };
 
 module.exports = EventModel;

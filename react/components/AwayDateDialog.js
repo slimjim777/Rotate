@@ -60,8 +60,8 @@ var AwayDateDialog = React.createClass({
             </div>
 
             <Modal.Footer>
-              <Button onClick={this.props.onClickCancel}>Cancel</Button>
               <Button onClick={this.handleSave} bsStyle="primary">Save</Button>
+              <Button onClick={this.props.onClickCancel}>Cancel</Button>
             </Modal.Footer>
           </Modal.Body>
         </Modal.Dialog>
