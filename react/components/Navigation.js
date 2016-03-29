@@ -9,6 +9,10 @@ var NavbarToggle = require("react-bootstrap/lib/NavbarToggle")
 var NavItem = require('react-bootstrap').NavItem;
 var Person = require('../models/person');
 
+const ROLE_SETLIST = 'set-list'
+const ROLE_STANDARD = 'standard'
+const ROLE_ADMIN = 'admin'
+
 
 var Navigation = React.createClass({
     getInitialState: function() {
@@ -47,7 +51,7 @@ var Navigation = React.createClass({
     },
 
     renderMusicSongs: function(activeSongs) {
-      if (this.state.user.music_role) {
+      if ((this.state.user.music_role === ROLE_STANDARD) || (this.state.user.music_role === ROLE_ADMIN)) {
         return (
           <NavItem eventKey={5} active={activeSongs} href="/rota/songs">Songs</NavItem>
         );

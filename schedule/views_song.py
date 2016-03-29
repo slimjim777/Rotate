@@ -4,11 +4,20 @@ from schedule import app
 from flask import request
 from flask import jsonify
 from flask import session
+from flask import abort
+
+ROLE_SETLIST = 'set-list'
+ROLE_STANDARD = 'standard'
+ROLE_ADMIN = 'admin'
+SONG_ROLES = [ROLE_SETLIST, ROLE_STANDARD, ROLE_ADMIN]
 
 
 @app.route('/api/songs', methods=['POST'])
 @login_required
 def api_song_list():
+    if session['music_role'] not in [ROLE_STANDARD, ROLE_ADMIN]:
+        abort(403)
+
     active = request.json.get('active')
     songs = SongQuery.songs(active)
     return jsonify({'response': 'Success', 'songs': songs})
@@ -17,6 +26,9 @@ def api_song_list():
 @app.route('/api/songs/<int:song_id>', methods=['GET'])
 @login_required
 def api_song_get(song_id):
+    if session['music_role'] not in [ROLE_STANDARD, ROLE_ADMIN]:
+        abort(403)
+
     song = SongQuery.song(song_id)
     return jsonify({'response': 'Success', 'song': song})
 
@@ -24,7 +36,7 @@ def api_song_get(song_id):
 @app.route('/api/songs/<int:song_id>', methods=['PUT'])
 @login_required
 def api_song_update(song_id):
-    if session['music_role'] != 'admin':
+    if session['music_role'] not in [ROLE_STANDARD, ROLE_ADMIN]:
         abort(403)
 
     try:
@@ -39,16 +51,17 @@ def api_song_update(song_id):
 @app.route('/api/songs/<int:song_id>/attachments', methods=['GET'])
 @login_required
 def api_song_attachments(song_id):
-    if session['music_role'] != 'admin':
+    if session['music_role'] not in [ROLE_STANDARD, ROLE_ADMIN]:
         abort(403)
 
     attachments = SongQuery.song_attachments(song_id)
     return jsonify({'response': 'Success', 'attachments': attachments})
 
+
 @app.route('/api/songs/<int:song_id>/attachments', methods=['POST'])
 @login_required
 def api_song_attachments_add(song_id):
-    if session['music_role'] != 'admin':
+    if session['music_role'] != ROLE_ADMIN:
         abort(403)
 
     try:
@@ -60,10 +73,12 @@ def api_song_attachments_add(song_id):
     except Exception as v:
         return jsonify({'response': 'Error', 'message': str(v)})
 
-@app.route('/api/songs/<int:song_id>/attachments/<int:att_id>', methods=['DELETE'])
+
+@app.route(
+    '/api/songs/<int:song_id>/attachments/<int:att_id>', methods=['DELETE'])
 @login_required
 def api_song_attachments_delete(song_id, att_id):
-    if session['music_role'] != 'admin':
+    if session['music_role'] != ROLE_ADMIN:
         abort(403)
 
     try:
