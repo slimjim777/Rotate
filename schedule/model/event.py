@@ -45,6 +45,7 @@ class Event(db.Model):
     event_admins = db.relationship(
         'Person', secondary=event_admins,
         backref=db.backref('event_ref', lazy='joined'))
+    parent_event = db.Column(db.Integer)
 
     def __init__(self, name):
         self.name = name

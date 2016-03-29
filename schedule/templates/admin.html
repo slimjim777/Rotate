@@ -79,7 +79,15 @@
                     T<input type="checkbox" name="day_thu" id="d-day_thu" />
                     F<input type="checkbox" name="day_fri" id="d-day_fri" />
                     S<input type="checkbox" name="day_sat" id="d-day_sat" />
-                    S<input type="checkbox" name="day_sun" id="d-day_sun" />
+                    S<input type="checkbox" name="day_sun" id="d-day_sun" /><br />
+
+                    <label for="d-parent_event">Parent Event (which holds the runsheet)</label>
+                    <select id="d-parent_event" name="parent_event" class="form-control">
+                      <option value="">-- This Event --</option>
+                      {% for p in parent_events %}
+                      <option value="{{p.id}}">{{p.name}}</option>
+                      {% endfor %}
+                    </select>
                   </fieldset>
               </form>
           </div>

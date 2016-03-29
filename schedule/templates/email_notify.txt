@@ -11,9 +11,7 @@ A friendly reminder that you are on rota:
 
 {% if rota.person_away %}You have indicated that you are away, so please make sure that you have made arrangements for cover.{% endif %}
 {% endfor %}
-You can check the rota at {{url_root}}rota#/people/me.
+You can check the rota at {{url_root}}rota/me.
 
 --
-This is an automated email sent from the Life Church Rota Robot.
-
-
+This is an automated email sent from the Rota Robot. Please do not reply.

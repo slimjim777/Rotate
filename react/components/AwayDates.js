@@ -101,7 +101,7 @@ var AwayDates = React.createClass({
 
     renderAwayDateDialog: function() {
       if (this.state.showModal) {
-        return (<AwayDateDialog awayId={this.state.away.id} fromDate={this.state.away.fromDate} toDate={this.state.away.toDate}
+        return (<AwayDateDialog awayId={this.state.away.id}
                   title={this.state.away.title} message={this.state.away.message}
                   fromDate={this.state.away.from_date} toDate={this.state.away.to_date}
                   onClickSave={this.handleAwaySave} onClickCancel={this.handleAwayCancel}/>);

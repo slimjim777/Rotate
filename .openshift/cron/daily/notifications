@@ -1,0 +1,7 @@
+#!/bin/sh
+
+date > $OPENSHIFT_LOG_DIR/last_date_cron_ran
+
+cd $OPENSHIFT_REPO_DIR
+
+python notifications.py

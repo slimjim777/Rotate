@@ -24,6 +24,7 @@ DAY_OF_WEEK = {
     'day_sun': 6,
 }
 
+
 class FastQuery(object):
     """
     Faster database queries by bypassing SQLAlchemy and going direct to the
@@ -95,25 +96,52 @@ class FastQuery(object):
             if from_d.weekday() == 0:
                 current_date = from_d
             else:
-                current_date = from_d - datetime.timedelta(days=from_d.weekday())
+                current_date = from_d - datetime.timedelta(
+                    days=from_d.weekday())
         elif e['frequency'] == 'monthly':
-            pass
+            current_date = datetime.datetime.strptime(from_date, '%Y-%m-%d')
 
         rota_dates = []
+        actual_dates = FastQuery.event_dates(event_id, from_date, to_date)
         while len(rota_dates) < 12:
             for day, value in DAY_OF_WEEK.items():
                 if e[day]:
                     on_date = current_date + datetime.timedelta(days=value)
                     rota_dates.append({
-                        'id': len(rota_dates), # fake event date ID
+                        'id': len(rota_dates),  # fake event date ID
                         'event_id': e['id'],
-                        'on_date': datetime.datetime.strftime(on_date, '%Y-%m-%d'),
+                        'on_date': datetime.datetime.strftime(
+                            on_date, '%Y-%m-%d'),
                     })
             if e['frequency'] == 'monthly':
                 current_date += datetime.timedelta(months=1)
             else:
                 current_date += datetime.timedelta(weeks=1)
-        return rota_dates
+
+        if len(actual_dates) == 0:
+            return rota_dates
+
+        display_dates = []
+        for index, ed in enumerate(actual_dates):
+            if len(rota_dates) > 0:
+                for rd in rota_dates:
+                    if ed['on_date'] == rota_dates[0]['on_date']:
+                        # Skip this date
+                        rota_dates.pop(0)
+
+                    if len(rota_dates) > 0 and \
+                       ed['on_date'] > rota_dates[0]['on_date']:
+                        # Missing a date, so add it
+                        this_date = rota_dates.pop(0)
+                        this_date['id'] = 99999 + index
+                        display_dates.append(this_date)
+                    else:
+                        display_dates.append(ed)
+                        break
+            else:
+                display_dates.append(ed)
+
+        return display_dates
 
     @staticmethod
     def event_date(event_date_id):
@@ -133,17 +161,27 @@ class FastQuery(object):
     @staticmethod
     def event_date_ondate(event_id, on_date):
         start = time.time()
-        sql = "select * from event_date where event_id=:event_id and on_date=:on_date"
+        sql = """select ed.*, e.name event_name from event_date ed
+            inner join event e on e.id=ed.event_id
+            where event_id=:event_id and on_date=:on_date"""
         params = {
             'event_id': event_id, 'on_date': on_date
         }
         row = db.session.execute(sql, params)
         ev_date = row.fetchone()
         if not ev_date:
-            return {
-                'event_id': event_id,
-                'on_date': on_date
-            }
+            try:
+                event = FastQuery.event(event_id)
+                return {
+                    'event_name': event['name'],
+                    'event_id': event_id,
+                    'on_date': on_date
+                }
+            except:
+                return {
+                    'event_id': event_id,
+                    'on_date': on_date
+                }
 
         app.logger.debug('Event Date: %s' % (time.time() - start))
         return FastQuery.event_date_to_dict(ev_date)
@@ -163,7 +201,7 @@ class FastQuery(object):
 
         # Reformat the details
         #event_date = {summary:e, roles: roles, rota: rota}
-        event_date = {"summary":e, "roles": roles, "rota": rota}
+        event_date = {"summary": e, "roles": roles, "rota": rota}
 
         # Pivot roles by sequence
         rroles = {}
@@ -176,7 +214,7 @@ class FastQuery(object):
 
         # Convert to an array
         role_array = []
-        for key,value in sorted(rroles.items()):
+        for key, value in sorted(rroles.items()):
             role_list = value
             role_name = ''
             role_id = None
@@ -867,6 +905,40 @@ class FastQuery(object):
         db.session.commit()
 
     @staticmethod
+    def upsert_event_date_add(event_id, on_date):
+        sql = """WITH upsert AS (
+            update event_date set on_date=:on_date
+            where event_id=:event_id and on_date=:on_date RETURNING *)
+            insert into event_date (event_id,on_date)
+            select :event_id,:on_date
+            WHERE NOT EXISTS (SELECT * from upsert)"""
+        data = {
+            'event_id': event_id, 'on_date': on_date
+        }
+
+        rows = db.session.execute(sql, data)
+        db.session.commit()
+
+    @staticmethod
+    def event_date_delete(event_id, on_date):
+        sql_rota = """
+            delete from rota
+            where event_date_id in (
+                select id from event_date
+                where event_id=:event_id and on_date=:on_date
+            )
+        """
+        sql_date = """delete from event_date
+                 where event_id=:event_id and on_date=:on_date"""
+        data = {
+            'event_id': event_id, 'on_date': on_date
+        }
+
+        db.session.execute(sql_rota, data)
+        db.session.execute(sql_date, data)
+        db.session.commit()
+
+    @staticmethod
     def _rota_for_event_date(event_date_id, role_id):
         sql = "select * from rota where event_date_id=:ed and role_id=:r"
         rows = db.session.execute(
@@ -994,6 +1066,7 @@ class FastQuery(object):
         event = FastQuery.event(event_id)
         roles = FastQuery.event_roles(event_id)
         records = FastQuery._event_rota(event_id, from_date, to_date)
+        actual_dates = FastQuery.event_dates(event_id, from_date, to_date)
 
         # Get the frequency
         frequency = 'weeks'
@@ -1011,19 +1084,48 @@ class FastQuery(object):
             current_date = from_d - datetime.timedelta(days=from_d.weekday())
 
         rota_dates = []
-        while current_date.strftime('%Y-%m-%d') < to_date:
-            rota_for_date = {}
-            if frequency == 'weeks':
+        if frequency != 'irregular':
+            while current_date.strftime('%Y-%m-%d') < to_date:
+                rota_for_date = {}
                 for key, value in DAY_OF_WEEK.items():
                     if event[key]:
                         day = current_date + datetime.timedelta(days=value)
-                        rota_for_date = FastQuery._check_rota_for_date(
-                            day.strftime('%Y-%m-%d'), records, roles)
-                        rota_dates.append(rota_for_date)
+                        rota_dates.append(day.strftime('%Y-%m-%d'))
 
-            # Increment the current date
-            current_date = current_date + datetime.timedelta(weeks=1)
-        return rota_dates
+                # Increment the current date
+                if frequency == 'monthly':
+                    current_date += datetime.timedelta(months=1)
+                else:
+                    current_date += datetime.timedelta(weeks=1)
+
+        merged_dates = []
+        if len(actual_dates) == 0:
+            merged_dates = rota_dates
+
+        for ed in actual_dates:
+            if len(rota_dates) > 0:
+                for rd in rota_dates:
+                    if ed['on_date'] == rota_dates[0]:
+                        # Skip this date
+                        rota_dates.pop(0)
+
+                    if len(rota_dates) > 0 and ed['on_date'] > rota_dates[0]:
+                        # Missing a date, so add it
+                        this_date = rota_dates.pop(0)
+                        merged_dates.append(this_date)
+                    else:
+                        merged_dates.append(ed['on_date'])
+                        break
+            else:
+                merged_dates.append(ed['on_date'])
+
+        # We have the dates we need, get the rota for each date
+        display_rota = []
+        for d in merged_dates:
+            rota_for_date = FastQuery._check_rota_for_date(d, records, roles)
+            display_rota.append(rota_for_date)
+
+        return display_rota
 
     @staticmethod
     def _check_rota_for_date(current_date, records, roles):
@@ -1048,7 +1150,6 @@ class FastQuery(object):
                 event_detail['roles'][role['id']] = {}
 
         return event_detail
-
 
     @staticmethod
     def _event_rota(event_id, from_date, to_date):
@@ -1077,7 +1178,7 @@ class FastQuery(object):
         rotas = []
         rows = db.session.execute(
             sql, {'event_id': event_id, 'from_date': from_date,
-                'to_date': to_date})
+                  'to_date': to_date})
 
         for row in rows.fetchall():
             r = dict(row)

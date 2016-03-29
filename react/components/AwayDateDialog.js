@@ -1,9 +1,7 @@
 'use strict';
 var React = require('react');
-var Panel = require("react-bootstrap").Panel;
-var Modal = require("react-bootstrap").Modal;
 var Button = require("react-bootstrap").Button;
-var Pikaday = require('react-pikaday');
+import Pikaday from 'react-pikaday';
 var moment = require('moment');
 
 
@@ -42,12 +40,11 @@ var AwayDateDialog = React.createClass({
 
   render: function() {
     return (
-      <div>
-        <Modal.Dialog>
-          <Modal.Header>
-              <Modal.Title>{this.props.title}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
+      <div className="panel panel-info">
+        <div className="panel-heading">
+          {this.props.title}
+        </div>
+        <div className="panel-body">
             <div>
               {this.renderMessage()}
               <p><em>Click the date entry box to select a date.</em></p>
@@ -59,12 +56,11 @@ var AwayDateDialog = React.createClass({
               <Pikaday value={this.state.toDate} onChange={this.handleChangeToDate} />
             </div>
 
-            <Modal.Footer>
-              <Button onClick={this.props.onClickCancel}>Cancel</Button>
+            <div>
               <Button onClick={this.handleSave} bsStyle="primary">Save</Button>
-            </Modal.Footer>
-          </Modal.Body>
-        </Modal.Dialog>
+              <Button onClick={this.props.onClickCancel}>Cancel</Button>
+            </div>
+        </div>
       </div>
     )
   }
