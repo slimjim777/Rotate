@@ -1,12 +1,13 @@
 'use strict';
 var React = require('react');
 var Song = require('../models/song');
+var Alert = require('react-bootstrap').Alert;
 
 
 var SongEdit = React.createClass({
 
   getInitialState: function() {
-      return {song: this.props.song}
+      return {song: this.props.song, message: null}
   },
 
   updateState: function(attribute, value) {
@@ -36,20 +37,62 @@ var SongEdit = React.createClass({
   handleSubmit: function(e) {
       e.preventDefault();
       var self = this;
-      Song.update(this.state.song).then(function(response) {
-          window.location.href = '/rota/songs/'.concat(self.state.song.id);
-      });
+      if (this.state.song.id) {
+        Song.update(this.state.song).then(function(response) {
+            window.location.href = '/rota/songs/'.concat(self.state.song.id);
+        });
+      } else {
+        Song.add(this.state.song).then(function(response) {
+            var data = JSON.parse(response.body);
+            if (data.response === 'Success') {
+              window.location.href = '/rota/songs/'.concat(data.song.id);
+            } else {
+              self.setState({message: data.message});
+            }
+        });
+      }
+  },
+
+  renderTitle: function() {
+    if (this.state.song.id) {
+      return ('Edit Song: ' + this.state.song.name);
+    } else {
+      return ('New Song');
+    }
+  },
+
+  renderCancelLink: function() {
+    if (this.state.song.id) {
+      return (
+        <a href={"/rota/songs/".concat(this.state.song.id)}>Cancel</a>
+      );
+    } else {
+      return (
+        <a href={"/rota/songs"}>Cancel</a>
+      );
+    }
+  },
+
+  renderAlert: function() {
+    if (this.state.message) {
+      return (
+        <Alert bsStyle={'danger'} onDismiss={this.handleAlertDismiss}>
+          {this.state.message}
+        </Alert>
+      );
+    }
   },
 
   render: function() {
     return (
         <div className="container-fluid" role="main">
             <h3 className="sub-heading">
-                Edit Song: {this.state.song.name}
+              {this.renderTitle()}
             </h3>
 
             <div className="panel panel-default">
                 <div className="panel-body">
+                    {this.renderAlert()}
                     <form role="form">
                       <div className="form-group">
                           <label>Name</label>
@@ -68,7 +111,7 @@ var SongEdit = React.createClass({
                       </div>
                       <div className="form-group">
                           <label>Tempo</label>
-                          <input type="number" value={this.state.song.tempo} className="form-control"
+                          <input type="number" min="0" max="300" value={this.state.song.tempo} className="form-control"
                                  onChange={this.handleTempoChange} />
                       </div>
                       <div className="form-group">
@@ -85,7 +128,7 @@ var SongEdit = React.createClass({
                 </div>
                 <div className="panel-footer">
                     <button onClick={this.handleSubmit} className="btn btn-primary">Save</button>&nbsp;
-                    <a href={"/rota/songs/".concat(this.state.song.id)}>Cancel</a>
+                    {this.renderCancelLink()}
                 </div>
             </div>
         </div>

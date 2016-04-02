@@ -42,16 +42,20 @@ var Song = React.createClass({
 
     getSong: function(songId) {
       var self = this;
-
-      SongModel.findById(songId).then(function(response) {
-          var data = JSON.parse(response.body);
-          self.setState({song: data.song});
-      });
+      if (songId === 'new') {
+        this.setState({song: {active: true}, isEditing: true});
+      } else {
+        SongModel.findById(songId).then(function(response) {
+            var data = JSON.parse(response.body);
+            self.setState({song: data.song});
+        });
+      }
     },
 
     getAttachments: function(songId) {
-      var self = this;
+      if (songId === 'new') { return };
 
+      var self = this;
       SongModel.attachments(songId).then(function(response) {
           var data = JSON.parse(response.body);
           self.setState({attachments: data.attachments});

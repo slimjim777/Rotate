@@ -139,6 +139,15 @@ select.role-select {
      background-color: #a5bfb2;
  }
 
+ .btn-info {
+   background-color: #5bc0de;
+   border-color: #46b8da;
+ }
+ .btn-default-info{
+  background-color: #fff;
+  color: #5bc0de;
+ }
+
  .btn-danger {
  	border-color: #d43f3a;
     background-color: #c9302c;
@@ -244,4 +253,8 @@ select.role-select {
 
 .left-align, th.left-align {
     text-align: left;
+}
+
+.inline-panel {
+  padding: 16px;
 }

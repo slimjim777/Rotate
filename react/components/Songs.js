@@ -2,7 +2,9 @@
 var React = require('react');
 var Navigation = require('../components/Navigation');
 var SongList = require('../components/SongList');
+var Person = require('../models/person');
 var Song = require('../models/song');
+var Utils = require('../models/utils');
 
 
 var Songs = React.createClass({
@@ -12,6 +14,8 @@ var Songs = React.createClass({
 
   componentDidMount: function () {
       var self = this;
+
+      this.getPermissions();
 
       // Get the songs
       self.getSongs();
@@ -27,25 +31,50 @@ var Songs = React.createClass({
       });
   },
 
+  getPermissions: function () {
+      var self = this;
+      Person.permissions().then(function(response) {
+          var user = JSON.parse(response.body).permissions;
+          self.setState({user: user});
+      });
+  },
+
+  canAdministrate: function() {
+    if (!this.state.user) {
+        return false;
+    }
+    if (this.state.user.music_role === 'admin') {
+        return true;
+    }
+    return false;
+  },
+
   handleFilterChange: function (name, status) {
       var self = this;
       var songs = this.state.songs.filter(function(p) {
           if (!self.contains(p.name, name)) {
               return false;
           }
-          // if ((status === 'active') && (!p.active)) {
-          //     return false;
-          // }
           return !((status === 'inactive') && (p.active));
       });
       this.setState({songsFiltered: songs});
+  },
+
+  renderActions: function() {
+    if (this.canAdministrate()) {
+      return (
+        <a className="btn btn-primary" href="/rota/songs/new" title="Add new song">
+          <span className="glyphicon glyphicon-plus" title="Add new song"></span>
+        </a>
+      );
+    }
   },
 
   render: function () {
     return (
         <div id="main" className="container-fluid" role="main">
             <Navigation active="songs" />
-            <h2>Songs</h2>
+            <h2>Songs {this.renderActions()}</h2>
 
             <SongList songs={this.state.songs} onFilterChange={this.handleFilterChange} />
 

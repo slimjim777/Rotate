@@ -37,6 +37,25 @@ class SongQuery(object):
         return dict(s)
 
     @staticmethod
+    def song_new(song):
+        sql = """
+            insert into song
+            (name, active, url, tempo, time_signature)
+            values (:name, :active, :url, :tempo, :time_signature)
+            RETURNING id
+        """
+        data = {
+            'name': song.get('name'), 'active': True, 'url': song.get('url'),
+            'tempo': song.get('tempo'),
+            'time_signature': song.get('time_signature')
+        }
+
+        rows = db.session.execute(sql, data)
+        song_id = rows.fetchone()[0]
+        db.session.commit()
+        return SongQuery.song(song_id)
+
+    @staticmethod
     def song_update(song):
         start = time.time()
         sql = """
@@ -101,3 +120,144 @@ class SongQuery(object):
         sql = "DELETE from attachment where song_id=:song_id and id=:id"
         rows = db.session.execute(sql, {'song_id': song_id, 'id': att_id})
         db.session.commit()
+
+    @staticmethod
+    def setlists(from_date, to_date):
+        sql = """
+            select s.*, e.name event_name, ed.focus, ed.url, ed.notes
+            from setlist s
+            inner join event e on e.id=s.event_id
+            left outer join event_date ed
+                on ed.event_id=s.event_id and ed.on_date=s.on_date
+            where s.on_date between :from_date and :to_date
+            order by s.on_date, e.name
+        """
+        rows = db.session.execute(
+            sql, {'from_date': from_date, 'to_date': to_date})
+
+        records = []
+        for row in rows.fetchall():
+            r = dict(row)
+            if row['on_date']:
+                r['on_date'] = row['on_date'].strftime('%Y-%m-%d')
+            records.append(r)
+
+        return records
+
+    @staticmethod
+    def upsert_event_date_setlist(event_id, on_date, setlist):
+        sql = """WITH upsert AS (
+            update setlist set on_date=:on_date
+            where event_id=:event_id and on_date=:on_date RETURNING *)
+            insert into setlist (event_id,on_date)
+            select :event_id,:on_date
+            WHERE NOT EXISTS (SELECT * from upsert)
+        """
+        data = {
+            'event_id': event_id, 'on_date': on_date
+        }
+        rows = db.session.execute(sql, data)
+
+        # Get the setlist
+        sl = SongQuery.get_setlist(event_id, on_date)
+
+        # Delete the setlist rows
+        SongQuery._delete_setlist_rows(sl['id'])
+
+        # Add the setlist songs
+        for index, row in enumerate(setlist['rows']):
+            SongQuery._add_setlist_rows(sl['id'], row, index)
+
+        db.session.commit()
+
+    @staticmethod
+    def get_setlist(event_id, on_date):
+        sql = """
+            select * from setlist
+            where event_id=:event_id and on_date=:on_date
+        """
+        data = {
+            'event_id': event_id, 'on_date': on_date
+        }
+        rows = db.session.execute(sql, data)
+        row = rows.fetchone()
+        return dict(row)
+
+    @staticmethod
+    def _delete_setlist_rows(setlist_id):
+        sql = """
+            delete from setlist_song
+            where setlist_id = :setlist_id
+        """
+        rows = db.session.execute(sql, {'setlist_id': setlist_id})
+
+    @staticmethod
+    def _add_setlist_rows(setlist_id, row, index):
+        sql = """
+            insert into setlist_song
+            (setlist_id, name, song_id, key, tempo, time_signature, position,
+             url, notes)
+            values (:setlist_id, :name, :song_id, :key, :tempo,
+                    :time_signature, :position, :url, :notes)
+        """
+        row['setlist_id'] = setlist_id
+        row['position'] = index
+        row['tempo'] = row.get('tempo')
+        row['key'] = row.get('key')
+        row['song_id'] = row.get('song_id')
+        row['url'] = row.get('url')
+        row['notes'] = row.get('notes')
+        db.session.execute(sql, row)
+
+    @staticmethod
+    def setlist(event_id, on_date):
+        sql = """
+            select s.*, e.name event_name, ed.focus, ed.url, ed.notes
+            from setlist s
+            inner join event e on e.id=s.event_id
+            left outer join event_date ed
+                on ed.event_id=s.event_id and ed.on_date=s.on_date
+            where s.event_id = :event_id and s.on_date = :on_date
+        """
+        rows = db.session.execute(
+            sql, {'event_id': event_id, 'on_date': on_date, 'rows': []})
+
+        if rows.rowcount == 0:
+            ed = FastQuery.event_date_ondate(event_id, on_date)
+            return ed
+
+        sheet = rows.fetchone()
+        r = dict(sheet)
+        r['on_date'] = sheet['on_date'].strftime('%Y-%m-%d')
+        r['rows'] = SongQuery.setlist_rows(event_id, on_date)
+        return r
+
+    @staticmethod
+    def setlist_rows(event_id, on_date):
+        sql = """
+            select s.*
+            from setlist sl
+            inner join setlist_song s on sl.id=s.setlist_id
+            where sl.event_id = :event_id and sl.on_date = :on_date
+        """
+        rows = db.session.execute(
+            sql, {'event_id': event_id, 'on_date': on_date})
+
+        if rows.rowcount == 0:
+            return []
+
+        return [dict(r) for r in rows.fetchall()]
+
+    @staticmethod
+    def song_find(q):
+        sql = """
+            select * from song
+            where name ilike :q
+            order by name
+        """
+        q = q.strip()
+        if len(q) == 0:
+            return []
+
+        rows = db.session.execute(sql, {'q': '%' + q + '%'})
+        return [dict(r) for r in rows.fetchall()]

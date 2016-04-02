@@ -4,6 +4,11 @@ var moment = require('moment');
 const DATETIME_FORMAT = 'DD/MM/YYYY HH:mm';
 const SQL_FORMAT = 'YYYY-MM-DDThh:mm:ss';
 
+const ROLE_SETLIST = 'set-list'
+const ROLE_STANDARD = 'standard'
+const ROLE_ADMIN = 'admin'
+
+
 var Utils = {
 
   relativeDate: function(datetime) {

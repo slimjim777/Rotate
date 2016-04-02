@@ -26,6 +26,10 @@ var Song = {
       return Ajax.put('/api/songs/' + song.id, {song: song});
   },
 
+  add: function(song) {
+      return Ajax.post('/api/songs/new', {song: song});
+  },
+
   attachments: function(song_id) {
     return Ajax.get('/api/songs/' + song_id + '/attachments');
   },
@@ -36,6 +40,22 @@ var Song = {
 
   attachmentDelete: function(song_id, att_id) {
     return Ajax.delete('/api/songs/' + song_id + '/attachments/' + att_id);
+  },
+
+  setlists: function(range) {
+    return Ajax.get('/api/events/setlists', {range: range});
+  },
+
+  setlist: function(eventId, on_date) {
+    return Ajax.get('/api/events/' + eventId + '/' + on_date + '/setlist');
+  },
+
+  upsertSetList: function(eventId, on_date, setlist) {
+    return Ajax.post('/api/events/' + eventId + '/' + on_date + '/setlist', {setlist: setlist});
+  },
+
+  find: function(q) {
+    return Ajax.post('/api/songs/find', {q: q});
   }
 };
 

@@ -58,7 +58,7 @@ def api_person(person_id=None):
             p = FastQuery.person(person_id)
             if not p:
                 raise Exception('Cannot find the person')
-            p =  {
+            p = {
                 'person_id': person_id,
                 'firstname': request.json.get('firstname'),
                 'lastname': request.json.get('lastname'),
@@ -71,17 +71,16 @@ def api_person(person_id=None):
 
             if not p['guest']:
                 if not p['email'] or len(p['email'].strip()) == 0:
-                    raise Exception("Email must be entered for non-guest users")
+                    raise Exception(
+                        "Email must be entered for non-guest users")
 
             FastQuery.person_update(p)
             result = {
                 'response': 'Success',
                 'person': p,
             }
-            print(result)
             return jsonify(result)
         except Exception as v:
-            print(str(v))
             return jsonify({'response': 'Error', 'message': str(v)})
 
 
@@ -155,7 +154,8 @@ def person_away_date_update(person_id):
                 away.validate_dates()
                 db.session.add(away)
             db.session.commit()
-            return jsonify({'response': 'Success', 'away_date': away.to_dict()})
+            return jsonify(
+                {'response': 'Success', 'away_date': away.to_dict()})
         except Exception as v:
             return jsonify({'response': 'Error', 'message': str(v)})
 

@@ -996,7 +996,8 @@ class FastQuery(object):
         """
         sql = "update person set last_login=:last_login where id=:person_id"
         db.session.execute(
-            sql, {'last_login': datetime.datetime.utcnow(), 'person_id': person_id})
+            sql, {'last_login': datetime.datetime.utcnow(),
+                  'person_id': person_id})
         db.session.commit()
 
     @staticmethod

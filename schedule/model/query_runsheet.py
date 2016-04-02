@@ -14,7 +14,7 @@ class QueryRunsheet(object):
             inner join event e on e.id=r.event_id
             left outer join event_date ed
                 on ed.event_id=r.event_id and ed.on_date=r.on_date
-            where ed.on_date between :from_date and :to_date
+            where r.on_date between :from_date and :to_date
             order by r.on_date, e.name
         """
         rows = db.session.execute(
