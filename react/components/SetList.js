@@ -55,7 +55,7 @@ var SetList = React.createClass({
       );
     } else {
       return (
-        <div className="alert alert-danger">
+        <div>
           You do not have permissions to view the set list.
         </div>
       )

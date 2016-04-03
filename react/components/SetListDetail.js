@@ -217,6 +217,8 @@ var SetListDetail = React.createClass({
   },
 
   renderRowViewOrEdit: function(r) {
+    var self = this;
+
     if ((this.state.isEditing) && (r.id===this.state.editRow)) {
       return (
         <tr key={r.id}>
@@ -245,7 +247,7 @@ var SetListDetail = React.createClass({
           <td>{r.tempo}</td>
           <td>{r.time_signature}</td>
           <td>{this.renderURL(r)}</td>
-          <td>{r.notes}</td>
+          <td>{Utils.renderMultiLine(r.notes)}</td>
         </tr>
       );
     }

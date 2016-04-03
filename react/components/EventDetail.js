@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var EventModel = require('../models/event');
+var SongModel = require('../models/song');
 var Person = require('../models/person');
 var EventDate = require('../models/eventdate');
 var $ = require('jquery');
@@ -100,7 +101,17 @@ var EventDetail = React.createClass({
             self.setState({
                 dateSummary: data.summary, rota: data.rota, roles: data.roles, onDate: onDate,
                 eventDateLoading: false });
+            self.setlistExists(modelId, onDate);
         });
+    },
+
+    // Checks if set list exists and if the user has permissions to see it
+    setlistExists: function(eventId, onDate) {
+      var self = this;
+      SongModel.setlistExists(eventId, onDate).then(function(response) {
+        var data = JSON.parse(response.body);
+        self.setState({setlistExists: data.exists});
+      });
     },
 
     handleAddEventDate: function(e) {
@@ -175,7 +186,8 @@ var EventDetail = React.createClass({
                 <EventDetailRota model={this.state.model} onDate={this.state.onDate}
                                  summary={this.state.dateSummary} rota={this.state.rota}
                                  canAdministrate={this.canAdministrate()} toggleEdit={this.handleToggleEdit}
-                                 handleDelete={this.handleDelete} />
+                                 handleDelete={this.handleDelete} user={this.state.user}
+                                 setlistExists={this.state.setlistExists} />
             );
         }
     },

@@ -6,7 +6,7 @@ var EventDateRunsheet = require('../components/EventDateRunsheet');
 
 var EventDetailRota = React.createClass({
     getInitialState: function() {
-      return {showRunsheet: false};
+      return {showRunsheet: false, user: {}};
     },
 
     toggleRunsheet: function() {
@@ -37,6 +37,7 @@ var EventDetailRota = React.createClass({
     },
 
     renderViewRunsheetButton: function() {
+      var self = this;
       var summary = this.props.summary;
       var model = this.props.model;
       var eventId;
@@ -47,8 +48,20 @@ var EventDetailRota = React.createClass({
         eventId = this.props.model.id;
       }
       return (
-        <a className="btn btn-primary" href={'/rota/events/'.concat(eventId, '/', summary.on_date, '/runsheet')}>View</a>
+        <span>
+          <a className="btn btn-primary" href={'/rota/events/'.concat(eventId, '/', summary.on_date, '/runsheet')}>View</a>
+          &nbsp;
+          {self.renderViewSetListButton(eventId, summary.on_date)}
+        </span>
       )
+    },
+
+    renderViewSetListButton: function(eventId, onDate) {
+      if (this.props.setlistExists) {
+        return (
+          <a className="btn btn-primary" href={'/rota/events/'.concat(eventId, '/', onDate, '/setlist')}>Set List</a>
+        );
+      }
     },
 
     renderName: function(r) {

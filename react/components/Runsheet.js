@@ -3,6 +3,7 @@ var React = require('react');
 var moment = require('moment');
 var Navigation = require('../components/Navigation');
 var EventModel = require('../models/event');
+var SongModel = require('../models/song');
 var RunsheetDetail = require('../components/RunsheetDetail');
 var RunsheetNotes = require('../components/RunsheetNotes');
 var RunsheetEvents = require('../components/RunsheetEvents');
@@ -20,6 +21,7 @@ var Runsheet = React.createClass({
 
     componentDidMount: function() {
       this.getRunsheet(this.props.params.id, this.props.params.onDate);
+      this.setlistExists(this.props.params.id, this.props.params.onDate);
 
       // Get the user permissions
       this.getPermissions(this.props.params.id);
@@ -48,6 +50,15 @@ var Runsheet = React.createClass({
         } else {
           self.setState({sheet: {}, detail: DEFAULT_DETAIL, notes: DEFAULT_NOTES, import: false});
         }
+      });
+    },
+
+    // Checks if set list exists and if the user has permissions to see it
+    setlistExists: function(eventId, onDate) {
+      var self = this;
+      SongModel.setlistExists(eventId, onDate).then(function(response) {
+        var data = JSON.parse(response.body);
+        self.setState({setlistExists: data.exists});
       });
     },
 
@@ -221,8 +232,16 @@ var Runsheet = React.createClass({
         }
     },
 
+    renderViewSetListButton: function() {
+      if (this.state.setlistExists) {
+        return (
+          <a className="btn btn-default" href={'/rota/events/'.concat(this.props.params.id, '/', this.props.params.onDate, '/setlist')}>Set List</a>
+        );
+      }
+    },
+
     renderRunSheet: function(sheet) {
-      if (sheet.event_id) {
+      if (sheet.event_name) {
         return (
           <RunsheetDetail summary={sheet} sheet={this.state.detail} canAdministrate={this.state.canAdministrate}
             refreshRunsheet={this.detailRefreshRunsheet} updateRunsheet={this.detailUpdateRunsheet}
@@ -257,8 +276,7 @@ var Runsheet = React.createClass({
                 </div>
                 <div>
                     <label>Run Sheet</label>&nbsp;
-                    <span>{this.renderRunSheetLink(sheet)}</span>
-                    {this.renderRunSheet(sheet)}
+                    <span>{this.renderRunSheetLink(sheet)} {this.renderViewSetListButton()}</span>
                 </div>
               </div>
           </div>
@@ -343,6 +361,7 @@ var Runsheet = React.createClass({
             <h2>Run Sheet {this.renderImportButton()}</h2>
             {this.renderImportTemplate()}
             {this.renderDetails(sheet)}
+            {this.renderRunSheet(sheet)}
             {this.renderRunsheetNotes(sheet)}
             {this.renderRunsheetEvents(sheet)}
         </div>

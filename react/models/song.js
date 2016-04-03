@@ -50,6 +50,10 @@ var Song = {
     return Ajax.get('/api/events/' + eventId + '/' + on_date + '/setlist');
   },
 
+  setlistExists: function(eventId, on_date) {
+    return Ajax.get('/api/events/' + eventId + '/' + on_date + '/setlist_exists');
+  },
+
   upsertSetList: function(eventId, on_date, setlist) {
     return Ajax.post('/api/events/' + eventId + '/' + on_date + '/setlist', {setlist: setlist});
   },

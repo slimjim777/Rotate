@@ -129,6 +129,21 @@ def api_setlists():
         return jsonify({'response': 'Error', 'message': str(v)})
 
 
+@app.route(
+    "/api/events/<int:event_id>/<on_date>/setlist_exists", methods=['GET'])
+@login_required
+def api_event_setlist_exists(event_id, on_date):
+    """
+    Check if a setlist for a date exists and verifies that the user has
+    permissions to see it.
+    """
+    if session['music_role']:
+        exists = SongQuery.setlist_exists(event_id, on_date)
+    else:
+        exists = False
+    return jsonify({'response': 'Success', 'exists': exists})
+
+
 @app.route("/api/events/<int:event_id>/<on_date>/setlist", methods=['GET'])
 @login_required
 def api_event_setlist_get(event_id, on_date):

@@ -29,6 +29,20 @@ class QueryRunsheet(object):
         return sheets
 
     @staticmethod
+    def runsheet_exists(event_id, on_date):
+        sql = """
+            select exists(
+                select *
+                from runsheet
+                where event_id = :event_id and on_date = :on_date
+            )
+        """
+        rows = db.session.execute(
+            sql, {'event_id': event_id, 'on_date': on_date})
+
+        return rows.fetchone()[0]
+
+    @staticmethod
     def runsheet(event_id, on_date):
         sql = """
             select r.*, e.name event_name, ed.focus, ed.url, ed.notes

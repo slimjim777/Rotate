@@ -210,6 +210,20 @@ class SongQuery(object):
         db.session.execute(sql, row)
 
     @staticmethod
+    def setlist_exists(event_id, on_date):
+        sql = """
+            select exists(
+                select *
+                from setlist
+                where event_id = :event_id and on_date = :on_date
+            )
+        """
+        rows = db.session.execute(
+            sql, {'event_id': event_id, 'on_date': on_date})
+
+        return rows.fetchone()[0]
+
+    @staticmethod
     def setlist(event_id, on_date):
         sql = """
             select s.*, e.name event_name, ed.focus, ed.url, ed.notes
@@ -220,7 +234,7 @@ class SongQuery(object):
             where s.event_id = :event_id and s.on_date = :on_date
         """
         rows = db.session.execute(
-            sql, {'event_id': event_id, 'on_date': on_date, 'rows': []})
+            sql, {'event_id': event_id, 'on_date': on_date})
 
         if rows.rowcount == 0:
             ed = FastQuery.event_date_ondate(event_id, on_date)
