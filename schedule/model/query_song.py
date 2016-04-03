@@ -253,6 +253,7 @@ class SongQuery(object):
             from setlist sl
             inner join setlist_song s on sl.id=s.setlist_id
             where sl.event_id = :event_id and sl.on_date = :on_date
+            order by position
         """
         rows = db.session.execute(
             sql, {'event_id': event_id, 'on_date': on_date})
