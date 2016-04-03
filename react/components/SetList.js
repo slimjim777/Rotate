@@ -65,7 +65,7 @@ var SetList = React.createClass({
   renderRunsheetLink: function(setlist) {
     if (setlist.url) {
       return (
-        <a href={'/rota/events/'.concat(this.props.params.id, '/', this.props.params.date, '/runsheet')} className="btn btn-default">external runsheet</a>
+        <a href={setlist.url}>external runsheet</a>
       );
     }
   },

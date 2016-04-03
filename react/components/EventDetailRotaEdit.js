@@ -13,15 +13,15 @@ var EventDetailRotaEdit = React.createClass({
 
     handleChangeFocus: function(e) {
         e.preventDefault();
-        this.setState({focus: event.target.value});
+        this.setState({focus: e.target.value});
     },
     handleChangeNotes: function(e) {
         e.preventDefault();
-        this.setState({notes: event.target.value});
+        this.setState({notes: e.target.value});
     },
     handleChangeRunSheet: function(e) {
         e.preventDefault();
-        this.setState({url: event.target.value});
+        this.setState({url: e.target.value});
     },
     handleChangeRota: function(e) {
         e.preventDefault();

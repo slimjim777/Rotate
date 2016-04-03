@@ -2,6 +2,7 @@
 var React = require('react');
 var Navigation = require('../components/Navigation');
 var SongModel = require('../models/song');
+var moment = require('moment');
 
 const RANGE = 12;
 
@@ -76,7 +77,7 @@ var SetLists = React.createClass({
                               var url = '/rota/events/' + sl.event_id + '/'+ sl.on_date + '/setlist';
                               return (
                                   <tr key={sl.id}>
-                                      <td><a href={url}>{sl.on_date}</a></td><td><a href={url}>{sl.event_name}</a></td>
+                                      <td><a href={url}>{moment(sl.on_date).format('DD/MM/YYYY')}</a></td><td><a href={url}>{sl.event_name}</a></td>
                                   </tr>
                               );
                           })}
