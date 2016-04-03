@@ -29,7 +29,7 @@ var SongAttachment = React.createClass({
       <div>
         <div className="col-xs-4">
           <Dropzone onDrop={this.handleDrop} onDropAccepted={this.handleDropAccepted}
-              multiple={false} accept={'application/pdf,text/*,audio/*'}>
+              multiple={false} accept={'application/pdf,text/*,audio/*,.onsong,.pro'}>
             <div>Drop a file here, or click to select a file to upload.</div>
           </Dropzone>
         </div>
