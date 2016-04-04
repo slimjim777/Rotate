@@ -3,6 +3,8 @@ var React = require('react');
 var Navigation = require('../components/Navigation');
 var RunsheetTemplates = require('../components/RunsheetTemplates');
 var EventModel = require('../models/event');
+var moment = require('moment');
+
 
 var RANGE = 12;
 
@@ -74,7 +76,7 @@ var RunsheetList = React.createClass({
                             var url = '/rota/events/' + sh.event_id + '/'+ sh.on_date + '/runsheet';
                             return (
                                 <tr key={sh.id}>
-                                    <td><a href={url}>{sh.on_date}</a></td><td><a href={url}>{sh.event_name}</a></td>
+                                    <td><a href={url}>{moment(sh.on_date).format('DD/MM/YYYY')}</a></td><td><a href={url}>{sh.event_name}</a></td>
                                 </tr>
                             );
                         })}

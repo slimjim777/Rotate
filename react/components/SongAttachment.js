@@ -4,6 +4,8 @@ var Dropzone = require('react-dropzone');
 var filesize = require('filesize');
 
 
+const MAX_SIZE = 10;
+
 var SongAttachment = React.createClass({
   getInitialState: function() {
     return {file: {}};
@@ -29,7 +31,8 @@ var SongAttachment = React.createClass({
       <div>
         <div className="col-xs-4">
           <Dropzone onDrop={this.handleDrop} onDropAccepted={this.handleDropAccepted}
-              multiple={false} accept={'application/pdf,text/*,audio/*,.onsong,.pro'}>
+              multiple={false} accept={'application/pdf,text/*,audio/*,.onsong,.pro'}
+              maxFilesize={MAX_SIZE}>
             <div>Drop a file here, or click to select a file to upload.</div>
           </Dropzone>
         </div>
@@ -45,11 +48,14 @@ var SongAttachment = React.createClass({
               <tr>
                 <td>Size:</td><td>{this.state.file.size ? filesize(this.state.file.size) : ''}</td>
               </tr>
+              <tr>
+                <td><em>(Max. file size {MAX_SIZE}Mb)</em></td><td></td>
+              </tr>
             </tbody>
           </table>
           <div>
-            <button onClick={this.handleSaveClick} className="btn btn-primary">Save</button>
-            <button onClick={this.props.onCancel} className="btn btn-secondary">Cancel</button>
+            <button onClick={this.handleSaveClick} className="btn btn-primary">Save</button>&nbsp;
+            <button onClick={this.props.onCancel} className="btn btn-default">Cancel</button>
           </div>
         </div>
       </div>

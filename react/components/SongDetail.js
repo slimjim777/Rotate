@@ -87,6 +87,18 @@ var SongDetail = React.createClass({
     return FILESTORE_URL + path;
   },
 
+  onsongDownload: function(att) {
+    if (att.path.slice(-6) === 'onsong') {
+      var url = FILESTORE_URL.replace('http:', 'onsong:') + att.path;
+      return (
+        <span>
+          &nbsp;
+          <a href={url} download title="OnSong import - start the app first" className="btn btn-default"><span className="glyphicon glyphicon-phone"></span></a>
+        </span>
+      );
+    }
+  },
+
   renderAttachments: function() {
     var self = this;
 
@@ -102,7 +114,12 @@ var SongDetail = React.createClass({
           {this.props.attachments.map(function(att) {
             return (
               <tr key={att.id}>
-                <td><a href={self.attachmentURL(att.path)}>{att.name}</a></td><td>{relativeDate(att.created_date)}</td>
+                <td>
+                  <a href={self.attachmentURL(att.path)}>{att.name}</a>
+                  &nbsp;<a href={self.attachmentURL(att.path)} download title="Download File" className="btn btn-default"><span className="glyphicon glyphicon-download-alt"></span></a>
+                  {self.onsongDownload(att)}
+                </td>
+                <td>{relativeDate(att.created_date)}</td>
                 {self.renderAttachmentDeleteButton(att)}
               </tr>
             );
