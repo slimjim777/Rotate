@@ -11,27 +11,28 @@ var PeopleFilter = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
-        // Raise an event to trigger the filter change
-        //$(document).trigger('filterChange', [this.state.findFirstname, this.state.findLastname, this.state.findStatus]);
         this.props.onFilterChange(this.state.findFirstname, this.state.findLastname, this.state.findStatus);
+    },
+
+    handleClearForm: function(e) {
+      e.preventDefault();
+      this.setState({findFirstname: null, findLastname:null, findStatus: 'active'});
+      this.props.onFilterChange('', '', 'active');
     },
 
     handleChangeStatus: function(e) {
         e.preventDefault();
-        this.setState({findStatus: event.target.value});
-        //$(document).trigger('filterChange', [this.state.findFirstname, this.state.findLastname, event.target.value]);
+        this.setState({findStatus: e.target.value});
         this.props.onFilterChange(this.state.findFirstname, this.state.findLastname, e.target.value);
     },
     handleChangeFirstname: function(e) {
         e.preventDefault();
-        this.setState({findFirstname: event.target.value});
-        //$(document).trigger('filterChange', [event.target.value, this.state.findLastname, this.state.findStatus]);
+        this.setState({findFirstname: e.target.value});
         this.props.onFilterChange(e.target.value, this.state.findLastname, this.state.findStatus);
     },
     handleChangeLastname: function(e) {
         e.preventDefault();
-        this.setState({findLastname: event.target.value});
-        //$(document).trigger('filterChange', [this.state.findFirstname, event.target.value, this.state.findStatus]);
+        this.setState({findLastname: e.target.value});
         this.props.onFilterChange(this.state.findFirstname, e.target.value, this.state.findStatus);
     },
 
@@ -51,17 +52,16 @@ var PeopleFilter = React.createClass({
                                placeholder="lastname" className="form-control"/>
                     </div>
                     <div className="col-xs-6 col-md-6 col-lg-3">
-                        <select name="status" className="form-control" onChange={this.handleChangeStatus}>
+                        <select name="status" className="form-control" onChange={this.handleChangeStatus} value={this.state.findStatus}>
                             {STATUSES.map(function(st) {
                                 return (
-                                    <option key={st.value} value={st.value}
-                                            defaultValue={self.state.findStatus}>{st.name}</option>
+                                    <option key={st.value} value={st.value}>{st.name}</option>
                                 );
                             })}
                         </select>
                     </div>
                     <div className="col-xs-6 col-md-6 col-lg-3">
-                        <button className="btn btn-primary" title="Find"><span className="glyphicon glyphicon-search"></span></button>
+                        <button className="btn btn-primary" title="Clear Form" onClick={this.handleClearForm}><span className="glyphicon glyphicon-remove-circle"></span></button>
                     </div>
                 </form>
             </div>

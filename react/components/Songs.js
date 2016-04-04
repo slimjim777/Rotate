@@ -31,6 +31,14 @@ var Songs = React.createClass({
       });
   },
 
+  findSongs: function(search) {
+      var self = this;
+      Song.find(search).then(function(response) {
+          var data = JSON.parse(response.body);
+          self.setState({songs: data.songs});
+      });
+  },
+
   getPermissions: function () {
       var self = this;
       Person.permissions().then(function(response) {
@@ -47,6 +55,12 @@ var Songs = React.createClass({
         return true;
     }
     return false;
+  },
+
+  contains: function(value, snippet) {
+      if (!value) {return false;}
+      if (!snippet) {return true;}
+      return value.toLowerCase().indexOf(snippet.toLowerCase()) >= 0;
   },
 
   handleFilterChange: function (name, status) {
@@ -76,7 +90,7 @@ var Songs = React.createClass({
             <Navigation active="songs" />
             <h2>Songs {this.renderActions()}</h2>
 
-            <SongList songs={this.state.songs} onFilterChange={this.handleFilterChange} />
+            <SongList songs={this.state.songsFiltered} onFilterChange={this.handleFilterChange} />
 
         </div>
     );
