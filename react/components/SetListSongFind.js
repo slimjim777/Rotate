@@ -17,6 +17,7 @@ var SetListSongFind = React.createClass({
   },
 
   handleAddListedSong: function(e) {
+    console.log(e);
     var songId = parseInt(e.target.getAttribute('data-key'));
     var song = this.state.songs.filter(function(s) {
       return s.id === songId;
@@ -36,6 +37,18 @@ var SetListSongFind = React.createClass({
 
     var song = {name: name, time_signature: '4/4'};
     this.props.addUnlistedSong(song);
+  },
+
+  handleListedKeyUp: function(e) {
+    if (e.keyCode === 13) {
+      this.findSongs();
+    }
+  },
+
+  handleUnlistedKeyUp: function(e) {
+    if (e.keyCode === 13) {
+      this.handleAddUnlistedSong();
+    }
   },
 
   findSongs: function() {
@@ -60,7 +73,7 @@ var SetListSongFind = React.createClass({
               <div className="col-md-6 col-lg-6">
                 <div className="input-group">
                   <input type="search" className="form-control" placeholder="find song in library"
-                    value={this.state.search} onChange={this.handleChangeSearch} />
+                    value={this.state.search} onChange={this.handleChangeSearch} onKeyUp={this.handleListedKeyUp} />
                   <span className="input-group-btn">
                     <button className="btn btn-info" type="button" onClick={this.findSongs}>Find</button>
                   </span>
@@ -70,7 +83,7 @@ var SetListSongFind = React.createClass({
               <div className="col-md-6 col-lg-6">
                 <div className="input-group">
                   <input className="form-control" placeholder="name of unlisted song"
-                    value={this.state.unlisted} onChange={this.handleChangeUnlisted} />
+                    value={this.state.unlisted} onChange={this.handleChangeUnlisted} onKeyUp={this.handleUnlistedKeyUp} />
                   <span className="input-group-btn">
                     <button className="btn btn-info" onClick={this.handleAddUnlistedSong}>Add Unlisted Song</button>
                   </span>
