@@ -42,6 +42,14 @@ var Song = {
     return Ajax.delete('/api/songs/' + song_id + '/attachments/' + att_id);
   },
 
+  chart: function(attachmentId) {
+    return Ajax.get('/api/songs/chart/' + attachmentId);
+  },
+
+  transpose: function(attachmentId, chart, key) {
+    return Ajax.post('/api/songs/chart/' + attachmentId + '/transpose', {key: key, chart: chart});
+  },
+
   setlists: function(range) {
     return Ajax.get('/api/events/setlists', {range: range});
   },

@@ -17,6 +17,7 @@ var SetListNew = require('./components/SetListNew');
 var SetList = require('./components/SetList');
 var Songs = require('./components/Songs');
 var Song = require('./components/Song');
+var SongView = require('./components/SongView');
 
 var RunsheetList = require('./components/RunsheetList');
 var Runsheet = require('./components/Runsheet');
@@ -43,6 +44,7 @@ render((
     <Route path="/rota/setlists/new" component={SetListNew} />
     <Route path="/rota/songs" component={Songs} />
     <Route path="/rota/songs/:id" component={Song}/>
+    <Route path="/rota/songs/:id/attachments/:attachment_id" component={SongView}/>
 
     <Route path="/rota/runsheets" component={RunsheetList} />
     <Route path="/rota/events/:id/:onDate/runsheet" component={Runsheet} />

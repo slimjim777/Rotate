@@ -2,6 +2,7 @@ from schedule.model.query import FastQuery
 from schedule.model.query_song import SongQuery
 from schedule.authorize import login_required
 from schedule import app
+from schedule.model.transpose import Transpose
 from flask import request
 from flask import jsonify
 from flask import session
@@ -161,3 +162,28 @@ def api_event_setlist_update(event_id, on_date):
 
     SongQuery.upsert_event_date_setlist(event_id, on_date, setlist)
     return jsonify({'response': 'Success'})
+
+
+@app.route('/api/songs/chart/<int:attachment_id>', methods=['GET'])
+@login_required
+def api_song_chart(attachment_id):
+    if session['music_role'] not in [ROLE_STANDARD, ROLE_ADMIN]:
+        abort(403)
+
+    chart = SongQuery.song_chart(attachment_id)
+    return jsonify({'response': 'Success', 'chart': chart})
+
+
+@app.route(
+    '/api/songs/chart/<int:attachment_id>/transpose', methods=['POST'])
+@login_required
+def api_song_chart_transpose(attachment_id):
+    if session['music_role'] not in [ROLE_STANDARD, ROLE_ADMIN]:
+        abort(403)
+
+    key = request.json.get('key')
+    chart = request.json.get('chart')
+
+        # Transpose the song
+    t = Transpose(chart, key)
+    return jsonify({'response': 'Success', 'chart': t.song})

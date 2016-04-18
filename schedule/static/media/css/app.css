@@ -258,3 +258,22 @@ select.role-select {
 .inline-panel {
   padding: 16px;
 }
+
+.chord {
+    font-weight: bold;
+    color: red;
+    font-size: 1.2em;
+}
+
+.lyric {
+    font-size: 1.2em;
+}
+
+.cnl {
+    display: table-cell;
+    float: left;
+}
+
+.cnl_line {
+    display: table-row;
+}

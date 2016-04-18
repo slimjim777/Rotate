@@ -99,6 +99,18 @@ var SongDetail = React.createClass({
     }
   },
 
+  chartView: function(att) {
+    if ((att.path.slice(-6) === 'onsong') || (att.path.slice(-3) === 'pro')) {
+      var url = '/rota/songs/'.concat(att.song_id, '/attachments/', att.id);
+      return (
+        <span>
+          &nbsp;
+          <a href={url} title="Song Chart" className="btn btn-default">Chart</a>
+        </span>
+      );
+    }
+  },
+
   renderAttachments: function() {
     var self = this;
 
@@ -118,6 +130,7 @@ var SongDetail = React.createClass({
                   <a href={self.attachmentURL(att.path)}>{att.name}</a>
                   &nbsp;<a href={self.attachmentURL(att.path)} download title="Download File" className="btn btn-default"><span className="glyphicon glyphicon-download-alt"></span></a>
                   {self.onsongDownload(att)}
+                  {self.chartView(att)}
                 </td>
                 <td>{relativeDate(att.created_date)}</td>
                 {self.renderAttachmentDeleteButton(att)}

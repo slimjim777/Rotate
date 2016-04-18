@@ -2,7 +2,10 @@ import time
 from flask import session
 from schedule import db, app
 from schedule.model.filestore import FileStore
+from schedule.model.song import Onsong, ChordPro
+from schedule.model.transpose import Transpose
 import json
+import requests
 
 
 class SongQuery(object):
@@ -105,6 +108,18 @@ class SongQuery(object):
             db.session.commit()
 
         return file_path
+
+    @staticmethod
+    def song_attachment_get(attachment_id):
+        sql = """
+            select * from attachment where id=:attachment_id order by name"""
+
+        rows = db.session.execute(sql, {'attachment_id': attachment_id})
+
+        if rows.rowcount == 0:
+            return None
+        row = rows.fetchone()
+        return dict(row)
 
     @staticmethod
     def song_attachments_delete(song_id, att_id):
@@ -276,3 +291,37 @@ class SongQuery(object):
 
         rows = db.session.execute(sql, {'q': '%' + q + '%'})
         return [dict(r) for r in rows.fetchall()]
+
+    @staticmethod
+    def song_chart(attachment_id, key=None):
+        attachment = SongQuery.song_attachment_get(attachment_id)
+        if not attachment:
+            return
+
+        # Check if we have the right file type
+        extension = attachment['name'].split('.')[-1].lower()
+        if extension != 'onsong' and extension != 'pro':
+            return
+
+        # Get the song file
+        req = requests.get(app.config['FILESTORE_URL'] + attachment['path'])
+        content = req.content
+
+        if extension == 'onsong':
+            # Parse the Onsong file
+            on_song = Onsong(content)
+            song_chart = on_song.parsed
+        else:
+            # Parse the ChordPro file
+            song_pro = ChordPro(content)
+            song_chart = song_pro.parsed
+
+        # Transpose to 'OriginalKey' if it is provided
+        if key:
+            t = Transpose(song_chart, key)
+            song_chart = t.song
+        elif song_chart.get('OriginalKey'):
+            t = Transpose(song_chart, song_chart['OriginalKey'])
+            song_chart = t.song
+
+        return song_chart
