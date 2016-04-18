@@ -305,7 +305,7 @@ class SongQuery(object):
 
         # Get the song file
         req = requests.get(app.config['FILESTORE_URL'] + attachment['path'])
-        content = req.content
+        content = req.content.decode('utf-8')
 
         if extension == 'onsong':
             # Parse the Onsong file
