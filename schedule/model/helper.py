@@ -1,7 +1,13 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
+import imaplib
+import email
+import base64
+import io
+import codecs
 from schedule.model.query import FastQuery
+from schedule.model.query_song import SongQuery
 from schedule import app
 from jinja2 import Environment, PackageLoader
 
@@ -57,3 +63,57 @@ def send_email(to_list, mime_text):
     server.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
     server.sendmail(app.config['EMAIL_FROM'], to_list, mime_text.as_string())
     server.quit()
+
+
+def email_song_upload():
+    """
+    Read the Email and look for new song Emails. Create new songs and save the
+    attachments.
+    """
+    app.logger.info("Email Song Upload -- start")
+    # Login to the mail server
+    imap = imaplib.IMAP4_SSL(
+        app.config.get('MAIL_SERVER_IMAP'),
+        port=app.config.get('MAIL_PORT_IMAP'))
+    imap.login(
+        app.config.get('MAIL_USERNAME'), app.config.get('MAIL_PASSWORD'))
+
+    # Select the inbox
+    imap.select()
+
+    # Search for the messages
+    typ, msgnums = imap.search(None, '(SUBJECT "your song:" UNSEEN)')
+
+    for num in msgnums[0].split():
+        try:
+            typ, data = imap.fetch(num, '(RFC822)')
+        except:
+            imap.close()
+
+        msg = email.message_from_string(data[0][1].decode('utf-8'))
+        song_name = msg.get('SUBJECT').split(':')[-1].strip()
+
+        if msg.is_multipart():
+            for part in msg.walk():
+                if part.get_content_maintype() != 'multipart' and \
+                        part.get('Content-Disposition') is not None:
+
+                    # Get the filename and file contents (unknown encoding)
+                    filename = part.get_filename()
+                    payload = part.get_payload(decode=True)
+
+                    # Re-encode the file to utf-8
+                    f = io.BytesIO(payload)
+                    new_f = codecs.StreamRecoder(
+                        f, codecs.getencoder('utf-8'),
+                        codecs.getdecoder('utf-8'),
+                        codecs.getreader('latin-1'),
+                        codecs.getwriter('latin-1'), errors='surrogateescape')
+
+                    # Upsert the song and it's attachment
+                    # (if an attachment with the name already exists, this one
+                    # will be silently dropped)
+                    SongQuery.song_upload(song_name, filename, new_f)
+
+    imap.logout()
+    app.logger.info("Email Song Upload -- end")

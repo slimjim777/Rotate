@@ -28,15 +28,44 @@ class SongQuery(object):
 
     @staticmethod
     def song(song_id):
-        start = time.time()
         sql = "select * from song where id=:song_id"
         rows = db.session.execute(sql, {'song_id': song_id})
 
         s = rows.fetchone()
         if not s:
             raise Exception("Cannot find the song")
+        return dict(s)
 
-        app.logger.debug('Song: %s' % (time.time() - start))
+    @staticmethod
+    def song_upload(name, filename, file_data):
+        """
+        Check if a song exists with the name, if not, create it. Then upload
+        the attachment.
+        """
+        # Get or create the song
+        try:
+            song = SongQuery.song_by_name(name)
+        except v:
+            song = SongQuery.song_new({'name': name})
+
+        # Upload the attachment, ignore the error if the file already exists
+        try:
+            SongQuery.song_attachments_add(
+                song['id'], filename, file_data, False)
+        except Exception as v:
+            app.logger.warn(
+                "Ignore song upload error for '%s': %s" % (filename, str(v)))
+        return song
+
+    @staticmethod
+    def song_by_name(name):
+        sql = "select * from song where name=:name"
+        rows = db.session.execute(sql, {'name': name})
+
+        s = rows.fetchone()
+        if not s:
+            raise Exception("Cannot find the song")
+
         return dict(s)
 
     @staticmethod
@@ -83,7 +112,7 @@ class SongQuery(object):
         return attachments
 
     @staticmethod
-    def song_attachments_add(song_id, filename, file_data):
+    def song_attachments_add(song_id, filename, file_data, encoded=True):
         """
         Upload the file to the storage site. Check first that the attachment
         does not exist for the song.
@@ -94,7 +123,7 @@ class SongQuery(object):
         if rows.rowcount > 0:
             raise Exception("A file with the same name exists for the song")
 
-        file_path = FileStore().put(song_id, filename, file_data)
+        file_path = FileStore().put(song_id, filename, file_data, encoded)
 
         if file_path:
             # Add the attachment record

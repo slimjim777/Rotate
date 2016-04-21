@@ -12,7 +12,7 @@ class FileStore(object):
             app.config['FILESTORE_SITE'], app.config['FILESTORE_USER'],
             app.config['FILESTORE_PASSWORD'])
 
-    def put(self, song_id, filename, file_data):
+    def put(self, song_id, filename, file_data, encoded=True):
         """
         Upload a file to the store.
         """
@@ -25,8 +25,11 @@ class FileStore(object):
             ftp.cwd('songs/%d' % song_id)
 
         # Open the decoded file data as a stream
-        data = base64.b64decode(file_data.split(',')[1])
-        f = BytesIO(data)
+        if encoded:
+            data = base64.b64decode(file_data.split(',')[1])
+            f = BytesIO(data)
+        else:
+            f = file_data
 
         # Store the file on the FTP server
         resp = ftp.storbinary("STOR " + filename, f)

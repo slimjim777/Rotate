@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ ! -f $OPENSHIFT_DATA_DIR/last_run_song_upload ]; then
+  touch $OPENSHIFT_DATA_DIR/last_run_song_upload
+fi
+
+if [[ $(find $OPENSHIFT_DATA_DIR/last_run_song_upload -mmin +4) ]]; then #run every 5 mins
+  rm -f $OPENSHIFT_DATA_DIR/last_run_song_upload
+  touch $OPENSHIFT_DATA_DIR/last_run_song_upload
+
+  date > $OPENSHIFT_LOG_DIR/song_upload_cron_ran
+  cd $OPENSHIFT_REPO_DIR
+  python mail_to_song.py
+fi

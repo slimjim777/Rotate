@@ -23,8 +23,11 @@ app.config['URL_ROOT'] = os.environ['URL_ROOT']
 
 # Mail setup
 app.config['EMAIL_FROM'] = os.environ.get("EMAIL_FROM", "portal@example.com")
-app.config['MAIL_SERVER'] = os.environ.get("MAIL_SERVER", "localhost")
+app.config['MAIL_SERVER'] = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
+app.config['MAIL_SERVER_IMAP'] = os.environ.get(
+    "MAIL_SERVER_IMAP", "imap.gmail.com")
 app.config['MAIL_PORT'] = os.environ.get("MAIL_PORT", 25)
+app.config['MAIL_PORT_IMAP'] = os.environ.get("MAIL_PORT_IMAP", 993)
 app.config['MAIL_USERNAME'] = os.environ.get("MAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PASSWORD")
 if os.environ.get("MAIL_USE_TLS") == "True":

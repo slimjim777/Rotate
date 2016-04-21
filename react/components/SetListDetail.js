@@ -24,6 +24,9 @@ var SetListDetail = React.createClass({
   handleChangeRowName: function(e) {
     this.handleChangeRowField('name', e.target.value);
   },
+  handleChangeRowKey: function(e) {
+    this.handleChangeRowField('key', e.target.value);
+  },
   handleChangeRowTempo: function(e) {
     this.handleChangeRowField('tempo', e.target.value);
   },
