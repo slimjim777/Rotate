@@ -45,7 +45,7 @@ class SongQuery(object):
         # Get or create the song
         try:
             song = SongQuery.song_by_name(name)
-        except v:
+        except Exception as v:
             song = SongQuery.song_new({'name': name})
 
         # Upload the attachment, ignore the error if the file already exists
