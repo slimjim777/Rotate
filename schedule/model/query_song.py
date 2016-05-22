@@ -13,12 +13,12 @@ class SongQuery(object):
 
     @staticmethod
     def songs(active):
-        if active == 'all':
-            sql = "select * from song order by name"
+        if active == 'active':
+            sql = "select * from song where active order by name"
         elif active == 'inactive':
             sql = "select * from song where inactive order by name"
         else:
-            sql = "select * from song where active order by name"
+            sql = "select * from song order by name"
 
         rows = db.session.execute(sql)
 

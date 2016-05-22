@@ -13,7 +13,7 @@ var Song = {
 
   all: function (active) {
       if (!active) {
-        active = 'active';
+        active = 'all';
       }
       return Ajax.post(this.url(), {active: active});
   },

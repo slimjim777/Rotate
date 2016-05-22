@@ -69,7 +69,13 @@ var Songs = React.createClass({
           if (!self.contains(p.name, name)) {
               return false;
           }
-          return !((status === 'inactive') && (p.active));
+          if (status === 'active') {
+            return p.active;
+          } else if (status === 'inactive') {
+            return !p.active;
+          } else {
+            return true;
+          }
       });
       this.setState({songsFiltered: songs});
   },
