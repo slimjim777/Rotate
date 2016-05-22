@@ -38,6 +38,9 @@ var SetList = React.createClass({
       var self = this;
       SongModel.setlist(this.props.params.id, this.props.params.onDate).then(function(response) {
           var data = JSON.parse(response.body);
+          if (!data.setlist.rows) {
+            data.setlist.rows = [];
+          }
           self.setState({setlist: data.setlist});
       });
   },

@@ -22,6 +22,11 @@ var path = {
     DIST: 'schedule/static/media/dist/'
 };
 
+// Use production mode to omit debug code from modules
+gulp.task('set-prod-node-env', function() {
+    return process.env.NODE_ENV = 'production';
+});
+
 // Compile the JSX files to Javascript in the build directory
 gulp.task('compile_jsx', function(){
     return gulp.src(path.SRC + '*.js')
@@ -79,4 +84,4 @@ gulp.task('watch', function () {
 });
 
 // Default: remember that these tasks get run asynchronously
-gulp.task('default', ['build_components', 'minify-css', 'minify-css-print', 'minify-pikaday']);
+gulp.task('default', ['set-prod-node-env', 'build_components', 'minify-css', 'minify-css-print', 'minify-pikaday']);

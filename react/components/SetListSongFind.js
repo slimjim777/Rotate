@@ -17,7 +17,6 @@ var SetListSongFind = React.createClass({
   },
 
   handleAddListedSong: function(e) {
-    console.log(e);
     var songId = parseInt(e.target.getAttribute('data-key'));
     var song = this.state.songs.filter(function(s) {
       return s.id === songId;

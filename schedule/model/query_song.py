@@ -1,6 +1,7 @@
 import time
 from flask import session
 from schedule import db, app
+from schedule.model.query import FastQuery
 from schedule.model.filestore import FileStore
 from schedule.model.song import Onsong, ChordPro
 from schedule.model.transpose import Transpose
