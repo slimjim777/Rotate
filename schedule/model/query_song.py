@@ -206,12 +206,16 @@ class SongQuery(object):
         # Get the setlist
         sl = SongQuery.get_setlist(event_id, on_date)
 
-        # Delete the setlist rows
-        SongQuery._delete_setlist_rows(sl['id'])
+        # Delete the setlist rows (not for new setlist)
+        if setlist:
+            SongQuery._delete_setlist_rows(sl['id'])
 
-        # Add the setlist songs
-        for index, row in enumerate(setlist['rows']):
-            SongQuery._add_setlist_rows(sl['id'], row, index)
+        # Add the setlist songs (only for existing setlists)
+        if setlist:
+            if not setlist['rows']:
+                setlist['rows'] = []
+            for index, row in enumerate(setlist['rows']):
+                SongQuery._add_setlist_rows(sl['id'], row, index)
 
         db.session.commit()
 

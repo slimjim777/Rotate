@@ -10,7 +10,7 @@ var moment = require('moment');
 
 var SetListNew = React.createClass({
   getInitialState: function() {
-    return {setlists: [], message: null, events: [], user: {}, onDate: moment().toDate(), eventId: null};
+    return {message: null, events: [], user: {}, onDate: moment().toDate(), eventId: null};
   },
 
   componentDidMount: function() {
