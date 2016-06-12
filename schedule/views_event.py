@@ -30,21 +30,6 @@ def error():
     return render_template('alerts.html')
 
 
-@app.route('/overview/<int:event_id>')
-def overview(event_id):
-    try:
-        from_date, to_date = FastQuery.date_range_from(
-            time.strftime('%Y-%m-%d'))
-        model = FastQuery.rota_for_event(
-            event_id, from_date, to_date, date_format='%d %b')
-        error_message = None
-    except Exception as e:
-        error_message = str(e)
-        model = None
-
-    return render_template('overview.html', model=model, error=error_message)
-
-
 @app.errorhandler(404)
 def not_found(e):
     return render_template('error.html', error=e), 404

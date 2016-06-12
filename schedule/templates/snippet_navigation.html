@@ -10,22 +10,22 @@
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li role="presentation" class="active">
-          <a href="/rota/me">My Rota</a>
+        <li role="presentation" class="{{ 'active' if active == 'myrota' }}">
+          <a href="/vintage">My Rota</a>
         </li>
-        <li role="presentation" class="">
+        <li role="presentation" class="{{ 'active' if active == 'people' }}">
           <a href="/rota/people">People</a>
         </li>
-        <li role="presentation" class="">
+        <li role="presentation" class="{{ 'active' if active == 'events' }}">
           <a href="/rota/events">Events</a>
         </li>
-        <li role="presentation" class="">
+        <li role="presentation" class="{{ 'active' if active == 'runsheets' }}">
           <a href="/rota/runsheets">Run Sheets</a>
         </li>
-        <li role="presentation" class="">
+        <li role="presentation" class="{{ 'active' if active == 'setlists' }}">
           <a href="/rota/setlists">Set Lists</a>
         </li>
-        <li role="presentation" class="">
+        <li role="presentation" class="{{ 'active' if active == 'songs' }}">
           <a href="/rota/songs">Songs</a>
         </li>
         <li role="presentation" class=""><a href="/admin">Admin</a></li>

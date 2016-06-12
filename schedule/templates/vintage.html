@@ -72,7 +72,7 @@
                     <td>
                       {% for evt in r.events %}
                         <div>
-                          {{ evt.event }}
+                          <a href="/vintage/events/{{ evt.event_id }}">{{ evt.event }}</a>
                           <div>
                             {% for role in evt.roles %}
                               <span class="label label-default">{{ role.name }}</span>
