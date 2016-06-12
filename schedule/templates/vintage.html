@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team Rota</title>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/media/images/favicons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static//static/media/images/favicons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/media/images/favicons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/media/images/favicons/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/media/images/favicons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/media/images/favicons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/media/images/favicons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/media/images/favicons/apple-touch-icon-152x152.png">
+    <meta name="apple-mobile-web-app-title" content="Team Rota">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="icon" type="image/png" href="/static/media/images/favicons/favicon-196x196.png" sizes="196x196">
+    <link rel="icon" type="image/png" href="/static/media/images/favicons/favicon-160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="/static/media/images/favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/static/media/images/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/static/media/images/favicons/favicon-32x32.png" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#2f9966">
+    <meta name="msapplication-TileImage" content="/static/media/images/favicons/mstile-144x144.png">
+    <meta name="application-name" content="Team Rota">
+
+    <link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:300' rel='stylesheet' type='text/css'>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link href="/static/media/css/dist/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/media/css/dist/pikaday.css" rel="stylesheet">
+    <link href="/static/media/css/dist/app.css" rel="stylesheet">
+    <link href="/static/media/css/dist/print.css" rel="stylesheet" media="print">
+</head>
+<body>
+    <script>
+    var FILESTORE_URL = '{{config.FILESTORE_URL}}';
+    </script>
+
+  <div id="app">
+    <div id="main" class="container-fluid" role="main">
+      {% include 'snippet_navigation.html' %}
+      <em>View-only for vintage browsers</em>
+
+      {% if person %}
+      <h2 class="sub-heading">{{person.firstname}} {{person.lastname}}</h2>
+
+      <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title">Rota</h3>
+          </div>
+          <div class="panel-body table-responsive" id="person-rota">
+            {% if rota|length > 0 %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Date</th><th>Event</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {% for r in rota %}
+                  <tr>
+                    <td>
+                      {% if r.is_away %}
+                      <div>
+                        <span class="alert-danger" title="You are away for this date. Please arrange a swap.">{{ r.on_date[:10] }}</span>
+                      </div>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% for evt in r.events %}
+                        <div>
+                          {{ evt.event }}
+                          <div>
+                            {% for role in evt.roles %}
+                              <span class="label label-default">{{ role.name }}</span>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Nothing to display</p>
+            {% endif %}
+          </div>
+      </div>
+
+      <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title">Away Dates</h3>
+          </div>
+          <div class="panel-body table-responsive" id="person-rota">
+            {% if away_dates|length > 0 %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>From Date</th><th>To Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for away in away_dates %}
+                      <tr>
+                          <td>{{ away.from_date[:10] }}</td>
+                          <td>{{ away.to_date[:10] }}</td>
+                      </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Nothing to display</p>
+            {% endif %}
+          </div>
+      </div>
+
+      {% else %}
+      <p>Cannot find the person</p>
+      {% endif %}
+    </div>
+</div>
+
+</body>
+</html>

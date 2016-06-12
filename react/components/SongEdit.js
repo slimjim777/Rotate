@@ -28,9 +28,6 @@ var SongEdit = React.createClass({
   handleTempoChange: function(e) {
       this.updateState('tempo', parseInt(e.target.value));
   },
-  handleURLChange: function(e) {
-      this.updateState('url', e.target.value);
-  },
   handleTimeSignatureChange: function(e) {
       this.updateState('time_signature', e.target.value);
   },

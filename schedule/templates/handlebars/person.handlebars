@@ -1,9 +1,0 @@
-    <h2 class="sub-heading">{{model.name}}</h2>
-    <p class="sub-heading">{{ model.email }}</p>
-
-    {{partial "rota"}}
-    {{#if canAdministratePerson}}
-        {{partial "away_dates"}}
-    {{/if}}
-    {{partial "confirm_dialog"}}
-    {{partial "available_people"}}
