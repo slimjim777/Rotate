@@ -67,6 +67,8 @@
                       <div>
                         <span class="alert-danger" title="You are away for this date. Please arrange a swap.">{{ r.on_date[:10] }}</span>
                       </div>
+                      {% else %}
+                        <div>{{ r.on_date[:10] }}</div>
                       {% endif %}
                     </td>
                     <td>
