@@ -53,7 +53,7 @@
                 <table class="table table-striped rota">
                   <thead>
                     <tr>
-                        <th class="freeze">Date</th><th class="first-column">Focus</th><th>Notes</th>
+                        <th class="freeze">Date</th><th class="first-column">Focus</th><th>Run Sheet</th><th>Notes</th>
                         {% for role in model.role_names%}<th>{{role}}</th>{% endfor %}
                         <th></th>
                     </tr>
@@ -65,6 +65,7 @@
                         {{ ed.on_date }}
                     </td>
                     <td><em>{{ed.focus or ''}}</em></td>
+                    <td><a href="/vintage/runsheets/{{model.event_id}}/{{ed.on_date_ymd}}">Run Sheet</a></td>
                     <td><em>{{ed.notes or ''}}</em></td>
                     {% for r in ed.rota %}
                     <td>

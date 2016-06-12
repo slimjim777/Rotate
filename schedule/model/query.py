@@ -517,6 +517,7 @@ class FastQuery(object):
                     'notes': row['notes'],
                     'url': row['url'],
                     'on_date': row['on_date'].strftime(date_format),
+                    'on_date_ymd': row['on_date'].strftime('%Y-%m-%d'),
                     'isEditing': False,
                     'rota': {},
                 }
@@ -636,6 +637,7 @@ class FastQuery(object):
 
             on_date = {
                 'on_date': row['on_date'].strftime(date_format),
+                'on_date_ymd': row['on_date'].strftime('%Y-%m-%d'),
                 'id': row['event_date_id'],
                 'focus': row['focus'],
                 'notes': row['notes'],
