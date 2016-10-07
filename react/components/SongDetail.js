@@ -59,7 +59,6 @@ var SongDetail = React.createClass({
           return (
               <span>
                   <button className="btn btn-primary" onClick={this.props.toggleEdit}>Edit</button>&nbsp;
-                  <button className="btn btn-default" title = "Delete" ><span className="glyphicon glyphicon-remove"></span></button>
               </span>
           );
       }
