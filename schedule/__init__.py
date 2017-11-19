@@ -20,6 +20,7 @@ app.config['GCLIENT_SECRET'] = os.environ['GCLIENT_SECRET']
 app.config['DATE_FORMAT'] = '%Y-%m-%d'
 app.config['PAGE_SIZE'] = os.environ.get('PAGE_SIZE', '20')
 app.config['URL_ROOT'] = os.environ['URL_ROOT']
+app.config['HASH_KEY'] = os.environ['HASH_KEY']
 
 # Mail setup
 app.config['EMAIL_FROM'] = os.environ.get("EMAIL_FROM", "portal@example.com")

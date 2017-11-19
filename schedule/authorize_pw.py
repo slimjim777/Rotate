@@ -34,7 +34,7 @@ def authorized():
     if request.method == 'POST':
         result = check_user(request.form.get('email'), request.form.get('password'))
         if result:
-            return redirect(url_for('view_person'))
+            return redirect('/rota/songs')
     return redirect(url_for('error'))
 
 

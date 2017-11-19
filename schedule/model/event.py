@@ -317,10 +317,15 @@ class Role(db.Model):
 
 
 def password_encrypt(password):
-    key = base64.b64encode(app.secret_key[:32].encode())
-    cipher_suite = Fernet(key)
-    cipher_text = cipher_suite.encrypt(key)
+    cipher_suite = Fernet(app.config['HASH_KEY'].encode('utf-8'))
+    cipher_text = cipher_suite.encrypt(password.encode('utf-8'))
     return cipher_text
+
+
+def password_decrypt(c):
+    cipher_suite = Fernet(app.config['HASH_KEY'].encode('utf-8'))
+    plain_text = cipher_suite.decrypt(c.encode('utf-8'))
+    return plain_text.decode('utf-8')
 
 
 class Person(db.Model):
@@ -421,10 +426,13 @@ class Person(db.Model):
         """
         Get the user by the Email and Password.
         """
-        pwd = password_encrypt(password)
+        user = Person.query.filter_by(email=email).first()
 
-        user = Person.query.filter_by(email=email, password=pwd.decode('utf-8')).first()
-        return user
+        if user:
+            p = password_decrypt(user.password)
+            if p == password:
+                return user
+        return
 
 
 class Rota(db.Model):
