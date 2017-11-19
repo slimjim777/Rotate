@@ -1,3 +1,4 @@
+import base64
 from dateutil.relativedelta import relativedelta
 from schedule import db
 from sqlalchemy import UniqueConstraint
@@ -5,6 +6,7 @@ from sqlalchemy.orm import validates
 import datetime
 from schedule import app
 from schedule.model.query import FastQuery
+from cryptography.fernet import Fernet
 
 
 def next_weekday(d, weekday):
@@ -314,6 +316,13 @@ class Role(db.Model):
         return '<Role %r>' % self.name
 
 
+def password_encrypt(password):
+    key = base64.b64encode(app.secret_key[:32].encode())
+    cipher_suite = Fernet(key)
+    cipher_text = cipher_suite.encrypt(key)
+    return cipher_text
+
+
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255))
@@ -333,6 +342,7 @@ class Person(db.Model):
         backref=db.backref('person_ref', lazy='joined'))
     guest = db.Column(db.Boolean, default=False)
     music_role = db.Column(db.String(30))
+    password = db.Column(db.Text)
 
     def __init__(self, email, firstname, lastname):
         self.firstname = firstname
@@ -404,6 +414,16 @@ class Person(db.Model):
         Get the user by the Email address.
         """
         user = Person.query.filter_by(email=email).first()
+        return user
+
+    @staticmethod
+    def user_check(email, password):
+        """
+        Get the user by the Email and Password.
+        """
+        pwd = password_encrypt(password)
+
+        user = Person.query.filter_by(email=email, password=pwd.decode('utf-8')).first()
         return user
 
 

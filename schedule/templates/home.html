@@ -55,20 +55,24 @@
 
     <div class="jumbotron">
       <div class="container">
-        <h1>Lifechurch Rotas</h1>
+        <h1>Lifechurch Music</h1>
         <div>
-            <a href="/my_rota" class="btn btn-primary btn-lg">Sign-in Using Google &raquo;</a>
+          <form action="/login/authorized" method="POST">
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" name="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+
+            <button type="submit" class="btn btn-default">Login</button>
+          </form>
+
         </div>
       </div>
     </div>
-    
-    <div id="main" class="container" role="main">
-        <h4>Don't have an Account?</h4>
-        <ol>
-            <li>Create a Google Account <a href="https://accounts.google.com/signupwithoutgmail">with your existing Email address</a>.</li>
-            <li>Contact the site administrators and let them know your Google Account Email address.</li>
-            <li>Login to with the button above when you are informed that your Team Rota account has been created.</li>
-        </ol>
-    </div>
+
 </body>
 </html>

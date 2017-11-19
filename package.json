@@ -2,7 +2,7 @@
   "name": "rota",
   "version": "1.0.0",
   "description": "Team Rota",
-  "main": "newrelic-admin run-program gunicorn schedule:app -b 0.0.0.0:$PORT -w 8 --max-requests 250",
+  "main": "gunicorn schedule:app -b 0.0.0.0:$PORT -w 8 --max-requests 250",
   "dependencies": {
     "filesize": "^3.2.1",
     "history": "^2.0.0-rc2",

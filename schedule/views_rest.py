@@ -3,7 +3,7 @@ from flask import jsonify
 from flask import flash
 from schedule import app
 from schedule.model.event import Event
-from schedule.authorize import login_required
+from schedule.authorize_pw import login_required
 
 
 @app.route("/events/<int:event_id>/dates/create", methods=['POST'])

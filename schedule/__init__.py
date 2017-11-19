@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
@@ -45,7 +45,8 @@ app.debug = True if os.environ.get("DEBUG", False) else False
 
 db = SQLAlchemy(app)
 
-import schedule.authorize
+# import schedule.authorize
+import schedule.authorize_pw
 import schedule.views_event
 import schedule.views_person
 import schedule.views_song

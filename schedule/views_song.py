@@ -1,6 +1,6 @@
 from schedule.model.query import FastQuery
 from schedule.model.query_song import SongQuery
-from schedule.authorize import login_required
+from schedule.authorize_pw import login_required
 from schedule import app
 from schedule.model.transpose import Transpose
 from flask import request

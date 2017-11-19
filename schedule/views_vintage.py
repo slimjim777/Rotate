@@ -4,7 +4,7 @@ import json
 from schedule.model.query import FastQuery
 from schedule.model.query_runsheet import QueryRunsheet
 from schedule import app
-from schedule.authorize import login_required
+from schedule.authorize_pw import login_required
 from flask import render_template, session, url_for
 
 

@@ -17,7 +17,7 @@ from schedule.model.event import Event
 from schedule.model.event import EventDate
 from schedule.model.event import Role
 from schedule.model.event import Person
-from schedule.authorize import login_required
+from schedule.authorize_pw import login_required
 
 
 @app.route('/', methods=['GET'])

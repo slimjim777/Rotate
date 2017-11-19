@@ -42,3 +42,4 @@ venv
 .idea/
 build/
 node_modules/
+.vscode/

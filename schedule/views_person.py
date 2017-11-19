@@ -1,6 +1,6 @@
 from schedule.model.query import FastQuery
 from schedule import app
-from schedule.authorize import login_required
+from schedule.authorize_pw import login_required
 from schedule.model.event import Person
 from flask import render_template, session, url_for
 from flask import request
