@@ -22,7 +22,7 @@ from schedule.authorize_pw import login_required
 
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('home.html')
+    return render_template('app.html')
 
 
 @app.route('/error')

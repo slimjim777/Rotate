@@ -38,6 +38,20 @@ def authorized():
     return redirect(url_for('error'))
 
 
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    email = request.json.get('email')
+    password = request.json.get('password')
+    if len(email) == 0 or len(password) == 0:
+        return jsonify({'response': 'Error', 'message': 'Email or password is not valid'})
+
+    result = check_user(email, password)
+    if result:
+        return jsonify({'response': 'Success', 'message': ''})
+    else:
+        return jsonify({'response': 'Error', 'message': 'Email or password is not valid'})
+
+
 def check_user(email, password):
     """
     Check we have a valid app user for the Google user.
