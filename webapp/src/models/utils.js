@@ -1,6 +1,5 @@
-'use strict'
-var React = require('react');
-var moment = require('moment');
+import React, { Component } from 'react';
+import moment from 'moment';
 
 const DATETIME_FORMAT = 'DD/MM/YYYY HH:mm';
 const SQL_FORMAT = 'YYYY-MM-DDThh:mm:ss';

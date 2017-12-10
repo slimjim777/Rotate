@@ -1,39 +1,27 @@
 import React, { Component } from 'react';
-var Person = require('../models/person');
-var SongModel = require('../models/song');
-var Navigation = require('../components/Navigation');
-var SongDetail = require('../components/SongDetail');
-var SongEdit = require('../components/SongEdit');
+import SongModel from '../models/song';
+import Navigation from './Navigation';
+import SongDetail from './SongDetail';
+import SongEdit from './SongEdit';
 
 
 class Song extends Component {
 
-    getInitialState() {
-        return ({isEditing: false, songId: null, isAdmin: false, song: {}
+    constructor(props) {
+        super(props)
+        this.state = {isEditing: false, songId: null, isAdmin: false, song: {}
           attachments: []
-        });
-    }
-
-    componentDidMount () {
-      this.getPermissions();
-
-      this.getSong(this.props.params.id);
-      this.getAttachments(this.props.params.id);
-    }
-
-    getPermissions () {
-        var self = this;
-        Person.permissions().then(function(response) {
-            var user = JSON.parse(response.body).permissions;
-            self.setState({user: user});
-        });
+        }
+        
+        this.getSong(this.props.params.id);
+        this.getAttachments(this.props.params.id);
     }
 
     canAdministrate() {
-      if (!this.state.user) {
+      if (!this.props.user) {
           return false;
       }
-      if (this.state.user.music_role === 'admin') {
+      if (this.props.user.music_role === 'admin') {
           return true;
       }
       return false;

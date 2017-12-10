@@ -29,7 +29,7 @@ class Login extends Component {
             var resp = JSON.parse(response.body);
             console.log(response.body)
             console.log('---', resp)
-            if (resp.response == 'Success') {
+            if (resp.response === 'Success') {
                 window.location = '/rota/songs'
             } else {
                 this.setState({message: resp.message})

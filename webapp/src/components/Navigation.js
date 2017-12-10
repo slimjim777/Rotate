@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-var Navbar = require('react-bootstrap').Navbar;
-var Nav = require('react-bootstrap').Nav;
-var NavbarHeader = require("react-bootstrap/lib/NavbarHeader")
-var NavbarBrand = require("react-bootstrap/lib/NavbarBrand")
-var NavbarCollapse = require("react-bootstrap/lib/NavbarCollapse")
-var NavbarToggle = require("react-bootstrap/lib/NavbarToggle")
-var NavItem = require('react-bootstrap').NavItem;
-var Person = require('../models/person');
+import {Navbar, Nav, NavItem} from 'react-bootstrap';
+import NavbarHeader from "react-bootstrap/lib/NavbarHeader"
+import NavbarBrand from "react-bootstrap/lib/NavbarBrand"
+import NavbarCollapse from "react-bootstrap/lib/NavbarCollapse"
+import NavbarToggle from "react-bootstrap/lib/NavbarToggle"
+
 
 //const ROLE_SETLIST = 'set-list'
 const ROLE_STANDARD = 'standard'
@@ -16,11 +14,10 @@ const ROLE_ADMIN = 'admin'
 class Navigation extends Component {
 
     constructor(props) {
-      super(props)
-	  this.state = {
-		canAdministrate: false,
-		user: this.props.user,
-	  };
+        super(props)
+        this.state = {
+            canAdministrate: false,
+        };
     }
 
     setCanAdministrate(user) {
@@ -35,7 +32,7 @@ class Navigation extends Component {
     }
 
     renderMusicLists(activeSetLists) {
-      if (this.state.user.music_role) {
+      if (this.props.user.music_role) {
         return (
           <NavItem eventKey={5} active={activeSetLists} href="/rota/setlists">Set Lists</NavItem>
         );
@@ -43,7 +40,7 @@ class Navigation extends Component {
     }
 
     renderMusicSongs(activeSongs) {
-      if ((this.state.user.music_role === ROLE_STANDARD) || (this.state.user.music_role === ROLE_ADMIN)) {
+      if ((this.props.user.music_role === ROLE_STANDARD) || (this.props.user.music_role === ROLE_ADMIN)) {
         return (
           <NavItem eventKey={6} active={activeSongs} href="/rota/songs">Songs</NavItem>
         );
@@ -59,6 +56,10 @@ class Navigation extends Component {
     }
 
     render() {
+        if (!this.props.user) {
+            return <div>Loading...</div>
+        }
+
         var activeRota = false;
         var activePeople = false;
         var activeEvents = false;
@@ -103,7 +104,7 @@ class Navigation extends Component {
                       {this.renderMusicLists(activeSetLists)}
                       {this.renderMusicSongs(activeSongs)}
                       {this.renderAdmin(activeAdmin)}
-                      <NavItem eventKey={9} href="https://accounts.google.com">{this.state.user.name}</NavItem>
+                      <NavItem eventKey={9} href="https://accounts.google.com">{this.props.user.name}</NavItem>
                   </Nav>
               </NavbarCollapse>
           </Navbar>

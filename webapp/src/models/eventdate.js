@@ -1,6 +1,5 @@
-'use strict';
-var Ajax = require('./Ajax');
-var EventModel = require('./event');
+import Ajax from './Ajax';
+import EventModel from './event';
 
 
 var EventDate = {

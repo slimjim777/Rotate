@@ -1,5 +1,4 @@
-'use strict';
-var Ajax = require('./Ajax');
+import Ajax from './Ajax';
 
 
 var Song = {

@@ -1,51 +1,40 @@
 import React, { Component } from 'react';
-var Person = require('../models/person');
 
-var STATUSES = [{name:'Active', value:'active'} {name:'Inactive', value:'inactive'} {name:'Both', value:'both'}];
+
+const STATUSES = [{name:'Active', value:'active'}, {name:'Inactive', value:'inactive'}, {name:'Both', value:'both'}];
 
 
 class SongList extends Component {
 
-    getInitialState() {
-        return ({isEditing: false, personId: null, isAdmin: false, search: '', findStatus: 'active'});
+    constructor(props) {
+        super(props)
+        this.state = {isEditing: false, personId: null, isAdmin: false, search: '', findStatus: 'active'};
     }
 
-    componentDidMount () {
-      this.getPermissions();
-    }
-
-    getPermissions () {
-        var self = this;
-        Person.permissions().then(function(response) {
-            var user = JSON.parse(response.body).permissions;
-            self.setState({user: user, isAdmin: user.is_admin});
-        });
-    }
-
-    handleSubmit(e) {
+    handleSubmit = (e) => {
         e.preventDefault();
         this.props.onFilterChange(this.state.search, this.state.findStatus);
     }
 
-    handleClearForm(e) {
+    handleClearForm = (e) => {
       e.preventDefault();
       this.setState({search: '', findStatus: 'active'});
       this.props.onFilterChange('', 'active');
     }
 
-    handleChangeStatus(e) {
+    handleChangeStatus = (e) => {
         e.preventDefault();
         this.setState({findStatus: e.target.value});
         this.props.onFilterChange(this.state.search, e.target.value);
     }
 
-    handleChangeSearch(e) {
+    handleChangeSearch = (e) => {
         e.preventDefault();
         this.setState({search: e.target.value});
         this.props.onFilterChange(e.target.value, this.state.findStatus);
     }
 
-    handleKeyUp(e) {
+    handleKeyUp = (e) => {
       if (e.keyCode === 13) {
         this.props.findSongs(this.state.search);
       }
@@ -99,7 +88,7 @@ class SongList extends Component {
                     <div>
                         <div className="form-group info">
                             <p>Find</p>
-                            <form role="form" onSubmit={this.handleSubmit}>
+                            <form onSubmit={this.handleSubmit}>
                                 <div className="col-xs-6 col-md-6 col-lg-6">
                                     <input text="search" value={this.state.search} onChange={this.handleChangeSearch}
                                            placeholder="find song" className="form-control" onKeyUp={this.handleKeyUp} />

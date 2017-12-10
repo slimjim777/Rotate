@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-var Alert = require('react-bootstrap').Alert;
-var relativeDate = require('../models/utils').relativeDate;
-var SongAttachment = require('../components/SongAttachment');
-var SongModel = require('../models/song');
+import {Alert} from 'react-bootstrap';
+import {relativeDate} from '../models/utils';
+import SongAttachment from '../components/SongAttachment';
+import SongModel from '../models/song';
 
 
 class SongDetail extends Component {
 
-  getInitialState() {
-    return {showAttachmentAdd: false, message: null, messageType: null};
+  constructor(props) {
+      super(props)
+      this.state = {showAttachmentAdd: false, message: null, messageType: null};
   }
 
   handleAttachmentAdd(e) {

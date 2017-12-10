@@ -23,7 +23,7 @@ def view_person_my_rota():
 @app.route('/rota/<path:path>', methods=['GET'])
 @login_required
 def view_person(path=None):
-    return render_template('react.html')
+    return render_template('app.html')
 
 
 @app.route('/api/people/me', methods=['GET'])

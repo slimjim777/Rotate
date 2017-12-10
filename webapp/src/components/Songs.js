@@ -1,24 +1,16 @@
 import React, { Component } from 'react';
-var Navigation = require('../components/Navigation');
-var SongList = require('../components/SongList');
-var Person = require('../models/person');
-var Song = require('../models/song');
-var Utils = require('../models/utils');
+import Navigation from './Navigation';
+import SongList from './SongList';
+import Song from '../models/song';
 
 
 class Songs extends Component {
 
-  getInitialState() {
-      return ({songsLoading: false, songs: [], songsFiltered: []});
-  }
-
-  componentDidMount () {
-      var self = this;
-
-      this.getPermissions();
-
-      // Get the songs
-      self.getSongs();
+  constructor(props) {
+      super(props)
+      this.state = {songsLoading: false, songs: [], songsFiltered: []};
+      
+      this.getSongs();
   }
 
   getSongs() {
@@ -39,19 +31,11 @@ class Songs extends Component {
       });
   }
 
-  getPermissions () {
-      var self = this;
-      Person.permissions().then(function(response) {
-          var user = JSON.parse(response.body).permissions;
-          self.setState({user: user});
-      });
-  }
-
   canAdministrate() {
-    if (!this.state.user) {
+    if (!this.props.user.music_role) {
         return false;
     }
-    if (this.state.user.music_role === 'admin') {
+    if (this.props.user.music_role === 'admin') {
         return true;
     }
     return false;
@@ -91,6 +75,11 @@ class Songs extends Component {
   }
 
   render () {
+    console.log(this.props.user)
+    if (!this.props.user.music_role) {
+        return <div>Loading...</div>
+    }
+  
     return (
         <div id="main" className="container-fluid" role="main">
             <Navigation active="songs" />

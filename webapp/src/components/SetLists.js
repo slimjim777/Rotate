@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-var Navigation = require('../components/Navigation');
-var SongModel = require('../models/song');
-var moment = require('moment');
+import Navigation from './Navigation';
+import SongModel from '../models/song';
+import moment from 'moment';
 
 const RANGE = 12;
 
 
 class SetLists extends Component {
 
-  getInitialState() {
-    return {setlists: [], range: RANGE};
-  }
-
-  componentDidMount() {
-    this.getSetlists();
+  constructor(props) {
+      super(props)
+      this.state = {setlists: [], range: RANGE};
+      
+      this.getSetlists();
   }
 
   getSetlists() {
