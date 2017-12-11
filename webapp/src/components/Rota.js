@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment'
-var Dialog = require('../components/Dialog');
+import Dialog from '../components/Dialog';
 
 var MESSAGES = [
     'Nada, zilch, nothing to display.',
@@ -11,8 +11,9 @@ var MESSAGES = [
 
 
 class Rota extends Component {
-    getInitialState() {
-        return {
+    constructor(props) {
+        super(props)
+        this.state = {
             dialogTitle: '', dialogMessages: '', showModal: false
         };
     }

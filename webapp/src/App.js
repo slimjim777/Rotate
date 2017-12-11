@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import MyRota from './components/MyRota';
 import Songs from './components/Songs';
+import People from './components/People';
 
 import Login from './components/Login';
 import Navigation from './components/Navigation';
+import {sectionFromPath, subsectionFromPath} from './components/Utils';
 import Person from './models/person';
 import './App.css';
 
@@ -24,7 +26,6 @@ class App extends Component {
 
         Person.permissions().then((response) => {
             var user = JSON.parse(response.body).permissions;
-            console.log('+++', user)
             this.setState({user: user});
         });
     }
@@ -51,19 +52,19 @@ class App extends Component {
     render() {
 
         var path = window.location.pathname;
-        console.log('---', this.state.user)
+        var section = sectionFromPath(window.location.pathname);
+        var subsection = subsectionFromPath(window.location.pathname);
+        console.log('---', path)
+        console.log('---', section, subsection)
 
         return (
           <div id="main" className="container-fluid" role="main">
 
-            {path === '/' ?
-              <Login />
-              :
-              <Navigation user={this.state.user} />
-            }
+            {section === '' ? <Login /> : <Navigation user={this.state.user} active={section} />}
 
-            {path === '/rota' ? <MyRota user={this.state.user} /> : ''}
-            {path === '/rota/songs' ? <Songs user={this.state.user} /> : ''}
+            {(section === 'rota') ? <MyRota user={this.state.user} id={subsection} /> : ''}
+            {section === 'people' ? <People user={this.state.user} /> : ''}
+            {section === 'songs' ? <Songs user={this.state.user} /> : ''}
 
           </div>
         );

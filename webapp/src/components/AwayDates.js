@@ -6,8 +6,9 @@ var Person = require('../models/person');
 
 class AwayDates extends Component {
 
-    getInitialState () {
-        return {
+    constructor(props) {
+        super(props)
+        this.state = {
             showModal: false, away: {}
         };
     }

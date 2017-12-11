@@ -1,30 +1,18 @@
 import React, { Component } from 'react';
-var moment = require('moment');
-var PeopleFilter = require('../components/PeopleFilter');
-var Person = require('../models/person');
+import moment from 'moment';
+import PeopleFilter from '../components/PeopleFilter';
 
 
 class PeopleList extends Component {
 
-    getInitialState() {
-        return ({isEditing: false, personId: null, isAdmin: false});
-    }
-
-    componentDidMount () {
-      this.getPermissions();
-    }
-
-    getPermissions () {
-        var self = this;
-        Person.permissions().then(function(response) {
-            var user = JSON.parse(response.body).permissions;
-            self.setState({user: user, isAdmin: user.is_admin});
-        });
+    constructor(props) {
+        super(props)
+        this.state = {isEditing: false, personId: null, isAdmin: false};
     }
 
     handleEditClick(e) {
         e.preventDefault();
-        this.setState({personId: parseInt(e.target.getAttribute('data-key')), isEditing: true});
+        this.setState({personId: parseInt(e.target.getAttribute('data-key'), 10), isEditing: true});
     }
 
     renderActive(active) {
@@ -59,7 +47,7 @@ class PeopleList extends Component {
         if (this.state.isAdmin) {
             return (
                 <td>
-                    <a href={'/rota/people/' + person.id + '/edit'} className="btn btn-default">Edit</a>
+                    <a href={'/people/' + person.id + '/edit'} className="btn btn-default">Edit</a>
                 </td>
             );
         }
@@ -95,7 +83,7 @@ class PeopleList extends Component {
                                 return (
                                     <tr key={p.id}>
                                         {self.renderEditAction(p)}
-                                        <td className="left-align"><a href={'/rota/person/' + p.id}>{p.firstname} {p.lastname}</a></td>
+                                        <td className="left-align"><a href={'/person/' + p.id}>{p.firstname} {p.lastname}</a></td>
                                         <td>{self.renderActive(p.active)}</td>
                                         <td>{self.renderActive(p.guest)}</td>
                                         {self.renderPermissions(p)}

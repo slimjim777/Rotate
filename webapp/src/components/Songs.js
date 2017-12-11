@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Navigation from './Navigation';
 import SongList from './SongList';
 import Song from '../models/song';
 
@@ -75,14 +74,12 @@ class Songs extends Component {
   }
 
   render () {
-    console.log(this.props.user)
     if (!this.props.user.music_role) {
         return <div>Loading...</div>
     }
   
     return (
         <div id="main" className="container-fluid" role="main">
-            <Navigation active="songs" />
             <h2>Songs {this.renderActions()}</h2>
 
             <SongList songs={this.state.songsFiltered} onFilterChange={this.handleFilterChange} />

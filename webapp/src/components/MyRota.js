@@ -1,46 +1,47 @@
 import React, { Component } from 'react';
 import AwayDates from './AwayDates';
-var Person = require('../models/person');
-var Rota = require('./Rota');
-var Navigation = require('./Navigation');
+import Person from '../models/person';
+import Rota from './Rota';
 
 
 var RANGE = 12;
 
 
 class MyRota extends Component {
-    getInitialState () {
-        return {
+    constructor(props) {
+        super(props)
+        this.state = {
             person: {},
             rota: [], rotaIsLoading: false, rotaRange: RANGE,
             awayDates: [], awayIsLoading: false, awayRange: RANGE
         };
+        
+        this.mount()
     }
 
-    componentDidMount () {
-        var self = this;
+    mount () {
 
         // Get the person ID if this was called for someone other than 'me'
-        var personId = this.props.params.id;
+        var personId = this.props.id;
 
         // Get the person details
-        Person.findById(personId).then(function(response) {
+        Person.findById(personId).then((response) => {
             var data = JSON.parse(response.body);
-            self.setState({ person: data.person });
-            self.getPermissions();
-            self.getRota(data.person.id, RANGE);
-            self.getAwayDates(data.person.id, RANGE);
-            self.forceUpdate();
+            this.setState({ person: data.person });
+            //self.getPermissions();
+            this.getRota(data.person.id, RANGE);
+            this.getAwayDates(data.person.id, RANGE);
+            this.forceUpdate();
         });
     }
 
-    getPermissions() {
-        var self = this;
-        Person.permissions().then(function(response) {
-            var user = JSON.parse(response.body).permissions;
-            self.setState({user: user, canAdministrate: self.canAdministrate(user)});
-        });
-    }
+//     getPermissions() {
+//         var self = this;
+//         Person.permissions().then(function(response) {
+//             var user = JSON.parse(response.body).permissions;
+//             self.setState({user: user, canAdministrate: self.canAdministrate(user)});
+//         });
+//     }
 
     canAdministrate(user) {
         if (user.role === 'admin') {
@@ -137,7 +138,6 @@ class MyRota extends Component {
     render () {
         return (
             <div id="main" className="container-fluid" role="main">
-                <Navigation />
                 <h2 className="sub-heading">{this.state.person.firstname} {this.state.person.lastname}</h2>
                 <p className="sub-heading">{this.state.person.email}</p>
                 <Rota personId={this.state.person.id} rota={this.state.rota} isLoading={this.state.rotaIsLoading}

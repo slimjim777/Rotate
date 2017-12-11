@@ -34,7 +34,7 @@ class Navigation extends Component {
     renderMusicLists(activeSetLists) {
       if (this.props.user.music_role) {
         return (
-          <NavItem eventKey={5} active={activeSetLists} href="/rota/setlists">Set Lists</NavItem>
+          <NavItem eventKey={5} active={activeSetLists} href="/setlists">Set Lists</NavItem>
         );
       }
     }
@@ -42,7 +42,7 @@ class Navigation extends Component {
     renderMusicSongs(activeSongs) {
       if ((this.props.user.music_role === ROLE_STANDARD) || (this.props.user.music_role === ROLE_ADMIN)) {
         return (
-          <NavItem eventKey={6} active={activeSongs} href="/rota/songs">Songs</NavItem>
+          <NavItem eventKey={6} active={activeSongs} href="/songs">Songs</NavItem>
         );
       }
     }
@@ -98,9 +98,9 @@ class Navigation extends Component {
               <NavbarCollapse eventKey={0}>
                   <Nav navbar>
                       <NavItem eventKey={1} active={activeRota} href="/rota/me">My Rota</NavItem>
-                      <NavItem eventKey={2} active={activePeople} href="/rota/people">People</NavItem>
-                      <NavItem eventKey={3} active={activeEvents} href="/rota/events">Events</NavItem>
-                      <NavItem eventKey={4} active={activeRunsheets} href="/rota/runsheets">Run Sheets</NavItem>
+                      <NavItem eventKey={2} active={activePeople} href="/people">People</NavItem>
+                      <NavItem eventKey={3} active={activeEvents} href="/events">Events</NavItem>
+                      <NavItem eventKey={4} active={activeRunsheets} href="/runsheets">Run Sheets</NavItem>
                       {this.renderMusicLists(activeSetLists)}
                       {this.renderMusicSongs(activeSongs)}
                       {this.renderAdmin(activeAdmin)}

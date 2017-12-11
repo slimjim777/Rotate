@@ -19,8 +19,13 @@ def view_person_my_rota():
     return redirect(url_for('view_person'))
 
 
-@app.route('/rota', methods=['GET'])
 @app.route('/rota/<path:path>', methods=['GET'])
+@app.route('/rota', methods=['GET'])
+@app.route('/songs', methods=['GET'])
+@app.route('/people', methods=['GET'])
+@app.route('/events', methods=['GET'])
+@app.route('/runsheets', methods=['GET'])
+@app.route('/setlists', methods=['GET'])
 @login_required
 def view_person(path=None):
     return render_template('app.html')

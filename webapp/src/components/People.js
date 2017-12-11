@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-var Person = require('../models/person');
-var PeopleList = require('../components/PeopleList');
-var Navigation = require('../components/Navigation');
+import Person from '../models/person';
+import PeopleList from '../components/PeopleList';
 
 
 class People extends Component {
 
-    getInitialState() {
-        return ({peopleLoading: false, people: [], peopleFiltered: []});
+    constructor(props) {
+        super(props)
+        this.state = {peopleLoading: false, people: [], peopleFiltered: []};
     }
 
     componentDidMount () {
@@ -51,7 +51,7 @@ class People extends Component {
     }
 
     handleNew() {
-        window.location = '/rota/people/new';
+        window.location = '/people/new';
     }
 
     renderNew() {
@@ -65,7 +65,6 @@ class People extends Component {
     render () {
         return (
             <div id="main" className="container-fluid" role="main">
-                <Navigation active="people" />
                 <h2>People {this.renderNew()}</h2>
 
                 <PeopleList people={this.state.peopleFiltered} onFilterChange={this.handleFilterChange} />

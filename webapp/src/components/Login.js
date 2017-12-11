@@ -27,8 +27,6 @@ class Login extends Component {
         console.log('Submit');
         Person.login(this.state.email, this.state.password).then((response) => {
             var resp = JSON.parse(response.body);
-            console.log(response.body)
-            console.log('---', resp)
             if (resp.response === 'Success') {
                 window.location = '/rota/songs'
             } else {

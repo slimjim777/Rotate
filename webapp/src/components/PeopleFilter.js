@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-var STATUSES = [{name:'Active', value:'active'} {name:'Inactive', value:'inactive'} {name:'Both', value:'both'}];
+var STATUSES = [{name:'Active', value:'active'}, {name:'Inactive', value:'inactive'}, {name:'Both', value:'both'}];
 
 
 class PeopleFilter extends Component {
 
-    getInitialState() {
+    constructor(props) {
+        super(props)
 
-        return ({findFirstname: null, findLastname:null, findStatus: 'active'});
+        this.state = {findFirstname: null, findLastname:null, findStatus: 'active'};
     }
 
     handleSubmit(e) {
@@ -37,12 +38,11 @@ class PeopleFilter extends Component {
     }
 
     render() {
-        var self = this;
 
         return (
             <div className="form-group info">
                 <p>Find</p>
-                <form role="form" onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSubmit}>
                     <div className="col-xs-6 col-md-6 col-lg-3">
                         <input text="search" value={this.state.findFirstname} onChange={this.handleChangeFirstname}
                                placeholder="firstname" className="form-control" />

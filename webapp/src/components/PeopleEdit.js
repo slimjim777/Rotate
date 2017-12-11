@@ -51,7 +51,7 @@ class PeopleEdit extends Component {
     handleSubmit(e) {
         e.preventDefault();
         Person.update(this.state.person).then(function(response) {
-            window.location = '/rota/people';
+            window.location = '/people';
         });
     }
 
@@ -110,7 +110,7 @@ class PeopleEdit extends Component {
                     </div>
                     <div className="panel-footer">
                         <button onClick={this.handleSubmit} className="btn btn-primary">Save</button>&nbsp;
-                        <a href="/rota/people">Cancel</a>
+                        <a href="/people">Cancel</a>
                     </div>
                 </div>
             </div>

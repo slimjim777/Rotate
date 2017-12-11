@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Pikaday from 'react-pikaday-datepicker';
-var Button = require("react-bootstrap").Button;
-var moment = require('moment');
+import {Button} from "react-bootstrap";
+import moment from 'moment';
 
 
 class AwayDateDialog extends Component {
 
-  getInitialState() {
-    return {awayId: this.props.awayId,
+  constructor(props) {
+    super(props)
+    this.state = {awayId: this.props.awayId,
       fromDate: moment(this.props.fromDate, 'YYYY-MM-DD').toDate(),
       toDate: moment(this.props.toDate, 'YYYY-MM-DD').toDate()}
   }
