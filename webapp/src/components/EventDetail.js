@@ -1,47 +1,48 @@
 import React, { Component } from 'react';
-var EventModel = require('../models/event');
-var SongModel = require('../models/song');
-var Person = require('../models/person');
-var EventDate = require('../models/eventdate');
-var $ = require('jquery');
-var EventDetailPanel = require('../components/EventDetailPanel');
-var EventDetailRota = require('../components/EventDetailRota');
-var EventDetailRotaEdit = require('../components/EventDetailRotaEdit');
-var EventDetailDates = require('../components/EventDetailDates');
-var EventDateAdd = require('../components/EventDateAdd');
-var Navigation = require('../components/Navigation');
-var DialogConfirm = require('../components/DialogConfirm');
+import EventModel from '../models/event';
+import SongModel from '../models/song';
+import Person from '../models/person';
+import EventDate from '../models/eventdate';
+//import $ from 'jquery';
+import EventDetailPanel from '../components/EventDetailPanel';
+import EventDetailRota from '../components/EventDetailRota';
+import EventDetailRotaEdit from '../components/EventDetailRotaEdit';
+import EventDetailDates from '../components/EventDetailDates';
+import EventDateAdd  from '../components/EventDateAdd';
+import DialogConfirm from '../components/DialogConfirm';
 
 
 class EventDetail extends Component {
 
-    getInitialState() {
-        return ({eventLoading: false, model: {}, onDate: null, eventDate: {},
+    constructor(props) {
+      super(props)
+      this.state = {
+          eventLoading: false, model: {}, onDate: null, eventDate: {},
           dateSummary: {}, rota: [], roles: [], showEventAdd: false,
           eventDatesLoading: false, dates: [], user: null, isEditing: false,
-          showEventDelete: false});
+          showEventDelete: false};
     }
 
     componentDidMount () {
-        $(document).on('dateTransition', this.handleDateChange);
+        //$(document).on('dateTransition', this.handleDateChange);
 
         // Get the user permissions
         this.getPermissions();
 
         // Get the event
-        var modelId = this.props.params.id;
+        var modelId = this.props.modelId;
         this.getEvent(modelId);
         this.getEventDates(modelId);
 
-        var onDate = this.props.params.onDate;
+        var onDate = this.props.onDate;
         if (onDate) {
             this.getEventDate(modelId, onDate);
         }
     }
 
-    componentWillUnmount () {
-        $(document).off('dateTransition', this.handleDateChange);
-    }
+//     componentWillUnmount () {
+//         $(document).off('dateTransition', this.handleDateChange);
+//     }
 
     getPermissions () {
         var self = this;
@@ -61,7 +62,7 @@ class EventDetail extends Component {
         if (!this.props.params.id) {
             return false;
         }
-        var eventId = parseInt(this.props.params.id);
+        var eventId = parseInt(this.props.params.id, 10);
         for (var i=0; i < this.state.user.events_admin.length; i++) {
             if (this.state.user.events_admin[i].id === eventId) {
                 return true;
@@ -113,26 +114,26 @@ class EventDetail extends Component {
       });
     }
 
-    handleAddEventDate(e) {
+    handleAddEventDate = (e) =>  {
       e.preventDefault();
 
       this.setState({showEventAdd: !this.state.showEventAdd});
     }
 
-    handleAddEventDateSave(eventDate) {
+    handleAddEventDateSave = (eventDate) => {
       this.setState({showEventAdd: false});
       window.location.href = '/rota/events/' + this.props.params.id + '/' + eventDate;
     }
 
-    handleDateChange(e, eventId, onDate) {
+    handleDateChange = (e, eventId, onDate) => {
         this.getEventDate(eventId, onDate);
     }
 
-    handleDelete(e) {
+    handleDelete = (e) =>  {
       this.setState({showEventDelete: !this.state.showEventDelete});
     }
 
-    handleDeleteConfirm(e) {
+    handleDeleteConfirm = (e) =>  {
       var self = this;
 
       EventModel.deleteDate(this.props.params.id, this.state.onDate).then(function(response) {
@@ -141,7 +142,7 @@ class EventDetail extends Component {
       });
     }
 
-    handleToggleEdit(e) {
+    handleToggleEdit = (e) => {
         if (e) {
             e.preventDefault();
         }
@@ -194,7 +195,6 @@ class EventDetail extends Component {
     render () {
         return (
             <div id="main" className="container-fluid" role="main">
-                <Navigation active="events" />
                 <h2 className="heading center">{this.state.model.name}</h2>
                 <h4 className="center"><a href={'/rota/events/'.concat(this.state.model.id, '/overview')}>Overview</a></h4>
                 {this.renderEventDate()}

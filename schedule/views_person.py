@@ -26,8 +26,10 @@ def view_person_my_rota():
 @app.route('/events', methods=['GET'])
 @app.route('/runsheets', methods=['GET'])
 @app.route('/setlists', methods=['GET'])
+@app.route('/events/<int:event_id>', methods=['GET'])
+@app.route('/events/<int:event_id>/<ondate>', methods=['GET'])
 @login_required
-def view_person(path=None):
+def view_person(path=None, event_id=None, ondate=None):
     return render_template('app.html')
 
 

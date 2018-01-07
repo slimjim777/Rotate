@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-var EventModel = require('../models/event');
-var Modal = require("react-bootstrap").Modal;
-var Button = require("react-bootstrap").Button;
-import Pikaday from 'react-pikaday';
-var moment = require('moment');
+import EventModel from '../models/event';
+import {Modal} from "react-bootstrap";
+import {Button} from "react-bootstrap";
+import Pikaday from 'react-pikaday-datepicker';
+import moment from 'moment';
 
 
 class EventDateAdd extends Component {
 
-  getInitialState() {
-    return {
-      eventDate: moment(this.props.eventDate, 'YYYY-MM-DD').toDate()
-    }
+  constructor(props) {
+      super(props)
+      this.state = {
+          eventDate: moment(this.props.eventDate, 'YYYY-MM-DD').toDate()
+      }
   }
 
   handleChangeEventDate(date) {

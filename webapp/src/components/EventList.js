@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 
-var EventList = React.createClass({
+class EventList extends Component {
 
     render() {
         return (
@@ -20,7 +20,7 @@ var EventList = React.createClass({
                         {this.props.events.map(function(ev) {
                             return (
                                 <tr key={ev.id}>
-                                    <td><a href={'/rota/events/' + ev.id}>{ev.name}</a></td><td><a href={'/rota/events/'.concat(ev.id, '/overview')}>Overview</a></td>
+                                    <td><a href={'/events/' + ev.id}>{ev.name}</a></td><td><a href={'/events/'.concat(ev.id, '/overview')}>Overview</a></td>
                                 </tr>
                             );
                         })}
@@ -31,6 +31,6 @@ var EventList = React.createClass({
         );
     }
 
-});
+}
 
 export default EventList;

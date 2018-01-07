@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-var moment = require('moment');
-var $ = require('jquery');
+import moment from 'moment';
+//import $ from 'jquery';
 
 
 class EventDetailDates extends Component {
@@ -26,7 +26,7 @@ class EventDetailDates extends Component {
     }
 
     handleClick(eventId, onDate) {
-        $(document).trigger('dateTransition', [eventId, onDate]);
+        //$(document).trigger('dateTransition', [eventId, onDate]);
     }
 
     render() {
@@ -43,7 +43,7 @@ class EventDetailDates extends Component {
                 <div className="panel-body">
                     <div>
                         {this.props.eventDates.map(function(ed) {
-                            var link = '/rota/events/' + self.props.model.id + '/' + ed.on_date;
+                            var link = '/events/' + self.props.model.id + '/' + ed.on_date;
                             var buttonClass = 'btn btn-primary btn-sm';
                             if (self.props.onDate === ed.on_date) {
                                 buttonClass += ' active';

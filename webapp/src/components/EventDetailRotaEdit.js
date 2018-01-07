@@ -1,31 +1,32 @@
 import React, { Component } from 'react';
-var moment = require('moment');
-var EventModel = require('../models/event');
+import moment from 'moment';
+import EventModel from '../models/event';
 
 
 class EventDetailRotaEdit extends Component {
 
-    getInitialState() {
+    constructor(props) {
+    	super(props)
         var summary = this.props.summary;
-        return {focus: summary.focus, notes: summary.notes, url: summary.url, rota: {}};
+        this.state = {focus: summary.focus, notes: summary.notes, url: summary.url, rota: {}};
     }
 
-    handleChangeFocus(e) {
+    handleChangeFocus = (e) =>  {
         e.preventDefault();
         this.setState({focus: e.target.value});
     }
 
-    handleChangeNotes(e) {
+    handleChangeNotes = (e) =>  {
         e.preventDefault();
         this.setState({notes: e.target.value});
     }
 
-    handleChangeRunSheet(e) {
+    handleChangeRunSheet = (e) =>  {
         e.preventDefault();
         this.setState({url: e.target.value});
     }
     
-    handleChangeRota(e) {
+    handleChangeRota = (e) =>  {
         e.preventDefault();
         // Get the role id and value
         var roleId = e.target.name.replace('role-','');
@@ -34,7 +35,7 @@ class EventDetailRotaEdit extends Component {
         this.setState({rota: rota});
     }
 
-    handleSave(e) {
+    handleSave = (e) =>  {
         e.preventDefault();
         var self = this;
 

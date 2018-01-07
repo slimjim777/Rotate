@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-var moment = require('moment');
-var EventDateRunsheet = require('../components/EventDateRunsheet');
+import moment from 'moment';
 
 
 class EventDetailRota extends Component {
 
-    getInitialState() {
-      return {showRunsheet: false, user: {}};
+    constructor(props) {
+      super(props)
+      this.state = {showRunsheet: false, user: {}};
     }
 
     toggleRunsheet() {
@@ -39,7 +39,6 @@ class EventDetailRota extends Component {
     renderViewRunsheetButton() {
       var self = this;
       var summary = this.props.summary;
-      var model = this.props.model;
       var eventId;
       // Link to the parent event, if there is one
       if (this.props.model.parent_event) {
@@ -49,7 +48,7 @@ class EventDetailRota extends Component {
       }
       return (
         <span>
-          <a className="btn btn-primary" href={'/rota/events/'.concat(eventId, '/', summary.on_date, '/runsheet')}>View</a>
+          <a className="btn btn-primary" href={'/events/'.concat(eventId, '/', summary.on_date, '/runsheet')}>View</a>
           &nbsp;
           {self.renderViewSetListButton(eventId, summary.on_date)}
         </span>
@@ -84,17 +83,8 @@ class EventDetailRota extends Component {
       }
     }
 
-    renderRunSheet(model, summary) {
-      if (this.state.showRunsheet) {
-        return (
-          <EventDateRunsheet model={model} summary={summary} canAdministrate={this.props.canAdministrate} />
-        );
-      }
-    }
-
     render () {
         var summary = this.props.summary;
-        var model = this.props.model;
         var rota = this.props.rota;
 
         if (!this.props.onDate) {
@@ -125,7 +115,7 @@ class EventDetailRota extends Component {
                         <div>
                             <label>Run Sheet</label>&nbsp;
                             <span>{this.renderRunSheetLink(summary)}&nbsp;{this.renderViewRunsheetButton()}</span>
-                            {this.renderRunSheet(model, summary)}
+                            {/*this.renderRunSheet(model, summary)*/}
                         </div>
                         <table className="table table-striped">
                             <thead>

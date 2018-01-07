@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-var EventModel = require('../models/event');
-var EventDate = require('../models/eventdate');
-var Navigation = require('../components/Navigation');
-var EventDateAdd = require('../components/EventDateAdd');
-var Person = require('../models/person');
-var moment = require('moment');
+import EventModel from '../models/event';
+import EventDate from '../models/eventdate';
+import Navigation from '../components/Navigation';
+import EventDateAdd from '../components/EventDateAdd';
+import Person from '../models/person';
+import moment from 'moment';
 
 var DISPLAY_FORMAT = 'DD/MM/YYYY';
 var STANDARD_FORMAT = 'YYYY-MM-DD';
@@ -12,9 +12,19 @@ var STANDARD_FORMAT = 'YYYY-MM-DD';
 
 class EventOverview extends Component {
 
-    getInitialState() {
-        return ({model: {}, roles: [], rota: [], fromDate: moment().format(STANDARD_FORMAT), eventLoading: false,
-            editing: null, editRoles: [], editValues: {}, showEventAdd: false});
+    constructor(props) {
+        super(props)
+        this.state = {
+            model: {},
+            roles: [],
+            rota: [],
+            fromDate: moment().format(STANDARD_FORMAT),
+            eventLoading: false,
+            editing: null,
+            editRoles: [],
+            editValues: {},
+            showEventAdd: false,
+        }
     }
 
     componentDidMount() {

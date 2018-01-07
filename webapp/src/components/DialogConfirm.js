@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-var Modal = require("react-bootstrap").Modal;
-var Button = require("react-bootstrap").Button;
+import {Modal} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 
 
 class DialogConfirm extends Component {
@@ -32,6 +32,6 @@ class DialogConfirm extends Component {
       </div>
     )
   }
-});
+};
 
 export default DialogConfirm;

@@ -14,6 +14,15 @@ export function subsectionFromPath(path) {
     }
 }
 
+export function subSubsectionFromPath(path) {
+    var p = path.split('/')
+    if (p.length > 2) {
+        return path.split('/')[3]
+    } else {
+        return ''
+    }
+}
+
 
 // 
 // 
