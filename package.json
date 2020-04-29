@@ -6,7 +6,7 @@
   "dependencies": {
     "filesize": "^3.2.1",
     "history": "^2.0.0-rc2",
-    "jquery": "^2.2.0",
+    "jquery": "^3.5.0",
     "moment": "^2.11.1",
     "react": "^0.14.6",
     "react-bootstrap": "^0.28.2",
