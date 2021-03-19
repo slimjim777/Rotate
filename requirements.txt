@@ -12,7 +12,7 @@ Flask-SQLAlchemy==2.3.2
 gunicorn==19.3.0
 idna==2.6
 itsdangerous==0.24
-Jinja2==2.7.3
+Jinja2==2.11.3
 MarkupSafe==0.23
 newrelic==2.50.0.39
 oauthlib==2.0.6
