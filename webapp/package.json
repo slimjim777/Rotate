@@ -10,7 +10,7 @@
     "react-dom": "^16.2.0",
     "react-dropzone": "^4.2.3",
     "react-pikaday-datepicker": "^3.0.1",
-    "react-scripts": "1.0.17",
+    "react-scripts": "5.0.1",
     "then-request": "^4.1.0"
   },
   "scripts": {
